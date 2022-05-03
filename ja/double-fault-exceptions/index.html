@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/ja/double-fault-exceptions/" />
+        <link rel="canonical" href="https://rust-os.ir/ja/double-fault-exceptions/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/ja" title="All Posts">« すべての記事へ</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/ja" title="All Posts">« すべての記事へ</a></aside>
 
             </div>
         </header>
@@ -120,7 +120,7 @@
             
             <p>
             <b>この記事は翻訳されたものです：</b>
-            この記事は<strong><a href="https://os.phil-opp.com/double-fault-exceptions/">Double Faults</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
+            この記事は<strong><a href="https://rust-os.ir/double-fault-exceptions/">Double Faults</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
             </p>
             <p>
                 翻訳者： <a href="https://github.com/garasubo">@garasubo</a>.
@@ -131,7 +131,7 @@
     <div class="">
     <p>この記事ではCPUが例外ハンドラの呼び出しに失敗したときに起きる、ダブルフォルト例外について詳細に見ていきます。この例外を処理することによって、システムリセットを起こす重大な<strong>トリプルフォルト</strong>を避けることができます。あらゆる場合においてトリプルフォルトを防ぐために、ダブルフォルトを異なるカーネルスタック上でキャッチするための<strong>割り込みスタックテーブル</strong>をセットアップしていきます。</p>
 <span id="continue-reading"></span>
-<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください（訳注: リンクは原文(英語)のものになります）。また<a href="https://os.phil-opp.com/ja/double-fault-exceptions/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-06"><code>post-06</code> ブランチ</a>にあります。</p>
+<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください（訳注: リンクは原文(英語)のものになります）。また<a href="https://rust-os.ir/ja/double-fault-exceptions/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-06"><code>post-06</code> ブランチ</a>にあります。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -190,7 +190,7 @@
     </details>
 
 <h2 id="daburuhuorutotoha"><a class="zola-anchor" href="#daburuhuorutotoha" aria-label="Anchor link for: daburuhuorutotoha">🔗</a>ダブルフォルトとは</h2>
-<p>簡単に言うとダブルフォルトとはCPUが例外ハンドラを呼び出すことに失敗したときに起きる特別な例外です。例えば、ページフォルトが起きたが、ページフォルトハンドラが<a href="https://os.phil-opp.com/ja/cpu-exceptions/#ge-riip-miji-shu-zi-biao">割り込みディスクリプタテーブル</a>（IDT: Interrupt Descriptor Table）に登録されていないときに発生します。つまり、C++での<code>catch(...)</code>や、JavaやC#の<code>catch(Exception e)</code>ような、例外のあるプログラミング言語のcatch-allブロックのようなものです。</p>
+<p>簡単に言うとダブルフォルトとはCPUが例外ハンドラを呼び出すことに失敗したときに起きる特別な例外です。例えば、ページフォルトが起きたが、ページフォルトハンドラが<a href="https://rust-os.ir/ja/cpu-exceptions/#ge-riip-miji-shu-zi-biao">割り込みディスクリプタテーブル</a>（IDT: Interrupt Descriptor Table）に登録されていないときに発生します。つまり、C++での<code>catch(...)</code>や、JavaやC#の<code>catch(Exception e)</code>ような、例外のあるプログラミング言語のcatch-allブロックのようなものです。</p>
 <p>ダブルフォルトは通常の例外のように振る舞います。ベクター番号<code>8</code>を持ち、IDTに通常のハンドラ関数として定義できます。ダブルフォルトがうまく処理されないと、より重大な例外である<strong>トリプルフォルト</strong>が起きてしまうため、ダブルフォルトハンドラを設定することはとても重要です。トリプルフォルトはキャッチできず、ほとんどのハードウェアはシステムリセットを起こします。</p>
 <h3 id="daburuhuorutowoqi-kosu"><a class="zola-anchor" href="#daburuhuorutowoqi-kosu" aria-label="Anchor link for: daburuhuorutowoqi-kosu">🔗</a>ダブルフォルトを起こす</h3>
 <p>ハンドラ関数を定義していない例外を発生させることでダブルフォルトを起こしてみましょう。</p>
@@ -215,7 +215,7 @@
 </span><span>    </span><span style="color:#569cd6;">loop </span><span>{}
 </span><span>}
 </span></code></pre>
-<p>不正なアドレスである<code>0xdeadbeef</code>に書き込みを行うため<code>unsafe</code>を使います。この仮想アドレスはページテーブル上で物理アドレスにマップされていないため、ページフォルトが発生します。私達の<a href="https://os.phil-opp.com/ja/cpu-exceptions/#ge-riip-miji-shu-zi-biao">IDT</a>にはページフォルトが登録されていないため、ダブルフォルトが発生します。</p>
+<p>不正なアドレスである<code>0xdeadbeef</code>に書き込みを行うため<code>unsafe</code>を使います。この仮想アドレスはページテーブル上で物理アドレスにマップされていないため、ページフォルトが発生します。私達の<a href="https://rust-os.ir/ja/cpu-exceptions/#ge-riip-miji-shu-zi-biao">IDT</a>にはページフォルトが登録されていないため、ダブルフォルトが発生します。</p>
 <p>今、私達のカーネルを起動すると、ブートループが発生します。この理由は以下の通りです：</p>
 <ol>
 <li>CPUが<code>0xdeadbeef</code>に書き込みを試みページフォルトを起こします。</li>
@@ -287,7 +287,7 @@
 <p>カーネルがスタックをオーバーフローさせてガードページにヒットしたら？</p>
 </blockquote>
 <p>ガードページはスタックの底にある特別なメモリページで、これによってスタックオーバーフローを検出することができます。このページはどの物理メモリにもマップされていないので、アクセスすることで警告なく他のメモリを破壊する代わりにページフォルトが発生します。ブートローダーはカーネルスタックのためにガードページをセットアップするので、スタックオーバーフローは<strong>ページフォルト</strong>を発生させることになります。</p>
-<p>ページフォルトが起きるとCPUはIDT内のページフォルトハンドラを探しにいき、<a href="https://os.phil-opp.com/cpu-exceptions/#the-interrupt-stack-frame">割り込みスタックフレーム</a>（訳注: 翻訳当時、リンク先未訳）をスタック上にプッシュしようと試みます。しかし、このスタックポインタは存在しないガードページを指しています。結果、二度目のページフォルトが発生して、ダブルフォルトが起きます（上の表によれば）。</p>
+<p>ページフォルトが起きるとCPUはIDT内のページフォルトハンドラを探しにいき、<a href="https://rust-os.ir/cpu-exceptions/#the-interrupt-stack-frame">割り込みスタックフレーム</a>（訳注: 翻訳当時、リンク先未訳）をスタック上にプッシュしようと試みます。しかし、このスタックポインタは存在しないガードページを指しています。結果、二度目のページフォルトが発生して、ダブルフォルトが起きます（上の表によれば）。</p>
 <p>そして、ここでCPUは<strong>ダブルフォルトハンドラ</strong>を呼びにいきます。しかし、ダブルフォルト例外においてもCPUは例外スタックフレームをプッシュしようと試みます。スタックポインタはまだガードページを指しているので、<strong>三度目の</strong>ページフォルトが起きて、<strong>トリプルフォルト</strong>を発生させシステムは再起動します。そのため、私達の今のダブルフォルトハンドラではこの場合でのトリプルフォルトを避けることができません。</p>
 <p>実際にやってみましょう。カーネルスタックオーバーフローは無限に再帰する関数を呼び出すことによって簡単に引き起こせます：</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/main.rs
@@ -317,7 +317,7 @@
 </span><span>    stack_pointers: [Option&lt;StackPointer&gt;; 7],
 </span><span>}
 </span></code></pre>
-<p>各例外ハンドラに対して、私達は対応する<a href="https://os.phil-opp.com/cpu-exceptions/#the-interrupt-descriptor-table">IDTエントリ</a>（訳注: 翻訳当時、リンク先未訳）の<code>stack_pointers</code>フィールドを通してISTからスタックを選ぶことができます。例えば、IST中の最初のスタックをダブルフォルトハンドラのために使うことができます。そうすると、CPUがダブルフォルトが発生したときは必ず、このスタックに自動的に切り替えを行います。この切り替えは何かがプッシュされる前に起きるので、トリプルフォルトを防ぐことになります。</p>
+<p>各例外ハンドラに対して、私達は対応する<a href="https://rust-os.ir/cpu-exceptions/#the-interrupt-descriptor-table">IDTエントリ</a>（訳注: 翻訳当時、リンク先未訳）の<code>stack_pointers</code>フィールドを通してISTからスタックを選ぶことができます。例えば、IST中の最初のスタックをダブルフォルトハンドラのために使うことができます。そうすると、CPUがダブルフォルトが発生したときは必ず、このスタックに自動的に切り替えを行います。この切り替えは何かがプッシュされる前に起きるので、トリプルフォルトを防ぐことになります。</p>
 <h3 id="isttotss"><a class="zola-anchor" href="#isttotss" aria-label="Anchor link for: isttotss">🔗</a>ISTとTSS</h3>
 <p>割り込みスタックテーブル（IST）は <strong><a href="https://ja.wikipedia.org/wiki/Task_state_segment">タスクステートセグメント</a></strong>（TSS）というレガシーな構造体の一部です。TSSはかつては様々な32ビットモードでのタスクに関する情報（例：プロセッサのレジスタの状態）を保持していて、例えば<a href="https://wiki.osdev.org/Context_Switching#Hardware_Context_Switching">ハードウェアコンテキストスイッチング</a>に使われていました。しかし、ハードウェアコンテキストスイッチングは64ビットモードではサポートされなくなり、TSSのフォーマットは完全に変わりました。</p>
 <p>x86_64ではTSSはタスク固有の情報は全く持たなくなりました。代わりに、2つのスタックテーブル（ISTがその1つ）を持つようになりました。唯一32ビットと64ビットのTSSで共通のフィールドは<a href="https://ja.wikipedia.org/wiki/Task_state_segment#I/O%E8%A8%B1%E5%8F%AF%E3%83%93%E3%83%83%E3%83%88%E3%83%9E%E3%83%83%E3%83%97">I/Oポート許可ビットマップ</a>へのポインタのみです。</p>
@@ -486,7 +486,7 @@
 </span><span>    blog_os::test_panic_handler(info)
 </span><span>}
 </span></code></pre>
-<p><code>panic_handler</code>のテストと同様、テストは<a href="https://os.phil-opp.com/ja/testing/#hanesu-harness-nonaitesuto">テストハーネスなし</a>で実行されます。理由は私達はダブルフォルト後に実行を続けることができず、２つ以上のテストは意味をなさないためです。テストハーネスを無効にするために、以下を<code>Cargo.toml</code>に追加します：</p>
+<p><code>panic_handler</code>のテストと同様、テストは<a href="https://rust-os.ir/ja/testing/#hanesu-harness-nonaitesuto">テストハーネスなし</a>で実行されます。理由は私達はダブルフォルト後に実行を続けることができず、２つ以上のテストは意味をなさないためです。テストハーネスを無効にするために、以下を<code>Cargo.toml</code>に追加します：</p>
 <pre data-lang="toml" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#608b4e;"># in Cargo.toml
 </span><span>
 </span><span>[[</span><span style="color:#808080;">test</span><span>]]
@@ -577,7 +577,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -649,9 +649,9 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/double-fault-exceptions/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/double-fault-exceptions/">
                         English (original)
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/double-fault-exceptions/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/double-fault-exceptions/">
                         Persian
                     </a></li></ul>
         </div>
@@ -667,7 +667,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

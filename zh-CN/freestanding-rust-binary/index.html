@@ -12,11 +12,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/zh-CN/freestanding-rust-binary/" />
+        <link rel="canonical" href="https://rust-os.ir/zh-CN/freestanding-rust-binary/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -35,11 +35,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/zh-CN" title="All Posts">« 所有文章</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/zh-CN" title="All Posts">« 所有文章</a></aside>
 
             </div>
         </header>
@@ -116,7 +116,7 @@
             
             <p>
             <b>翻译内容：</b>
-            这是对原文章 <strong><a href="https://os.phil-opp.com/freestanding-rust-binary/">A Freestanding Rust Binary</a></strong> 的社区中文翻译。它可能不完整，过时或者包含错误。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">这个 Issue</a> 上评论和提问！
+            这是对原文章 <strong><a href="https://rust-os.ir/freestanding-rust-binary/">A Freestanding Rust Binary</a></strong> 的社区中文翻译。它可能不完整，过时或者包含错误。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">这个 Issue</a> 上评论和提问！
             </p>
             <p>
                 翻译者： <a href="https://github.com/luojia65">@luojia65</a>, <a href="https://github.com/Rustin-Liu">@Rustin-Liu</a> 和 <a href="https://github.com/TheBegining">@TheBegining</a>.
@@ -127,7 +127,7 @@
     <div class="">
     <p>创建一个不链接标准库的 Rust 可执行文件，将是我们迈出的第一步。无需底层操作系统的支撑，这样才能在<strong>裸机</strong>（<a href="https://en.wikipedia.org/wiki/Bare_machine">bare metal</a>）上运行 Rust 代码。</p>
 <span id="continue-reading"></span>
-<p>此博客在 <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上公开开发. 如果您有任何问题或疑问，请在此处打开一个 issue。 您也可以在<a href="https://os.phil-opp.com/zh-CN/freestanding-rust-binary/#comments">底部</a>发表评论. 这篇文章的完整源代码可以在 [<code>post-01</code>] <a href="https://github.com/phil-opp/blog_os/tree/post-01">post branch</a> 分支中找到。</p>
+<p>此博客在 <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上公开开发. 如果您有任何问题或疑问，请在此处打开一个 issue。 您也可以在<a href="https://rust-os.ir/zh-CN/freestanding-rust-binary/#comments">底部</a>发表评论. 这篇文章的完整源代码可以在 [<code>post-01</code>] <a href="https://github.com/phil-opp/blog_os/tree/post-01">post branch</a> 分支中找到。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -359,7 +359,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -429,19 +429,19 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/freestanding-rust-binary/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/freestanding-rust-binary/">
                         English (original)
-                    </a></li><li data-lang-switch-to="zh-TW" class=""><a href="https://os.phil-opp.com/zh-TW/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="zh-TW" class=""><a href="https://rust-os.ir/zh-TW/freestanding-rust-binary/">
                         Chinese (traditional)
-                    </a></li><li data-lang-switch-to="fr" class=""><a href="https://os.phil-opp.com/fr/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="fr" class=""><a href="https://rust-os.ir/fr/freestanding-rust-binary/">
                         French
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/freestanding-rust-binary/">
                         Japanese
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/freestanding-rust-binary/">
                         Persian
-                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://os.phil-opp.com/ru/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://rust-os.ir/ru/freestanding-rust-binary/">
                         Russian
-                    </a></li><li data-lang-switch-to="ko" class=""><a href="https://os.phil-opp.com/ko/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ko" class=""><a href="https://rust-os.ir/ko/freestanding-rust-binary/">
                         Korean
                     </a></li></ul>
         </div>
@@ -457,7 +457,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

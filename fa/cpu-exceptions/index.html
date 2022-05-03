@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/fa/cpu-exceptions/" />
+        <link rel="canonical" href="https://rust-os.ir/fa/cpu-exceptions/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/fa" title="All Posts">« همه پست‌ها</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/fa" title="All Posts">« همه پست‌ها</a></aside>
 
             </div>
         </header>
@@ -113,7 +113,7 @@
             
             <p>
             <b>محتوای ترجمه شده:</b>
-            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://os.phil-opp.com/cpu-exceptions/">CPU Exceptions</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
+            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://rust-os.ir/cpu-exceptions/">CPU Exceptions</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
             </p>
             <p>
                 ترجمه توسط <a href="https://github.com/hamidrezakp">@hamidrezakp</a> و <a href="https://github.com/MHBahrampour">@MHBahrampour</a>.
@@ -124,7 +124,7 @@
     <div class="right-to-left">
     <p>استثناهای پردازنده در موقعیت های مختلف دارای خطا رخ می دهد ، به عنوان مثال هنگام دسترسی به آدرس حافظه نامعتبر یا تقسیم بر صفر. برای واکنش به آنها ، باید یک <em>جدول توصیف کننده وقفه</em> تنظیم کنیم که توابع کنترل کننده را فراهم کند. در انتهای این پست ، هسته ما قادر به گرفتن <a href="https://wiki.osdev.org/Exceptions#Breakpoint">استثناهای breakpoint</a> و ادامه اجرای طبیعی پس از آن خواهد بود.</p>
 <span id="continue-reading"></span>
-<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. همچنین می‌توانید <a href="https://os.phil-opp.com/fa/cpu-exceptions/#comments">در زیر</a> این پست کامنت بگذارید. سورس کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-05"><code>post-05</code></a> پیدا کنید.</p>
+<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. همچنین می‌توانید <a href="https://rust-os.ir/fa/cpu-exceptions/#comments">در زیر</a> این پست کامنت بگذارید. سورس کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-05"><code>post-05</code></a> پیدا کنید.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -297,7 +297,7 @@
 <li><strong>مدیریت کد خطا</strong>: کد خطا که برای برخی  استثناها به پشته اضافه می شود ، کارها را بسیار پیچیده تر می کند. تراز بندی پشته را تغییر می دهد (به قسمت بعدی مراجعه کنید) و باید قبل از بازگشت، از پشته خارج شود. قرارداد فراخوانی <code>x86-interrupt</code> تمام پیچیدگی‌ها را برطرف می کند. با این حال، نمی داند کدام تابع کنترل کننده برای کدام استثنا استفاده می شود، بنابراین باید این اطلاعات را از تعداد آرگومان های تابع استخراج کند. این بدان معناست که برنامه نویس همچنان مسئول استفاده صحیح هر نوع تابع برای هر استثنا است. خوشبختانه نوع <code>InterruptDescriptorTable</code> که توسط کرت <code>x86_64</code> تعریف شده است، استفاده از انواع تابع صحیح را تضمین می کند.</li>
 <li><strong>تراز کردن پشته</strong>: برخی دستورالعمل‌ها (به ویژه دستورالعمل های SSE) وجود دارند که به یک تراز پشته 16 بایتی نیاز دارند. پردازنده این تراز را هر زمان که یک استثنا اتفاق می افتد تضمین می کند ، اما برای برخی از استثناها بعداً هنگامی که یک کد خطا را به پشته اضافه می‌کند، دوباره آن را از بین می برد. قرارداد فراخوانی <code>x86-interrupt</code> با تنظیم مجدد پشته در این حالت این مشکل را برطرف می‌کند.</li>
 </ul>
-<p>اگر به جزئیات بیشتر علاقه مندید: ما همچنین یک سری پست داریم که مدیریت استثنا با استفاده از <a href="https://github.com/rust-lang/rfcs/blob/master/text/1201-naked-fns.md">توابع برهنه</a> را توضیح می‌دهند. (<a href="https://os.phil-opp.com/fa/cpu-exceptions/#khyly-jdwyy-bwd">در انتهای این پست</a>).</p>
+<p>اگر به جزئیات بیشتر علاقه مندید: ما همچنین یک سری پست داریم که مدیریت استثنا با استفاده از <a href="https://github.com/rust-lang/rfcs/blob/master/text/1201-naked-fns.md">توابع برهنه</a> را توضیح می‌دهند. (<a href="https://rust-os.ir/fa/cpu-exceptions/#khyly-jdwyy-bwd">در انتهای این پست</a>).</p>
 <h2 id="pydh-szy"><a class="zola-anchor" href="#pydh-szy" aria-label="Anchor link for: pydh-szy">🔗</a>پیاده سازی</h2>
 <p>اکنون که تئوری را فهمیدیم ، وقت آن رسیده است که استثناهای پردازنده را در هسته خود کنترل کنیم. ما با ایجاد یک ماژول جدید وقفه‌ها در <code>src/interrupts.rs</code> شروع خواهیم کرد، که ابتدا یک تابع <code>init_idt</code> ایجاد می کند که یک <code>InterruptDescriptorTable</code> جدید ایجاد می کند:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/lib.rs
@@ -389,7 +389,7 @@
 <p>در این روش بدون خطا کامپایل می شود اما مشکلات دیگری به همراه دارد. <code>static mut</code> بسیار مستعد Data Race هستند، بنابراین در هر دسترسی به یک <a href="https://doc.rust-lang.org/1.30.0/book/second-edition/ch19-01-unsafe-rust.html#unsafe-superpowers">بلوک <code>unsafe</code></a> نیاز داریم.</p>
 <h4 id="lazy-statics-bh-njt-m-myaynd"><a class="zola-anchor" href="#lazy-statics-bh-njt-m-myaynd" aria-label="Anchor link for: lazy-statics-bh-njt-m-myaynd">🔗</a>Lazy Statics به نجات ما می‌آیند</h4>
 <p>خوشبختانه ماکرو <code>lazy_static</code> وجود دارد. ماکرو به جای ارزیابی یک <code>static</code> در زمان کامپایل ، مقداردهی اولیه آن را هنگام اولین ارجاع به آن انجام می دهد. بنابراین، می توانیم تقریباً همه کاری را در بلوک مقداردهی اولیه انجام دهیم و حتی قادر به خواندن مقادیر زمان اجرا هستیم.</p>
-<p>ما قبلاً کرت <code>lazy_static</code> را وارد کردیم وقتی <a href="https://os.phil-opp.com/vga-text-mode/#lazy-statics">یک انتزاع برای بافر متن VGA ایجاد کردیم</a>. بنابراین می توانیم مستقیماً از ماکرو <code>!lazy_static</code> برای ایجاد IDT استاتیک استفاده کنیم:</p>
+<p>ما قبلاً کرت <code>lazy_static</code> را وارد کردیم وقتی <a href="https://rust-os.ir/vga-text-mode/#lazy-statics">یک انتزاع برای بافر متن VGA ایجاد کردیم</a>. بنابراین می توانیم مستقیماً از ماکرو <code>!lazy_static</code> برای ایجاد IDT استاتیک استفاده کنیم:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span style="color:#569cd6;">use </span><span>lazy_static::lazy_static;
@@ -468,7 +468,7 @@
 <pre style="background-color:#1e1e1e;color:#dcdcdc;"><code><span>blog_os::interrupts::test_breakpoint_exception...	[ok]
 </span></code></pre>
 <h2 id="khyly-jdwyy-bwd"><a class="zola-anchor" href="#khyly-jdwyy-bwd" aria-label="Anchor link for: khyly-jdwyy-bwd">🔗</a>خیلی جادویی بود؟</h2>
-<p>قرارداد فراخوانی <code>x86-interrupt</code> و نوع <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.InterruptDescriptorTable.html"><code>InterruptDescriptorTable</code></a> روند مدیریت استثناها را نسبتاً سر راست و بدون درد ساخته‌اند. اگر این برای شما بسیار جادویی بود و دوست دارید تمام جزئیات مهم مدیریت استثنا را بیاموزید، برای شما هم مطالبی داریم: مجموعه <a href="https://os.phil-opp.com/edition-1/extra/naked-exceptions/">“مدیریت استثناها با توابع برهنه”</a> ما، نحوه مدیریت استثنا‌ها بدون قرارداد فراخوانی<code>x86-interrupt</code> را نشان می دهد و همچنین نوع IDT خاص خود را ایجاد می کند. از نظر تاریخی، این پست‌ها مهمترین پست‌های مدیریت استثناها قبل از وجود قرارداد فراخوانی <code>x86-interrupt</code> و کرت <code>x86_64</code> بودند. توجه داشته باشید که این پست‌ها بر اساس <a href="https://os.phil-opp.com/edition-1/">نسخه اول</a> این وبلاگ هستند و ممکن است قدیمی باشند.</p>
+<p>قرارداد فراخوانی <code>x86-interrupt</code> و نوع <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.InterruptDescriptorTable.html"><code>InterruptDescriptorTable</code></a> روند مدیریت استثناها را نسبتاً سر راست و بدون درد ساخته‌اند. اگر این برای شما بسیار جادویی بود و دوست دارید تمام جزئیات مهم مدیریت استثنا را بیاموزید، برای شما هم مطالبی داریم: مجموعه <a href="https://rust-os.ir/edition-1/extra/naked-exceptions/">“مدیریت استثناها با توابع برهنه”</a> ما، نحوه مدیریت استثنا‌ها بدون قرارداد فراخوانی<code>x86-interrupt</code> را نشان می دهد و همچنین نوع IDT خاص خود را ایجاد می کند. از نظر تاریخی، این پست‌ها مهمترین پست‌های مدیریت استثناها قبل از وجود قرارداد فراخوانی <code>x86-interrupt</code> و کرت <code>x86_64</code> بودند. توجه داشته باشید که این پست‌ها بر اساس <a href="https://rust-os.ir/edition-1/">نسخه اول</a> این وبلاگ هستند و ممکن است قدیمی باشند.</p>
 <h2 id="mrhlh-b-dy-chyst"><a class="zola-anchor" href="#mrhlh-b-dy-chyst" aria-label="Anchor link for: mrhlh-b-dy-chyst">🔗</a>مرحله بعدی چیست؟</h2>
 <p>ما اولین استثنای خود را با موفقیت گرفتیم و از آن بازگشتیم! گام بعدی اطمینان از این است که همه استثناها را می گیریم ، زیرا یک استثنا گرفته نشده باعث <a href="https://wiki.osdev.org/Triple_Fault">خطای سه‌گانه</a> می شود که منجر به شروع مجدد سیستم می شود. پست بعدی توضیح می دهد که چگونه می توان با گرفتن صحیح <a href="https://wiki.osdev.org/Double_Fault#Double_Fault">خطای دوگانه</a> از این امر جلوگیری کرد.</p>
 
@@ -478,7 +478,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -550,9 +550,9 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/cpu-exceptions/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/cpu-exceptions/">
                         English (original)
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/cpu-exceptions/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/cpu-exceptions/">
                         Japanese
                     </a></li></ul>
         </div>
@@ -568,7 +568,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

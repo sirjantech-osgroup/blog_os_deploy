@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/ja/async-await/" />
+        <link rel="canonical" href="https://rust-os.ir/ja/async-await/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/ja" title="All Posts">« すべての記事へ</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/ja" title="All Posts">« すべての記事へ</a></aside>
 
             </div>
         </header>
@@ -118,7 +118,7 @@
             
             <p>
             <b>この記事は翻訳されたものです：</b>
-            この記事は<strong><a href="https://os.phil-opp.com/async-await/">Async/Await</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
+            この記事は<strong><a href="https://rust-os.ir/async-await/">Async/Await</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
             </p>
             <p>
                 翻訳者： <a href="https://github.com/kahirokunn">@kahirokunn</a>, <a href="https://github.com/garasubo">@garasubo</a>, <a href="https://github.com/sozysozbot">@sozysozbot</a> 及び <a href="https://github.com/woodyZootopia">@woodyZootopia</a>.
@@ -129,7 +129,7 @@
     <div class="">
     <p>この記事では、Rustの<strong>協調的マルチタスク</strong>と<strong>async/await</strong>機能について説明します。Rustのasync/await機能については、<code>Future</code> trait の設計、ステートマシンの変換、 <strong>pinning</strong> などを含めて詳しく説明します。そして、非同期キーボードタスクと基本的なexecutorを作成することで、カーネルにasync/awaitの基本的なサポートを追加します。</p>
 <span id="continue-reading"></span>
-<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://os.phil-opp.com/ja/async-await/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-12"><code>post-12</code> ブランチ</a>にあります。</p>
+<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://rust-os.ir/ja/async-await/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-12"><code>post-12</code> ブランチ</a>にあります。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> --> 
 
     <details id = "toc-inline">
@@ -194,7 +194,7 @@
 <p>非協調的マルチタスクの考え方は、タスクを切り替えるタイミングをOSが制御するというものです。そのためには、割り込みのたびにCPUの制御権がOS側に戻ってくることを利用します。これにより、システムに新しい入力があったときに、タスクを切り替えることができます。例えば、マウスを動かしたときやネットワークパケットが届いたときなどにタスクを切り替えることができます。OSは、ハードウェアのタイマーを設定して、その時間が経過したら割り込みを送るようにすることで、タスクの実行が許される正確な時間を決定することもできます。</p>
 <p>ハードウェア割り込みでのタスク切り替え処理を下図に示します:</p>
 <p><img src="regain-control-on-interrupt.svg" alt="" /></p>
-<p>最初の行では、CPUがプログラム<code>A</code>のタスク<code>A1</code>を実行しています。他のすべてのタスクは一時停止しています。2行目では、CPUにハードウェア割り込みが入ります。<a href="https://os.phil-opp.com/hardware-interrupts/"><strong>ハードウェア割り込み</strong></a>（訳注: 翻訳当時、リンク先未訳）の記事で説明したように、CPUは直ちにタスク<code>A1</code>の実行を停止し、割り込み記述子テーブル(IDT)に定義されている割り込みハンドラにジャンプします。この割り込みハンドラを介して、OSは再びCPUを制御できるようになり、タスク<code>A1</code>の継続ではなく、タスク<code>B1</code>に切り替えることができます。</p>
+<p>最初の行では、CPUがプログラム<code>A</code>のタスク<code>A1</code>を実行しています。他のすべてのタスクは一時停止しています。2行目では、CPUにハードウェア割り込みが入ります。<a href="https://rust-os.ir/hardware-interrupts/"><strong>ハードウェア割り込み</strong></a>（訳注: 翻訳当時、リンク先未訳）の記事で説明したように、CPUは直ちにタスク<code>A1</code>の実行を停止し、割り込み記述子テーブル(IDT)に定義されている割り込みハンドラにジャンプします。この割り込みハンドラを介して、OSは再びCPUを制御できるようになり、タスク<code>A1</code>の継続ではなく、タスク<code>B1</code>に切り替えることができます。</p>
 <h4 id="zhuang-tai-nobao-cun"><a class="zola-anchor" href="#zhuang-tai-nobao-cun" aria-label="Anchor link for: zhuang-tai-nobao-cun">🔗</a>状態の保存</h4>
 <p>タスクは任意の時点で中断されるため、計算の途中である可能性もあります。後で再開できるようにするために、OSは、タスクの<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%BC%E3%83%AB%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF">コールスタック</a>やすべてのCPUレジスタの値など、タスクの状態全体をバックアップする必要があります。この作業を<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%B9%E3%82%A4%E3%83%83%E3%83%81">コンテキスト・スイッチ (context switch)</a> といいます。</p>
 <p>コールスタックは非常に大きくなる可能性があるため、OSは通常、各タスクのスイッチでコールスタックの内容をバックアップする代わりに、各タスクに個別のコールスタックを設定します。このような独立したスタックを持つタスクは、<a href="%E7%95%A5%E3%81%97%E3%81%A6**%E3%82%B9%E3%83%AC%E3%83%83%E3%83%89**"><em>thread of execution</em></a>と呼ばれます。タスクごとに独立したスタックを使用することで、コンテキスト・スイッチの際に保存する必要があるのはレジスタの内容だけになります(プログラム・カウンタとスタック・ポインタを含む)。この方法を取ることで、コンテキスト・スイッチの性能上のオーバーヘッドが最小限になります。これは、コンテキスト・スイッチが1秒間に100回も行われることがあるため、非常に重要なことです。</p>
@@ -328,7 +328,7 @@
 </span><span>}
 </span></code></pre>
 <p>(<a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d93c28509a1c67661f31ff820281d434">Try it on the playground</a>)</p>
-<p>この関数は、<a href="https://os.phil-opp.com/ja/async-await/#drawbacks">上記</a>のコンビネータ関数を使った <code>example</code> 関数をそのまま翻訳したものです。 <code>.await</code> 演算子を使うことで、クロージャや <code>Either</code> 型を必要とせずに future の値を取得することができます。その結果、まるで通常の同期コードを書いているかのように非同期コードを書くことができます。</p>
+<p>この関数は、<a href="https://rust-os.ir/ja/async-await/#drawbacks">上記</a>のコンビネータ関数を使った <code>example</code> 関数をそのまま翻訳したものです。 <code>.await</code> 演算子を使うことで、クロージャや <code>Either</code> 型を必要とせずに future の値を取得することができます。その結果、まるで通常の同期コードを書いているかのように非同期コードを書くことができます。</p>
 <h4 id="sutetomasinhenobian-huan"><a class="zola-anchor" href="#sutetomasinhenobian-huan" aria-label="Anchor link for: sutetomasinhenobian-huan">🔗</a>ステートマシンへの変換</h4>
 <p>舞台裏で何をしているかというと、<code>async</code>関数の本体を<a href="https://en.wikipedia.org/wiki/Finite-state_machine"><strong>ステートマシン (state machine)</strong></a>に変換し、<code>.await</code>を呼び出すたびに異なる状態を表すようにしています。上記の <code>example</code> 関数の場合、コンパイラは以下の4つの状態を持つステートマシンを作成します:</p>
 <p><img src="async-state-machine-states.svg" alt="Four states: start, waiting on foo.txt, waiting on bar.txt, end" /></p>
@@ -510,7 +510,7 @@
 </ul>
 <p><strong>ゼロコスト抽象化</strong>（抽象化は実行時のコストを増やしてはならないという原則） を提供するというRustの理念から、Rustは3つ目の解決策を選択しました。そのために <a href="https://github.com/rust-lang/rfcs/blob/master/text/2349-pin.md">RFC2349</a> で提案されたのが <a href="https://doc.rust-lang.org/stable/core/pin/index.html"><strong>pinning (ピン留め)</strong></a> APIです。以下では、このAPIの概要を説明し、async/awaitやfutureでどのように動作するかを説明します。</p>
 <h4 id="hipushang-nozhi"><a class="zola-anchor" href="#hipushang-nozhi" aria-label="Anchor link for: hipushang-nozhi">🔗</a>ヒープ上の値</h4>
-<p>まず最初に、<a href="https://os.phil-opp.com/heap-allocation/">ヒープ上に確保</a>された値は、ほとんどの場合、すでに固定のメモリアドレスを持っているということに気づきます。これらの値は、<code>allocate</code> の呼び出しで作成され、<code>Box&lt;T&gt;</code>のようなポインタ型で参照されます。ポインタ型を移動することは可能ですが、ポインタが指すヒープ上の値は、再び <code>deallocate</code> 呼び出しで解放されるまで、同じメモリアドレスに留まります。</p>
+<p>まず最初に、<a href="https://rust-os.ir/heap-allocation/">ヒープ上に確保</a>された値は、ほとんどの場合、すでに固定のメモリアドレスを持っているということに気づきます。これらの値は、<code>allocate</code> の呼び出しで作成され、<code>Box&lt;T&gt;</code>のようなポインタ型で参照されます。ポインタ型を移動することは可能ですが、ポインタが指すヒープ上の値は、再び <code>deallocate</code> 呼び出しで解放されるまで、同じメモリアドレスに留まります。</p>
 <p>ヒープ割り当てを利用して、自己参照型の構造体を作成してみましょう:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#569cd6;">fn </span><span>main() {
 </span><span>    </span><span style="color:#569cd6;">let mut</span><span> heap_value = Box::new(SelfReferential {
@@ -593,12 +593,12 @@
 <p>この記事ですでに見たように、<a href="https://doc.rust-lang.org/nightly/core/future/trait.Future.html#tymethod.poll"><code>Future::poll</code></a>メソッドは、<code>Pin&lt;&amp;mut Self&gt;</code>パラメータの形でピンを使用しています:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#569cd6;">fn </span><span>poll(self: Pin&lt;</span><span style="color:#569cd6;">&amp;mut Self</span><span>&gt;, cx: </span><span style="color:#569cd6;">&amp;mut</span><span> Context) -&gt; Poll&lt;</span><span style="color:#569cd6;">Self::</span><span>Output&gt;
 </span></code></pre>
-<p>このメソッドが通常の<code>&amp;mut self</code>ではなく<code>self: Pin&lt;&amp;mut Self&gt;</code>を取る理由は、<a href="https://os.phil-opp.com/async-await/#self-referential-structs">上</a>で見たように、async/awaitから生成されるfutureのインスタンスはしばしば自己参照しているためです。<code>Self</code> を <code>Pin</code> にラップして、async/await から生成された自己参照のfutureに対して、コンパイラに <code>Unpin</code> を選択させることで、<code>poll</code> 呼び出しの間にfutureがメモリ内で移動しないことが保証されます。これにより、すべての内部参照が有効であることが保証されます。</p>
+<p>このメソッドが通常の<code>&amp;mut self</code>ではなく<code>self: Pin&lt;&amp;mut Self&gt;</code>を取る理由は、<a href="https://rust-os.ir/async-await/#self-referential-structs">上</a>で見たように、async/awaitから生成されるfutureのインスタンスはしばしば自己参照しているためです。<code>Self</code> を <code>Pin</code> にラップして、async/await から生成された自己参照のfutureに対して、コンパイラに <code>Unpin</code> を選択させることで、<code>poll</code> 呼び出しの間にfutureがメモリ内で移動しないことが保証されます。これにより、すべての内部参照が有効であることが保証されます。</p>
 <p>注目すべきは、最初の <code>poll</code> 呼び出しの前にfutureを移動させることは問題ないということです。これは、futureがlazyであり、最初にポーリングされるまで何もしないという事実に起因しています。そのため、生成されたステートマシンの <code>start</code> 状態には、関数の引数だけが含まれており、内部参照は含まれていません。<code>poll</code> を呼び出すためには、呼び出し側はまずfutureを <code>Pin</code> にラップしなければなりません。これにより、futureがメモリ上で移動できなくなります。スタック上で正しく pin するのは、ヒープ上でするよりも難しいので、<a href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html#method.pin"><code>Box::pin</code></a>と<a href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html#method.as_mut"><code>Pin::as_mut</code></a>を組み合わせて使用することをお勧めします。</p>
 <p>スタック変数のピン留めを使ってfutureのコンビネータ関数を安全に実装する方法を知りたい場合は、比較的短い <code>futures</code> クレートの <a href="https://docs.rs/futures-util/0.3.4/src/futures_util/future/future/map.rs.html"><code>map</code> コンビネータメソッドのソースコード</a> と pin のドキュメントの <a href="https://doc.rust-lang.org/stable/std/pin/index.html#projections-and-structural-pinning">projections and structural pinning</a> のセクションを見てください。</p>
 <h3 id="executor-to-waker"><a class="zola-anchor" href="#executor-to-waker" aria-label="Anchor link for: executor-to-waker">🔗</a>Executor と Waker</h3>
 <p>async/awaitを使えば、完全に非同期的なfutureを簡単に扱うことができます。しかし、上で学んだように、futureはポーリングされるまで何もしません。つまり、どこかの時点で<code>poll</code>を呼ばないと、非同期コードは実行されないということです。</p>
-<p>単一のfutureであれば、<a href="https://os.phil-opp.com/ja/async-await/#futurewodai-tu">上述のように</a>ループを使って常に手動で各futureを待つことができます。しかし、この方法は非常に効率が悪く、多数のfutureを作成するプログラムでは実用的ではありません。この問題を解決する最も一般的な方法は、システム内のすべてのfutureが終了するまでポーリングする責任を負う、グローバルな <strong>executor</strong> を定義することです。</p>
+<p>単一のfutureであれば、<a href="https://rust-os.ir/ja/async-await/#futurewodai-tu">上述のように</a>ループを使って常に手動で各futureを待つことができます。しかし、この方法は非常に効率が悪く、多数のfutureを作成するプログラムでは実用的ではありません。この問題を解決する最も一般的な方法は、システム内のすべてのfutureが終了するまでポーリングする責任を負う、グローバルな <strong>executor</strong> を定義することです。</p>
 <h4 id="executor"><a class="zola-anchor" href="#executor" aria-label="Anchor link for: executor">🔗</a>Executor</h4>
 <p>executorの目的は、 <code>spawn</code> のようなメソッドを使って、独立したタスクとしてfutureを<ruby>生成<rp> (</rp><rt>spawn</rt><rp>) </rp></ruby>できるようにすることです。そして、executor はすべてのfutureが完了するまでポーリングする責任を担うのです。すべてのfutureを中央集権的に管理することの大きな利点は、あるfutureが <code>Poll::Pending</code> を返すたびに、executorが別のfutureに切り替えることができることです。このようにして、非同期の処理が並行して実行され、CPUをずっと忙しくしておけます。</p>
 <p>多くのexecutorの実装では、システムが複数のCPUコアを持っている場合にそれを生かすことができるようになっています。これらの実装では、十分な作業量があればすべてのコアを利用できる<a href="https://en.wikipedia.org/wiki/Thread_pool">スレッドプール</a>を作成したり、<a href="https://en.wikipedia.org/wiki/Work_stealing">work stealing</a>などの手法を用いてコア間の負荷を分散させたりします。また、低レイテンシーとメモリオーバーヘッドに最適化した、組み込みシステム用の特別なexecutorの実装もあります。</p>
@@ -666,7 +666,7 @@
 <ul>
 <li>私たちは、タスクに関連するfutureが <code>()</code> を返すことを要求しています。これは、タスクが結果を一切返さず、副作用のためだけに実行されることを意味します。例えば、上で定義した<code>example_task</code>関数は、戻り値はありませんが、副作用として画面に何かを表示します。</li>
 <li><code>dyn</code>キーワードは、<code>Box</code>に<a href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html"><em>trait object</em></a>を格納することを示しています。これはfuture上のメソッドが<a href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html#trait-objects-perform-dynamic-dispatch"><strong>動的にディスパッチされる</strong></a>ことを意味しており、<code>Task</code> 型に異なる型のfutureを格納することが可能になります。各 <code>async fn</code> はそれぞれ異なる型を持っており，私達は複数の異なるタスクを作成できるようにしたいので、これは重要です。</li>
-<li><a href="https://os.phil-opp.com/ja/async-await/#pinliu-me">pinningについて</a>で学んだように、<code>Pin&lt;Box&gt;</code> 型は、値をheap上に配置し、その値への <code>&amp;mut</code> 参照の作成を防ぐことで、メモリ内で値が移動できないようにします。これは、async/awaitによって生成されたfutureが自己参照構造体である可能性があるため、重要です。つまり、futureが移動されたときに無効になるような自分自身へのポインタを含む可能性があります。</li>
+<li><a href="https://rust-os.ir/ja/async-await/#pinliu-me">pinningについて</a>で学んだように、<code>Pin&lt;Box&gt;</code> 型は、値をheap上に配置し、その値への <code>&amp;mut</code> 参照の作成を防ぐことで、メモリ内で値が移動できないようにします。これは、async/awaitによって生成されたfutureが自己参照構造体である可能性があるため、重要です。つまり、futureが移動されたときに無効になるような自分自身へのポインタを含む可能性があります。</li>
 </ul>
 <p>future から新しい <code>Task</code> 構造体を作成できるように、<code>new</code> 関数を作成します:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/task/mod.rs
@@ -823,7 +823,7 @@
 </ul>
 <h3 id="fei-tong-qi-kibodoru-li"><a class="zola-anchor" href="#fei-tong-qi-kibodoru-li" aria-label="Anchor link for: fei-tong-qi-kibodoru-li">🔗</a>非同期キーボード入力</h3>
 <p>私たちのシンプルなexecutorは、<code>Waker</code>通知を利用せず、単純にすべてのタスクを完了するまでループさせます。今回の例では、最初の <code>poll</code> 呼び出しで <code>example_task</code> が最後まで実行されて終了するので、これは問題になりませんでした。適切な <code>Waker</code> の実装によるパフォーマンス上の利点を見るためには、まず真の意味で非同期なタスクを作成する必要があります。つまり、最初の <code>poll</code> 呼び出しでは <code>Poll::Pending</code> を返す可能性の高いタスクです。</p>
-<p>すでに<strong>ハードウェア割り込み</strong>という非同期なタスクが私達のシステムにはあるので、それをこのために使うことができます。<a href="https://os.phil-opp.com/hardware-interrupts/"><em>Interrupts</em></a>の項でご紹介したように、ハードウェアによる割り込みは、外部からの任意のタイミングで発生させることができます。例えば、ハードウェア・タイマーは、あらかじめ定義された時間が経過すると、CPUに割り込みを送ります。CPUは割り込みを受信すると、即座に割り込み記述子表 (interrupt descriptor table, IDT) で定義された対応するハンドラ関数に制御を移します。</p>
+<p>すでに<strong>ハードウェア割り込み</strong>という非同期なタスクが私達のシステムにはあるので、それをこのために使うことができます。<a href="https://rust-os.ir/hardware-interrupts/"><em>Interrupts</em></a>の項でご紹介したように、ハードウェアによる割り込みは、外部からの任意のタイミングで発生させることができます。例えば、ハードウェア・タイマーは、あらかじめ定義された時間が経過すると、CPUに割り込みを送ります。CPUは割り込みを受信すると、即座に割り込み記述子表 (interrupt descriptor table, IDT) で定義された対応するハンドラ関数に制御を移します。</p>
 <p>以下では、キーボード割り込みを利用した非同期タスクを作成します。キーボード割り込みは、非決定論的であり、かつlatency-criticalであるため、これに適した候補となります。非決定論的とは、次にいつキーが押されるかはユーザーに完全に依存しているため、これを予測する方法がないということです。latency-criticalとは、キーボード入力を即座に処理したいということで、そうしないとユーザーはラグを感じることになります。このようなタスクを効率的にサポートするためには、executorが <code>Waker</code> 通知を適切にサポートすることが不可欠となります。</p>
 <h4 id="sukiyankodokiyu"><a class="zola-anchor" href="#sukiyankodokiyu" aria-label="Anchor link for: sukiyankodokiyu">🔗</a>スキャンコードキュー</h4>
 <p>現在、キーボードの入力は割り込みハンドラで直接処理しています。割り込みハンドラは重要な作業を中断する可能性がある以上できるだけ短くする必要があるため、これは長期的に考えると良いアイデアではありません。このようにするのではなく、割り込みハンドラは必要最小限の作業（例: キーボードのスキャンコードの読み取りなど）のみを行い、残りの作業（例: スキャンコードの解釈など）はバックグラウンドタスクに任せるべきです。</p>
@@ -1058,7 +1058,7 @@
 </span><span>    }
 </span><span>}
 </span></code></pre>
-<p>このコードは、この記事で修正する前の<a href="https://os.phil-opp.com/hardware-interrupts/#interpreting-the-scancodes">keyboard interrupt handler</a>にあったコードと非常によく似ています。唯一の違いは、I/O portからスキャンコードを読み込むのではなく、<code>ScancodeStream</code>からスキャンコードを取得することです。このために、まず新しい <code>Scancode</code> ストリームを作成し、次に <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html"><code>StreamExt</code></a> traitが提供する <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html#method.next"><code>next</code></a> メソッドを繰り返し使用して、ストリーム内の次の要素を返す <code>Future</code> を取得します。これに <code>await</code> 演算子を用いることで、futureの結果を非同期的に待ちます。</p>
+<p>このコードは、この記事で修正する前の<a href="https://rust-os.ir/hardware-interrupts/#interpreting-the-scancodes">keyboard interrupt handler</a>にあったコードと非常によく似ています。唯一の違いは、I/O portからスキャンコードを読み込むのではなく、<code>ScancodeStream</code>からスキャンコードを取得することです。このために、まず新しい <code>Scancode</code> ストリームを作成し、次に <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html"><code>StreamExt</code></a> traitが提供する <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html#method.next"><code>next</code></a> メソッドを繰り返し使用して、ストリーム内の次の要素を返す <code>Future</code> を取得します。これに <code>await</code> 演算子を用いることで、futureの結果を非同期的に待ちます。</p>
 <p>ストリームが終了の合図として <code>None</code> を返すまで、<code>while let</code> を使ってループします。<code>poll_next</code> メソッドが <code>None</code> を返すことはないので、これは事実上の無限ループとなり、<code>print_keypresses</code> タスクは決して終了しません。</p>
 <p><code>main.rs</code>の中で、<code>print_keypresses</code>タスクをexecutorに追加して、キーボード入力を復活させましょう:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/main.rs
@@ -1374,7 +1374,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -1444,7 +1444,7 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/async-await/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/async-await/">
                         English (original)
                     </a></li></ul>
         </div>
@@ -1460,7 +1460,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

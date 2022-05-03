@@ -1,336 +1,336 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://os.phil-opp.com/</loc>
+        <loc>https://rust-os.ir/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/advanced-paging/</loc>
+        <loc>https://rust-os.ir/advanced-paging/</loc>
         <lastmod>2019-01-28</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/allocating-frames/</loc>
+        <loc>https://rust-os.ir/allocating-frames/</loc>
         <lastmod>2015-11-15</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/allocator-designs/</loc>
+        <loc>https://rust-os.ir/allocator-designs/</loc>
         <lastmod>2020-01-20</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/async-await/</loc>
+        <loc>https://rust-os.ir/async-await/</loc>
         <lastmod>2020-03-27</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/better-exception-messages/</loc>
+        <loc>https://rust-os.ir/better-exception-messages/</loc>
         <lastmod>2016-08-03</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/catching-exceptions/</loc>
+        <loc>https://rust-os.ir/catching-exceptions/</loc>
         <lastmod>2016-05-28</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/contact/</loc>
+        <loc>https://rust-os.ir/contact/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/cpu-exceptions/</loc>
+        <loc>https://rust-os.ir/cpu-exceptions/</loc>
         <lastmod>2018-06-17</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/cross-compile-binutils/</loc>
+        <loc>https://rust-os.ir/cross-compile-binutils/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/cross-compile-libcore/</loc>
+        <loc>https://rust-os.ir/cross-compile-libcore/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/disable-simd/</loc>
+        <loc>https://rust-os.ir/disable-simd/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/double-fault-exceptions/</loc>
+        <loc>https://rust-os.ir/double-fault-exceptions/</loc>
         <lastmod>2018-06-18</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/double-faults/</loc>
+        <loc>https://rust-os.ir/double-faults/</loc>
         <lastmod>2017-01-02</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/edition-1/</loc>
+        <loc>https://rust-os.ir/edition-1/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/edition-1/extra/naked-exceptions/</loc>
+        <loc>https://rust-os.ir/edition-1/extra/naked-exceptions/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/edition-2/</loc>
+        <loc>https://rust-os.ir/edition-2/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/edition-2/extra/building-on-android/</loc>
+        <loc>https://rust-os.ir/edition-2/extra/building-on-android/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/entering-longmode/</loc>
+        <loc>https://rust-os.ir/entering-longmode/</loc>
         <lastmod>2015-08-25</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/</loc>
+        <loc>https://rust-os.ir/fa/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/cpu-exceptions/</loc>
+        <loc>https://rust-os.ir/fa/cpu-exceptions/</loc>
         <lastmod>2018-06-17</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/double-fault-exceptions/</loc>
+        <loc>https://rust-os.ir/fa/double-fault-exceptions/</loc>
         <lastmod>2018-06-18</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/fa/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/hardware-interrupts/</loc>
+        <loc>https://rust-os.ir/fa/hardware-interrupts/</loc>
         <lastmod>2018-10-22</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/minimal-rust-kernel/</loc>
+        <loc>https://rust-os.ir/fa/minimal-rust-kernel/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/paging-introduction/</loc>
+        <loc>https://rust-os.ir/fa/paging-introduction/</loc>
         <lastmod>2019-01-14</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/testing/</loc>
+        <loc>https://rust-os.ir/fa/testing/</loc>
         <lastmod>2019-04-27</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fa/vga-text-mode/</loc>
+        <loc>https://rust-os.ir/fa/vga-text-mode/</loc>
         <lastmod>2018-02-26</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fr/</loc>
+        <loc>https://rust-os.ir/fr/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/fr/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/fr/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/handling-exceptions/</loc>
+        <loc>https://rust-os.ir/handling-exceptions/</loc>
         <lastmod>2017-03-26</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/hardware-interrupts/</loc>
+        <loc>https://rust-os.ir/hardware-interrupts/</loc>
         <lastmod>2018-10-22</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/heap-allocation/</loc>
+        <loc>https://rust-os.ir/heap-allocation/</loc>
         <lastmod>2019-06-26</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/integration-tests/</loc>
+        <loc>https://rust-os.ir/integration-tests/</loc>
         <lastmod>2018-06-15</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/</loc>
+        <loc>https://rust-os.ir/ja/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/async-await/</loc>
+        <loc>https://rust-os.ir/ja/async-await/</loc>
         <lastmod>2020-03-27</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/cpu-exceptions/</loc>
+        <loc>https://rust-os.ir/ja/cpu-exceptions/</loc>
         <lastmod>2018-06-17</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/double-fault-exceptions/</loc>
+        <loc>https://rust-os.ir/ja/double-fault-exceptions/</loc>
         <lastmod>2018-06-18</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/ja/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/minimal-rust-kernel/</loc>
+        <loc>https://rust-os.ir/ja/minimal-rust-kernel/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/paging-implementation/</loc>
+        <loc>https://rust-os.ir/ja/paging-implementation/</loc>
         <lastmod>2019-03-14</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/paging-introduction/</loc>
+        <loc>https://rust-os.ir/ja/paging-introduction/</loc>
         <lastmod>2019-01-14</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/testing/</loc>
+        <loc>https://rust-os.ir/ja/testing/</loc>
         <lastmod>2019-04-27</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ja/vga-text-mode/</loc>
+        <loc>https://rust-os.ir/ja/vga-text-mode/</loc>
         <lastmod>2018-02-26</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/kernel-heap/</loc>
+        <loc>https://rust-os.ir/kernel-heap/</loc>
         <lastmod>2016-04-11</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ko/</loc>
+        <loc>https://rust-os.ir/ko/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ko/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/ko/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/minimal-rust-kernel/</loc>
+        <loc>https://rust-os.ir/minimal-rust-kernel/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/multiboot-kernel/</loc>
+        <loc>https://rust-os.ir/multiboot-kernel/</loc>
         <lastmod>2015-08-18</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/news/</loc>
+        <loc>https://rust-os.ir/news/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/news/pure-rust/</loc>
+        <loc>https://rust-os.ir/news/pure-rust/</loc>
         <lastmod>2018-03-09</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/page-tables/</loc>
+        <loc>https://rust-os.ir/page-tables/</loc>
         <lastmod>2015-12-09</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/paging-implementation/</loc>
+        <loc>https://rust-os.ir/paging-implementation/</loc>
         <lastmod>2019-03-14</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/paging-introduction/</loc>
+        <loc>https://rust-os.ir/paging-introduction/</loc>
         <lastmod>2019-01-14</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/printing-to-screen/</loc>
+        <loc>https://rust-os.ir/printing-to-screen/</loc>
         <lastmod>2015-10-23</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/red-zone/</loc>
+        <loc>https://rust-os.ir/red-zone/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/remap-the-kernel/</loc>
+        <loc>https://rust-os.ir/remap-the-kernel/</loc>
         <lastmod>2016-01-01</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/returning-from-exceptions/</loc>
+        <loc>https://rust-os.ir/returning-from-exceptions/</loc>
         <lastmod>2016-09-21</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ru/</loc>
+        <loc>https://rust-os.ir/ru/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ru/disable-simd/</loc>
+        <loc>https://rust-os.ir/ru/disable-simd/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ru/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/ru/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ru/minimal-rust-kernel/</loc>
+        <loc>https://rust-os.ir/ru/minimal-rust-kernel/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/ru/red-zone/</loc>
+        <loc>https://rust-os.ir/ru/red-zone/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/set-up-gdb/</loc>
+        <loc>https://rust-os.ir/set-up-gdb/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/set-up-rust/</loc>
+        <loc>https://rust-os.ir/set-up-rust/</loc>
         <lastmod>2015-09-02</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/</loc>
+        <loc>https://rust-os.ir/status-update/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2019-05-01/</loc>
+        <loc>https://rust-os.ir/status-update/2019-05-01/</loc>
         <lastmod>2019-05-01</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2019-06-03/</loc>
+        <loc>https://rust-os.ir/status-update/2019-06-03/</loc>
         <lastmod>2019-06-03</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2019-07-06/</loc>
+        <loc>https://rust-os.ir/status-update/2019-07-06/</loc>
         <lastmod>2019-07-06</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2019-08-02/</loc>
+        <loc>https://rust-os.ir/status-update/2019-08-02/</loc>
         <lastmod>2019-08-02</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2019-09-09/</loc>
+        <loc>https://rust-os.ir/status-update/2019-09-09/</loc>
         <lastmod>2019-09-09</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2019-10-06/</loc>
+        <loc>https://rust-os.ir/status-update/2019-10-06/</loc>
         <lastmod>2019-10-06</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2019-12-02/</loc>
+        <loc>https://rust-os.ir/status-update/2019-12-02/</loc>
         <lastmod>2019-12-02</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2020-01-07/</loc>
+        <loc>https://rust-os.ir/status-update/2020-01-07/</loc>
         <lastmod>2020-01-07</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2020-02-01/</loc>
+        <loc>https://rust-os.ir/status-update/2020-02-01/</loc>
         <lastmod>2020-02-01</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2020-03-02/</loc>
+        <loc>https://rust-os.ir/status-update/2020-03-02/</loc>
         <lastmod>2020-03-02</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/status-update/2020-04-01/</loc>
+        <loc>https://rust-os.ir/status-update/2020-04-01/</loc>
         <lastmod>2020-04-01</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/talks/</loc>
+        <loc>https://rust-os.ir/talks/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/testing/</loc>
+        <loc>https://rust-os.ir/testing/</loc>
         <lastmod>2019-04-27</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/unit-testing/</loc>
+        <loc>https://rust-os.ir/unit-testing/</loc>
         <lastmod>2018-04-29</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/vga-text-mode/</loc>
+        <loc>https://rust-os.ir/vga-text-mode/</loc>
         <lastmod>2018-02-26</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/zh-CN/</loc>
+        <loc>https://rust-os.ir/zh-CN/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/zh-CN/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/zh-CN/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/zh-CN/minimal-rust-kernel/</loc>
+        <loc>https://rust-os.ir/zh-CN/minimal-rust-kernel/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/zh-CN/testing/</loc>
+        <loc>https://rust-os.ir/zh-CN/testing/</loc>
         <lastmod>2019-04-27</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/zh-CN/vga-text-mode/</loc>
+        <loc>https://rust-os.ir/zh-CN/vga-text-mode/</loc>
         <lastmod>2018-02-26</lastmod>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/zh-TW/</loc>
+        <loc>https://rust-os.ir/zh-TW/</loc>
     </url>
     <url>
-        <loc>https://os.phil-opp.com/zh-TW/freestanding-rust-binary/</loc>
+        <loc>https://rust-os.ir/zh-TW/freestanding-rust-binary/</loc>
         <lastmod>2018-02-10</lastmod>
     </url>
 </urlset>

@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/unit-testing/" />
+        <link rel="canonical" href="https://rust-os.ir/unit-testing/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com" title="All Posts">« All Posts</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir" title="All Posts">« All Posts</a></aside>
 
             </div>
         </header>
@@ -108,7 +108,7 @@
     <div class="">
     <p>This post explores unit testing in <code>no_std</code> executables using Rust’s built-in test framework. We will adjust our code so that <code>cargo test</code> works and add some basic unit tests to our VGA buffer module.</p>
 <span id="continue-reading"></span>
-<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://os.phil-opp.com/unit-testing/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-04"><code>post-04</code></a> branch.</p>
+<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://rust-os.ir/unit-testing/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-04"><code>post-04</code></a> branch.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -151,8 +151,8 @@
     </details>
 
 <h2 id="requirements"><a class="zola-anchor" href="#requirements" aria-label="Anchor link for: requirements">🔗</a>Requirements</h2>
-<p>In this post we explore how to execute <code>cargo test</code> on the host system (as a normal Linux/Windows/macOS executable). This only works if you don’t have a <code>.cargo/config</code> file that sets a default target. If you followed the <a href="https://os.phil-opp.com/minimal-rust-kernel/"><em>Minimal Rust Kernel</em></a> post before 2019-04-27, you should be fine. If you followed it after that date, you need to remove the <code>build.target</code> key from your <code>.cargo/config</code> file and explicitly pass a target argument to <code>cargo xbuild</code>.</p>
-<p>Alternatively, consider reading the new <a href="https://os.phil-opp.com/testing/"><em>Testing</em></a> post instead. It sets up a similar functionality as this post, but instead of running the tests on your host system, they are run in a realistic environment inside QEMU.</p>
+<p>In this post we explore how to execute <code>cargo test</code> on the host system (as a normal Linux/Windows/macOS executable). This only works if you don’t have a <code>.cargo/config</code> file that sets a default target. If you followed the <a href="https://rust-os.ir/minimal-rust-kernel/"><em>Minimal Rust Kernel</em></a> post before 2019-04-27, you should be fine. If you followed it after that date, you need to remove the <code>build.target</code> key from your <code>.cargo/config</code> file and explicitly pass a target argument to <code>cargo xbuild</code>.</p>
+<p>Alternatively, consider reading the new <a href="https://rust-os.ir/testing/"><em>Testing</em></a> post instead. It sets up a similar functionality as this post, but instead of running the tests on your host system, they are run in a realistic environment inside QEMU.</p>
 <h2 id="unit-tests-for-no-std-binaries"><a class="zola-anchor" href="#unit-tests-for-no-std-binaries" aria-label="Anchor link for: unit-tests-for-no-std-binaries">🔗</a>Unit Tests for <code>no_std</code> Binaries</h2>
 <p>Rust has a <a href="https://doc.rust-lang.org/book/ch11-00-testing.html">built-in test framework</a> that is capable of running unit tests without the need to set anything up. Just create a function that checks some results through assertions and add the <code>#[test]</code> attribute to the function header. Then <code>cargo test</code> will automatically find and execute all test functions of your crate.</p>
 <p>Unfortunately it’s a bit more complicated for <code>no_std</code> applications such as our kernel. If we run <code>cargo test</code> (without adding any test yet), we get the following error:</p>
@@ -407,7 +407,7 @@
 <h2 id="summary"><a class="zola-anchor" href="#summary" aria-label="Anchor link for: summary">🔗</a>Summary</h2>
 <p>Unit testing is a very useful technique to ensure that certain components have a desired behavior. Even if they cannot show the absence of bugs, they’re still an useful tool for finding them and especially for avoiding regressions.</p>
 <p>This post explained how to set up unit testing in a Rust kernel. We now have a functioning test framework and can easily add tests by adding functions with a <code>#[test]</code> attribute. To run them, a short <code>cargo test</code> suffices. We also added a few basic tests for our VGA buffer as an example how unit tests could look like.</p>
-<p>We also learned a bit about conditional compilation, Rust’s <a href="https://os.phil-opp.com/unit-testing/#silencing-the-warnings">lint system</a>, how to <a href="https://os.phil-opp.com/unit-testing/#buffer-construction">initialize arrays with non-Copy types</a>, and the <code>dev-dependencies</code> section of the <code>Cargo.toml</code>.</p>
+<p>We also learned a bit about conditional compilation, Rust’s <a href="https://rust-os.ir/unit-testing/#silencing-the-warnings">lint system</a>, how to <a href="https://rust-os.ir/unit-testing/#buffer-construction">initialize arrays with non-Copy types</a>, and the <code>dev-dependencies</code> section of the <code>Cargo.toml</code>.</p>
 <h2 id="what-s-next"><a class="zola-anchor" href="#what-s-next" aria-label="Anchor link for: what-s-next">🔗</a>What’s next?</h2>
 <p>We now have a working unit testing framework, which gives us the ability to test individual components. However, unit tests have the disadvantage that they run on the host machine and are thus unable to test how components interact with platform specific parts. For example, we can’t test the <code>println!</code> macro with an unit test because it wants to write at the VGA text buffer at address <code>0xb8000</code>, which only exists in the bare metal environment.</p>
 <p>The next post will close this gap by creating a basic <em>integration test</em> framework, which runs the tests in QEMU and thus has access to platform specific components. This will allow us to test the full system, for example that our kernel boots correctly or that no deadlock occurs on nested <code>println!</code> invocations.</p>
@@ -418,7 +418,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -496,7 +496,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/paging-introduction/" />
+        <link rel="canonical" href="https://rust-os.ir/paging-introduction/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com" title="All Posts">« All Posts</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir" title="All Posts">« All Posts</a></aside>
 
             </div>
         </header>
@@ -121,7 +121,7 @@
     <div class="">
     <p>This post introduces <em>paging</em>, a very common memory management scheme that we will also use for our operating system. It explains why memory isolation is needed, how <em>segmentation</em> works, what <em>virtual memory</em> is, and how paging solves memory fragmentation issues. It also explores the layout of multilevel page tables on the x86_64 architecture.</p>
 <span id="continue-reading"></span>
-<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://os.phil-opp.com/paging-introduction/#comments">at the bottom</a>.  The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-08"><code>post-08</code></a> branch.</p>
+<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://rust-os.ir/paging-introduction/#comments">at the bottom</a>.  The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-08"><code>post-08</code></a> branch.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -306,11 +306,11 @@
 <p>Unlike the other CPU caches, the TLB is not fully transparent and does not update or remove translations when the contents of page tables change. This means that the kernel must manually update the TLB whenever it modifies a page table. To do this, there is a special CPU instruction called <a href="https://www.felixcloutier.com/x86/INVLPG.html"><code>invlpg</code></a> (“invalidate page”) that removes the translation for the specified page from the TLB, so that it is loaded again from the page table on the next access. The TLB can also be flushed completely by reloading the <code>CR3</code> register, which simulates an address space switch. The <code>x86_64</code> crate provides Rust functions for both variants in the <a href="https://docs.rs/x86_64/0.14.2/x86_64/instructions/tlb/index.html"><code>tlb</code> module</a>.</p>
 <p>It is important to remember flushing the TLB on each page table modification because otherwise the CPU might keep using the old translation, which can lead to non-deterministic bugs that are very hard to debug.</p>
 <h2 id="implementation"><a class="zola-anchor" href="#implementation" aria-label="Anchor link for: implementation">🔗</a>Implementation</h2>
-<p>One thing that we did not mention yet: <strong>Our kernel already runs on paging</strong>. The bootloader that we added in the <a href="https://os.phil-opp.com/minimal-rust-kernel/#creating-a-bootimage">“A minimal Rust Kernel”</a> post already set up a 4-level paging hierarchy that maps every page of our kernel to a physical frame. The bootloader does this because paging is mandatory in 64-bit mode on x86_64.</p>
+<p>One thing that we did not mention yet: <strong>Our kernel already runs on paging</strong>. The bootloader that we added in the <a href="https://rust-os.ir/minimal-rust-kernel/#creating-a-bootimage">“A minimal Rust Kernel”</a> post already set up a 4-level paging hierarchy that maps every page of our kernel to a physical frame. The bootloader does this because paging is mandatory in 64-bit mode on x86_64.</p>
 <p>This means that every memory address that we used in our kernel was a virtual address. Accessing the VGA buffer at address <code>0xb8000</code> only worked because the bootloader <em>identity mapped</em> that memory page, which means that it mapped the virtual page <code>0xb8000</code> to the physical frame <code>0xb8000</code>.</p>
 <p>Paging makes our kernel already relatively safe, since every memory access that is out of bounds causes a page fault exception instead of writing to random physical memory. The bootloader even set the correct access permissions for each page, which means that only the pages containing code are executable and only data pages are writable.</p>
 <h3 id="page-faults"><a class="zola-anchor" href="#page-faults" aria-label="Anchor link for: page-faults">🔗</a>Page Faults</h3>
-<p>Let’s try to cause a page fault by accessing some memory outside of our kernel. First, we create a page fault handler and register it in our IDT, so that we see a page fault exception instead of a generic <a href="https://os.phil-opp.com/double-fault-exceptions/">double fault</a> :</p>
+<p>Let’s try to cause a page fault by accessing some memory outside of our kernel. First, we create a page fault handler and register it in our IDT, so that we see a page fault exception instead of a generic <a href="https://rust-os.ir/double-fault-exceptions/">double fault</a> :</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span>lazy_static! {
@@ -341,7 +341,7 @@
 </span><span>    hlt_loop();
 </span><span>}
 </span></code></pre>
-<p>The <a href="https://en.wikipedia.org/wiki/Control_register#CR2"><code>CR2</code></a> register is automatically set by the CPU on a page fault and contains the accessed virtual address that caused the page fault. We use the <a href="https://docs.rs/x86_64/0.14.2/x86_64/registers/control/struct.Cr2.html#method.read"><code>Cr2::read</code></a> function of the <code>x86_64</code> crate to read and print it. The <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.PageFaultErrorCode.html"><code>PageFaultErrorCode</code></a> type provides more information about the type of memory access that caused the page fault, for example whether it was caused by a read or write operation. For this reason we print it too. We can’t continue execution without resolving the page fault, so we enter a <a href="https://os.phil-opp.com/hardware-interrupts/#the-hlt-instruction"><code>hlt_loop</code></a> at the end.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Control_register#CR2"><code>CR2</code></a> register is automatically set by the CPU on a page fault and contains the accessed virtual address that caused the page fault. We use the <a href="https://docs.rs/x86_64/0.14.2/x86_64/registers/control/struct.Cr2.html#method.read"><code>Cr2::read</code></a> function of the <code>x86_64</code> crate to read and print it. The <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.PageFaultErrorCode.html"><code>PageFaultErrorCode</code></a> type provides more information about the type of memory access that caused the page fault, for example whether it was caused by a read or write operation. For this reason we print it too. We can’t continue execution without resolving the page fault, so we enter a <a href="https://rust-os.ir/hardware-interrupts/#the-hlt-instruction"><code>hlt_loop</code></a> at the end.</p>
 <p>Now we can try to access some memory outside our kernel:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/main.rs
 </span><span>
@@ -420,7 +420,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -486,9 +486,9 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/paging-introduction/">
+            <ul><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/paging-introduction/">
                         Japanese
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/paging-introduction/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/paging-introduction/">
                         Persian
                     </a></li></ul>
         </div>
@@ -504,7 +504,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

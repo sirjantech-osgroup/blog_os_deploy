@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/fa/minimal-rust-kernel/" />
+        <link rel="canonical" href="https://rust-os.ir/fa/minimal-rust-kernel/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/fa" title="All Posts">« همه پست‌ها</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/fa" title="All Posts">« همه پست‌ها</a></aside>
 
             </div>
         </header>
@@ -111,7 +111,7 @@
             
             <p>
             <b>محتوای ترجمه شده:</b>
-            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://os.phil-opp.com/minimal-rust-kernel/">A Minimal Rust Kernel</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
+            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://rust-os.ir/minimal-rust-kernel/">A Minimal Rust Kernel</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
             </p>
             <p>
                 ترجمه توسط <a href="https://github.com/hamidrezakp">@hamidrezakp</a> و <a href="https://github.com/MHBahrampour">@MHBahrampour</a>.
@@ -122,7 +122,7 @@
     <div class="right-to-left">
     <p>در این پست ما برای معماری x86 یک هسته مینیمال ۶۴ بیتی به زبان راست می‌سازیم. با استفاده از باینری مستقل Rust از پست قبل، یک دیسک ایمیج قابل بوت می‌سازیم، که متنی را در صفحه چاپ کند.</p>
 <span id="continue-reading"></span>
-<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر شما مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. شما همچنین می‌توانید <a href="https://os.phil-opp.com/fa/minimal-rust-kernel/#comments">در زیر</a> این پست کامنت بگذارید. منبع کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-02"><code>post-02</code></a> پیدا کنید.</p>
+<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر شما مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. شما همچنین می‌توانید <a href="https://rust-os.ir/fa/minimal-rust-kernel/#comments">در زیر</a> این پست کامنت بگذارید. منبع کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-02"><code>post-02</code></a> پیدا کنید.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -191,11 +191,11 @@
 <li>هر دو استاندارد GRUB و Multiboot بصورت ناقص مستند شده‌اند. </li>
 <li>برای ایجاد یک ایمیج دیسکِ قابل بوت از فایل هسته، GRUB باید روی سیستم میزبان نصب شود. این امر باعث دشوارتر شدنِ توسعه در ویندوز یا Mac می‌شود. </li>
 </ul>
-<p>به دلیل این اشکالات ما تصمیم گرفتیم از GRUB یا استاندارد Multiboot استفاده نکنیم. با این حال، ما قصد داریم پشتیبانی Multiboot را به ابزار <a href="https://github.com/rust-osdev/bootimage">bootimage</a> خود اضافه کنیم، به طوری که امکان بارگذاری هسته شما بر روی یک سیستم با بوت‌لودر GRUB نیز وجود داشته باشد. اگر علاقه‌مند به نوشتن هسته سازگار با Multiboot هستید، <a href="https://os.phil-opp.com/edition-1/">نسخه اول</a> مجموعه پست‌های این وبلاگ را بررسی کنید.</p>
+<p>به دلیل این اشکالات ما تصمیم گرفتیم از GRUB یا استاندارد Multiboot استفاده نکنیم. با این حال، ما قصد داریم پشتیبانی Multiboot را به ابزار <a href="https://github.com/rust-osdev/bootimage">bootimage</a> خود اضافه کنیم، به طوری که امکان بارگذاری هسته شما بر روی یک سیستم با بوت‌لودر GRUB نیز وجود داشته باشد. اگر علاقه‌مند به نوشتن هسته سازگار با Multiboot هستید، <a href="https://rust-os.ir/edition-1/">نسخه اول</a> مجموعه پست‌های این وبلاگ را بررسی کنید.</p>
 <h3 id="uefi"><a class="zola-anchor" href="#uefi" aria-label="Anchor link for: uefi">🔗</a>UEFI</h3>
 <p>(ما در حال حاضر پشتیبانی UEFI را ارائه نمی‌دهیم، اما خیلی دوست داریم این کار را انجام دهیم! اگر می‌خواهید کمک کنید، لطفاً در <a href="https://github.com/phil-opp/blog_os/issues/349">ایشو گیت‌هاب</a> به ما بگویید.)</p>
 <h2 id="ykh-hsth-mynyml"><a class="zola-anchor" href="#ykh-hsth-mynyml" aria-label="Anchor link for: ykh-hsth-mynyml">🔗</a>یک هسته مینیمال</h2>
-<p>اکنون که تقریباً می‌دانیم چگونه یک کامپیوتر بوت می‌شود، وقت آن است که هسته مینیمال خودمان را ایجاد کنیم. هدف ما ایجاد دیسک ایمیجی می‌باشد که “!Hello World” را هنگام بوت شدن چاپ کند. برای این منظور از <a href="https://os.phil-opp.com/freestanding-rust-binary/">باینری مستقل Rust</a> که در پست قبل دیدید استفاده می‌کنیم.</p>
+<p>اکنون که تقریباً می‌دانیم چگونه یک کامپیوتر بوت می‌شود، وقت آن است که هسته مینیمال خودمان را ایجاد کنیم. هدف ما ایجاد دیسک ایمیجی می‌باشد که “!Hello World” را هنگام بوت شدن چاپ کند. برای این منظور از <a href="https://rust-os.ir/freestanding-rust-binary/">باینری مستقل Rust</a> که در پست قبل دیدید استفاده می‌کنیم.</p>
 <p>همانطور که ممکن است به یاد داشته باشید، باینری مستقل را از طریق <code>cargo</code> ایجاد کردیم، اما با توجه به سیستم عامل، به نام‌های ورودی و پرچم‌های کامپایل مختلف نیاز داشتیم. به این دلیل که <code>cargo</code> به طور پیش فرض برای سیستم میزبان بیلد می‌کند، بطور مثال سیستمی که از آن برای نوشتن هسته استفاده می‌کنید. این چیزی نیست که ما برای هسته خود بخواهیم‌، زیرا منطقی نیست که هسته سیستم عامل‌مان را روی یک سیستم عامل دیگر اجرا کنیم. در عوض، ما می‌خواهیم هسته را برای یک <em>سیستم هدف</em> کاملاً مشخص کامپایل کنیم.</p>
 <h3 id="installing-rust-nightly"><a class="zola-anchor" href="#installing-rust-nightly" aria-label="Anchor link for: installing-rust-nightly">🔗</a>نصب Rust Nightly</h3>
 <p>راست دارای سه کانال انتشار است: <em>stable</em>, <em>beta</em>, and <em>nightly</em> (ترجمه از چپ به راست: پایدار، بتا و شبانه). کتاب Rust تفاوت بین این کانال‌ها را به خوبی توضیح می‌دهد، بنابراین یک دقیقه وقت بگذارید و <a href="https://doc.rust-lang.org/book/appendix-07-nightly-rust.html#choo-choo-release-channels-and-riding-the-trains">آن را بررسی کنید</a>. برای ساخت یک سیستم عامل به برخی از ویژگی‌های آزمایشی نیاز داریم که فقط در کانال شبانه موجود است‌، بنابراین باید نسخه شبانه Rust را نصب کنیم.</p>
@@ -242,13 +242,13 @@
 <p>این تنظیم مشخص می‌کند که هدف از <a href="https://www.bogotobogo.com/cplusplus/stackunwinding.php">stack unwinding</a> درهنگام panic پشتیبانی نمی‌کند، بنابراین به جای آن خود برنامه باید مستقیماً متوقف شود. این همان اثر است که آپشن <code>panic = &quot;abort&quot;</code> در فایل Cargo.toml دارد، پس میتوانیم آن را از فایل Cargo.toml حذف کنیم.(توجه داشته باشید که این آپشنِ هدف همچنین زمانی اعمال می‌شود که ما کتابخانه <code>هسته</code> را مجددا در ادامه همین پست کامپایل می‌‌کنیم. بنابراین حتماً این گزینه را اضافه کنید، حتی اگر ترجیح می دهید گزینه Cargo.toml را حفظ کنید.)</p>
 <pre data-lang="json" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-json "><code class="language-json" data-lang="json"><span style="color:#d69d85;">&quot;disable-redzone&quot;</span><span>: </span><span style="color:#569cd6;">true</span><span>,
 </span></code></pre>
-<p>ما در حال نوشتن یک هسته هستیم‌، بنابراین بالاخره باید وقفه‌ها را مدیریت کنیم. برای انجام ایمن آن، باید بهینه‌سازی اشاره‌گر پشته‌ای خاصی به نام <em>“red zone”</em> (ترجمه: منطقه قرمز) را غیرفعال کنیم، زیرا در غیر این صورت باعث خراب شدن پشته می‌شود. برای اطلاعات بیشتر، به پست جداگانه ما در مورد <a href="https://os.phil-opp.com/red-zone/">غیرفعال کردن منطقه قرمز</a> مراجعه کنید.</p>
+<p>ما در حال نوشتن یک هسته هستیم‌، بنابراین بالاخره باید وقفه‌ها را مدیریت کنیم. برای انجام ایمن آن، باید بهینه‌سازی اشاره‌گر پشته‌ای خاصی به نام <em>“red zone”</em> (ترجمه: منطقه قرمز) را غیرفعال کنیم، زیرا در غیر این صورت باعث خراب شدن پشته می‌شود. برای اطلاعات بیشتر، به پست جداگانه ما در مورد <a href="https://rust-os.ir/red-zone/">غیرفعال کردن منطقه قرمز</a> مراجعه کنید.</p>
 <pre data-lang="json" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-json "><code class="language-json" data-lang="json"><span style="color:#d69d85;">&quot;features&quot;</span><span>: </span><span style="color:#d69d85;">&quot;-mmx,-sse,+soft-float&quot;</span><span>,
 </span></code></pre>
 <p>فیلد <code>features</code> ویژگی‌های هدف را فعال/غیرفعال می‌کند. ما ویژگی‌های <code>mmx</code> و <code>sse</code> را با گذاشتن یک منفی در ابتدای آن‌ها غیرفعال کردیم و ویژگی <code>soft-float</code> را با اضافه کردن یک مثبت به ابتدای آن فعال کردیم. توجه داشته باشید که بین پرچم‌های مختلف نباید فاصله‌ای وجود داشته باشد، در غیر این صورت LLVM قادر به تفسیر رشته ویژگی‌ها نیست.</p>
 <p>ویژگی‌های <code>mmx</code> و <code>sse</code> پشتیبانی از دستورالعمل‌های <a href="https://en.wikipedia.org/wiki/SIMD">Single Instruction Multiple Data (SIMD)</a> را تعیین می‌کنند، که اغلب می‌تواند سرعت برنامه‌ها را به میزان قابل توجهی افزایش دهد. با این حال، استفاده از ثبات‌های بزرگ SIMD در هسته سیستم عامل منجر به مشکلات عملکردی می‌شود. دلیل آن این است که هسته قبل از ادامه یک برنامه‌ی متوقف شده، باید تمام رجیسترها را به حالت اولیه خود برگرداند. این بدان معناست که هسته در هر فراخوانی سیستم یا وقفه سخت افزاری باید حالت کامل SIMD را در حافظه اصلی ذخیره کند. از آنجا که حالت SIMD بسیار بزرگ است (512-1600 بایت) و وقفه‌ها ممکن است اغلب اتفاق بیفتند، این عملیات ذخیره و بازیابی اضافی به طور قابل ملاحظه‌ای به عملکرد آسیب می‌رساند. برای جلوگیری از این، SIMD را برای هسته خود غیرفعال می‌کنیم (نه برای برنامه‌هایی که از روی آن اجرا می شوند!).</p>
 <p>یک مشکل در غیرفعال کردن SIMD این است که عملیات‌های مُمَیزِ شناور (ترجمه: floating point) در <code>x86_64</code> به طور پیش فرض به ثبات‌های SIMD نیاز دارد. برای حل این مشکل، ویژگی <code>soft-float</code> را اضافه می‌کنیم، که از طریق عملکردهای نرم‌افزاری مبتنی بر اعداد صحیح عادی، تمام عملیات مُمَیزِ شناور را شبیه‌سازی می‌کند.</p>
-<p>For more information, see our post on <a href="https://os.phil-opp.com/disable-simd/">disabling SIMD</a>.</p>
+<p>For more information, see our post on <a href="https://rust-os.ir/disable-simd/">disabling SIMD</a>.</p>
 <h4 id="khnr-hm-qrr-ddn"><a class="zola-anchor" href="#khnr-hm-qrr-ddn" aria-label="Anchor link for: khnr-hm-qrr-ddn">🔗</a>کنار هم قرار دادن</h4>
 <p>فایل مشخصات هدف ما اکنون به این شکل است:</p>
 <pre data-lang="json" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-json "><code class="language-json" data-lang="json"><span>{
@@ -268,7 +268,7 @@
 </span><span>}
 </span></code></pre>
 <h3 id="skht-hsth"><a class="zola-anchor" href="#skht-hsth" aria-label="Anchor link for: skht-hsth">🔗</a>ساخت هسته</h3>
-<p>عملیات کامپایل کردن برای هدف جدید ما از قراردادهای لینوکس استفاده خواهد کرد (کاملاً مطمئن نیستم که چرا، تصور می‌کنم این فقط پیش فرض LLVM باشد). این بدان معنی است که ما به یک نقطه ورود به نام <code>start_</code> نیاز داریم همانطور که در <a href="https://os.phil-opp.com/freestanding-rust-binary/">پست قبلی</a> توضیح داده شد:</p>
+<p>عملیات کامپایل کردن برای هدف جدید ما از قراردادهای لینوکس استفاده خواهد کرد (کاملاً مطمئن نیستم که چرا، تصور می‌کنم این فقط پیش فرض LLVM باشد). این بدان معنی است که ما به یک نقطه ورود به نام <code>start_</code> نیاز داریم همانطور که در <a href="https://rust-os.ir/freestanding-rust-binary/">پست قبلی</a> توضیح داده شد:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// src/main.rs
 </span><span>
 </span><span>#![no_std] </span><span style="color:#608b4e;">// don&#39;t link the Rust standard library
@@ -298,7 +298,7 @@
 <p>شکست میخورد! این خطا به ما می‌گوید که کامپایلر Rust دیگر <a href="https://doc.rust-lang.org/nightly/core/index.html">کتابخانه <code>core</code></a> را پیدا نمی‌کند. این کتابخانه شامل انواع اساسی Rust مانند <code>Result</code> ، <code>Option</code> و iterators است، و به طور ضمنی به همه کریت‌های <code>no_std</code> لینک است.</p>
 <p>مشکل این است که کتابخانه core همراه با کامپایلر Rust به عنوان یک کتابخانه <em>precompiled</em> (ترجمه: از پیش کامپایل شده) توزیع می‌شود. بنابراین فقط برای میزبان‌های سه‌گانه پشتیبانی شده مجاز است (مثلا، <code>x86_64-unknown-linux-gnu</code>) اما برای هدف سفارشی ما صدق نمی‌کند. اگر می‌خواهیم برای سیستم‌های هدف دیگر کدی را کامپایل کنیم، ابتدا باید <code>core</code> را برای این اهداف دوباره کامپایل کنیم. </p>
 <h4 id="apshn-build-std"><a class="zola-anchor" href="#apshn-build-std" aria-label="Anchor link for: apshn-build-std">🔗</a>آپشن <code>build-std</code></h4>
-<p>این‌جاست که <a href="https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std">ویژگی <code>build-std</code></a> کارگو  وارد می‌شود. این امکان را می‌دهد تا بجای استفاده از نسخه‌های از پیش کامپایل شده با نصب Rust، بتوانیم <code>core</code> و ‌کریت سایر کتابخانه‌های استاندارد را در صورت نیاز دوباره کامپایل کنیم. این ویژگی بسیار جدید بوده و هنوز تکمیل نشده است، بنابراین بعنوان «ناپایدار» علامت گذاری شده و فقط در <a href="https://os.phil-opp.com/fa/minimal-rust-kernel/#installing-rust-nightly">نسخه شبانه کامپایلر Rust</a> در دسترس می‌باشد.</p>
+<p>این‌جاست که <a href="https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std">ویژگی <code>build-std</code></a> کارگو  وارد می‌شود. این امکان را می‌دهد تا بجای استفاده از نسخه‌های از پیش کامپایل شده با نصب Rust، بتوانیم <code>core</code> و ‌کریت سایر کتابخانه‌های استاندارد را در صورت نیاز دوباره کامپایل کنیم. این ویژگی بسیار جدید بوده و هنوز تکمیل نشده است، بنابراین بعنوان «ناپایدار» علامت گذاری شده و فقط در <a href="https://rust-os.ir/fa/minimal-rust-kernel/#installing-rust-nightly">نسخه شبانه کامپایلر Rust</a> در دسترس می‌باشد.</p>
 <p>برای استفاده از این ویژگی، ما نیاز داریم تا یک فایل <a href="https://doc.rust-lang.org/cargo/reference/config.html">پیکربندی کارگو</a> در <code>cargo/config.toml.</code> با محتوای زیر بسازیم:</p>
 <pre data-lang="toml" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#608b4e;"># in .cargo/config.toml
 </span><span>
@@ -425,7 +425,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -497,13 +497,13 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/minimal-rust-kernel/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/minimal-rust-kernel/">
                         English (original)
-                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://os.phil-opp.com/zh-CN/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://rust-os.ir/zh-CN/minimal-rust-kernel/">
                         Chinese (simplified)
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/minimal-rust-kernel/">
                         Japanese
-                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://os.phil-opp.com/ru/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://rust-os.ir/ru/minimal-rust-kernel/">
                         Russian
                     </a></li></ul>
         </div>
@@ -519,7 +519,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

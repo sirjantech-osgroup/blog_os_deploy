@@ -12,11 +12,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/ja/minimal-rust-kernel/" />
+        <link rel="canonical" href="https://rust-os.ir/ja/minimal-rust-kernel/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -35,11 +35,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/ja" title="All Posts">« すべての記事へ</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/ja" title="All Posts">« すべての記事へ</a></aside>
 
             </div>
         </header>
@@ -112,7 +112,7 @@
             
             <p>
             <b>この記事は翻訳されたものです：</b>
-            この記事は<strong><a href="https://os.phil-opp.com/minimal-rust-kernel/">A Minimal Rust Kernel</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
+            この記事は<strong><a href="https://rust-os.ir/minimal-rust-kernel/">A Minimal Rust Kernel</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
             </p>
             <p>
                 翻訳者： <a href="https://github.com/woodyZootopia">@woodyZootopia</a> 及び <a href="https://github.com/JohnTitor">@JohnTitor</a>.
@@ -121,9 +121,9 @@
     
 
     <div class="">
-    <p>この記事では、Rustで最小限の64bitカーネルを作ります。前の記事で作った<a href="https://os.phil-opp.com/ja/freestanding-rust-binary/">フリースタンディングなRustバイナリ</a>を下敷きにして、何かを画面に出力する、ブータブルディスクイメージを作ります。</p>
+    <p>この記事では、Rustで最小限の64bitカーネルを作ります。前の記事で作った<a href="https://rust-os.ir/ja/freestanding-rust-binary/">フリースタンディングなRustバイナリ</a>を下敷きにして、何かを画面に出力する、ブータブルディスクイメージを作ります。</p>
 <span id="continue-reading"></span>
-<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://os.phil-opp.com/ja/minimal-rust-kernel/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-02"><code>post-02</code> ブランチ</a>にあります。</p>
+<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://rust-os.ir/ja/minimal-rust-kernel/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-02"><code>post-02</code> ブランチ</a>にあります。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -192,11 +192,11 @@
 <li>GRUBもMultiboot標準規格もドキュメントが充実していません。</li>
 <li>カーネルファイルからブータブルディスクイメージを作るには、ホストシステムにGRUBがインストールされている必要があります。これにより、MacとWindows上での開発は比較的難しくなっています。</li>
 </ul>
-<p>これらの欠点を考慮し、私達はGRUBとMultiboot標準規格を使わないことに決めました。しかし、あなたのカーネルをGRUBシステム上で読み込めるように、私達の<a href="https://github.com/rust-osdev/bootimage">bootimage</a>ツールにMultibootのサポートを追加することも計画しています。Multiboot準拠なカーネルを書きたい場合は、このブログシリーズの<a href="https://os.phil-opp.com/edition-1/">第1版</a>をご覧ください。</p>
+<p>これらの欠点を考慮し、私達はGRUBとMultiboot標準規格を使わないことに決めました。しかし、あなたのカーネルをGRUBシステム上で読み込めるように、私達の<a href="https://github.com/rust-osdev/bootimage">bootimage</a>ツールにMultibootのサポートを追加することも計画しています。Multiboot準拠なカーネルを書きたい場合は、このブログシリーズの<a href="https://rust-os.ir/edition-1/">第1版</a>をご覧ください。</p>
 <h3 id="uefi"><a class="zola-anchor" href="#uefi" aria-label="Anchor link for: uefi">🔗</a>UEFI</h3>
 <p>（今の所UEFIのサポートは提供していませんが、ぜひともしたいと思っています！お手伝いいただける場合は、 <a href="https://github.com/phil-opp/blog_os/issues/349">GitHub issue</a>で教えてください。）</p>
 <h2 id="zui-xiao-nokaneru"><a class="zola-anchor" href="#zui-xiao-nokaneru" aria-label="Anchor link for: zui-xiao-nokaneru">🔗</a>最小のカーネル</h2>
-<p>どのようにコンピュータが起動するのかについてざっくりと理解できたので、自前で最小のカーネルを書いてみましょう。目標は、起動したら画面に“Hello, World!“と出力するようなディスクイメージを作ることです。というわけで、前の記事の<a href="https://os.phil-opp.com/ja/freestanding-rust-binary/"><ruby>独立した<rp> (</rp><rt>freestanding</rt><rp>) </rp></ruby>Rustバイナリ</a>をもとにして作っていきます。</p>
+<p>どのようにコンピュータが起動するのかについてざっくりと理解できたので、自前で最小のカーネルを書いてみましょう。目標は、起動したら画面に“Hello, World!“と出力するようなディスクイメージを作ることです。というわけで、前の記事の<a href="https://rust-os.ir/ja/freestanding-rust-binary/"><ruby>独立した<rp> (</rp><rt>freestanding</rt><rp>) </rp></ruby>Rustバイナリ</a>をもとにして作っていきます。</p>
 <p>覚えていますか、この独立したバイナリは<code>cargo</code>を使ってビルドしましたが、オペレーティングシステムに依って異なるエントリポイント名とコンパイルフラグが必要なのでした。これは<code>cargo</code>は標準では <strong>ホストシステム</strong>（あなたの使っているシステム）向けにビルドするためです。例えばWindows上で走るカーネルというのはあまり意味がなく、私達の望む動作ではありません。代わりに、明確に定義された <strong>ターゲットシステム</strong> 向けにコンパイルできると理想的です。</p>
 <h3 id="installing-rust-nightly"><a class="zola-anchor" href="#installing-rust-nightly" aria-label="Anchor link for: installing-rust-nightly">🔗</a>RustのNightly版をインストールする</h3>
 <p>Rustには<strong>stable</strong>、<strong>beta</strong>、<strong>nightly</strong>の3つのリリースチャンネルがあります。Rust Bookはこれらの3つのチャンネルの違いをとても良く説明しているので、一度<a href="https://doc.rust-jp.rs/book-ja/appendix-07-nightly-rust.html">確認してみてください</a>。オペレーティングシステムをビルドするには、nightlyチャンネルでしか利用できないいくつかの実験的機能を使う必要があるので、Rustのnightly版をインストールすることになります。</p>
@@ -243,13 +243,13 @@
 <p>この設定は、ターゲットがパニック時の<a href="https://www.bogotobogo.com/cplusplus/stackunwinding.php">stack unwinding</a>をサポートしていないので、プログラムは代わりに直接<ruby>中断<rp> (</rp><rt>abort</rt><rp>) </rp></ruby>しなければならないということを指定しています。これは、Cargo.tomlに<code>panic = &quot;abort&quot;</code>という設定を書くのに等しいですから、後者の設定を消しても構いません（このターゲット設定は、Cargo.tomlの設定と異なり、このあと行う<code>core</code>ライブラリの再コンパイルにも適用されます。ですので、Cargo.tomlに設定する方が好みだったとしても、この設定を追加するようにしてください）。</p>
 <pre data-lang="json" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-json "><code class="language-json" data-lang="json"><span style="color:#d69d85;">&quot;disable-redzone&quot;</span><span>: </span><span style="color:#569cd6;">true</span><span>,
 </span></code></pre>
-<p>カーネルを書いている以上、ある時点で<ruby>割り込み<rp> (</rp><rt>interrupt</rt><rp>) </rp></ruby>を処理しなければならなくなるでしょう。これを安全に行うために、 <strong>“red zone”</strong> と呼ばれる、ある種のスタックポインタ最適化を無効化する必要があります。こうしないと、スタックの<ruby>破損<rp> (</rp><rt>corruption</rt><rp>) </rp></ruby>を引き起こしてしまう恐れがあるためです。より詳しくは、<a href="https://os.phil-opp.com/red-zone/">red zoneの無効化</a>という別記事をご覧ください。</p>
+<p>カーネルを書いている以上、ある時点で<ruby>割り込み<rp> (</rp><rt>interrupt</rt><rp>) </rp></ruby>を処理しなければならなくなるでしょう。これを安全に行うために、 <strong>“red zone”</strong> と呼ばれる、ある種のスタックポインタ最適化を無効化する必要があります。こうしないと、スタックの<ruby>破損<rp> (</rp><rt>corruption</rt><rp>) </rp></ruby>を引き起こしてしまう恐れがあるためです。より詳しくは、<a href="https://rust-os.ir/red-zone/">red zoneの無効化</a>という別記事をご覧ください。</p>
 <pre data-lang="json" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-json "><code class="language-json" data-lang="json"><span style="color:#d69d85;">&quot;features&quot;</span><span>: </span><span style="color:#d69d85;">&quot;-mmx,-sse,+soft-float&quot;</span><span>,
 </span></code></pre>
 <p><code>features</code>フィールドは、ターゲットの<ruby>機能<rp> (</rp><rt>features</rt><rp>) </rp></ruby>を有効化/無効化します。マイナスを前につけることで<code>mmx</code>と<code>sse</code>という機能を無効化し、プラスを前につけることで<code>soft-float</code>という機能を有効化しています。それぞれのフラグの間にスペースは入れてはならず、もしそうするとLLVMが機能文字列の解釈に失敗してしまうことに注意してください。</p>
 <p><code>mmx</code>と<code>sse</code>という機能は、<a href="https://ja.wikipedia.org/wiki/SIMD">Single Instruction Multiple Data (SIMD)</a>命令をサポートするかを決定します。この命令は、しばしばプログラムを著しく速くしてくれます。しかし、大きなSIMDレジスタをOSカーネルで使うことは性能上の問題に繋がります。 その理由は、カーネルは、割り込まれたプログラムを再開する前に、すべてのレジスタを元に戻さないといけないためです。これは、カーネルがSIMDの状態のすべてを、システムコールやハードウェア割り込みがあるたびにメインメモリに保存しないといけないということを意味します。SIMDの状態情報はとても巨大（512〜1600 bytes）で、割り込みは非常に頻繁に起こるかもしれないので、保存・復元の操作がこのように追加されるのは性能にかなりの悪影響を及ぼします。これを避けるために、（カーネルの上で走っているアプリケーションではなく！）カーネル上でSIMDを無効化するのです。</p>
 <p>SIMDを無効化することによる問題に、<code>x86_64</code>における浮動小数点演算は標準ではSIMDレジスタを必要とするということがあります。この問題を解決するため、<code>soft-float</code>機能を追加します。これは、すべての浮動小数点演算を通常の整数に基づいたソフトウェア上の関数を使ってエミュレートするというものです。</p>
-<p>より詳しくは、<a href="https://os.phil-opp.com/disable-simd/">SIMDを無効化する</a>ことに関する私達の記事を読んでください。</p>
+<p>より詳しくは、<a href="https://rust-os.ir/disable-simd/">SIMDを無効化する</a>ことに関する私達の記事を読んでください。</p>
 <h4 id="matomeruto"><a class="zola-anchor" href="#matomeruto" aria-label="Anchor link for: matomeruto">🔗</a>まとめると</h4>
 <p>私達のターゲット仕様ファイルは今このようになっているはずです。</p>
 <pre data-lang="json" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-json "><code class="language-json" data-lang="json"><span>{
@@ -269,7 +269,7 @@
 </span><span>}
 </span></code></pre>
 <h3 id="kaneruwobirudosuru"><a class="zola-anchor" href="#kaneruwobirudosuru" aria-label="Anchor link for: kaneruwobirudosuru">🔗</a>カーネルをビルドする</h3>
-<p>私達の新しいターゲットのコンパイルにはLinuxの慣習に倣います（理由は知りません、LLVMのデフォルトであるというだけではないでしょうか）。つまり、<a href="https://os.phil-opp.com/ja/freestanding-rust-binary/">前の記事</a>で説明したように<code>_start</code>という名前のエントリポイントが要るということです。</p>
+<p>私達の新しいターゲットのコンパイルにはLinuxの慣習に倣います（理由は知りません、LLVMのデフォルトであるというだけではないでしょうか）。つまり、<a href="https://rust-os.ir/ja/freestanding-rust-binary/">前の記事</a>で説明したように<code>_start</code>という名前のエントリポイントが要るということです。</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// src/main.rs
 </span><span>
 </span><span>#![no_std] </span><span style="color:#608b4e;">// don&#39;t link the Rust standard library
@@ -299,7 +299,7 @@
 <p>失敗しましたね！エラーはRustコンパイラが<a href="https://doc.rust-lang.org/nightly/core/index.html"><code>core</code>ライブラリ</a>を見つけられなくなったと言っています。このライブラリは、<code>Result</code> や <code>Option</code>、イテレータのような基本的なRustの型を持っており、暗黙のうちにすべての<code>no_std</code>なクレートにリンクされています。</p>
 <p>問題は、coreライブラリはRustコンパイラと一緒に<ruby>コンパイル済み<rp> (</rp><rt>precompiled</rt><rp>) </rp></ruby>ライブラリとして配布されているということです。そのため、これは、私達独自のターゲットではなく、サポートされているhost triple（例えば <code>x86_64-unknown-linux-gnu</code>）でのみ使えるのです。他のターゲットのためにコードをコンパイルしたいときには、<code>core</code>をそれらのターゲットに向けて再コンパイルする必要があります。</p>
 <h4 id="build-stdopusiyon"><a class="zola-anchor" href="#build-stdopusiyon" aria-label="Anchor link for: build-stdopusiyon">🔗</a><code>build-std</code>オプション</h4>
-<p>ここでcargoの<a href="https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std"><code>build-std</code>機能</a>の出番です。これを使うと<code>core</code>やその他の標準ライブラリクレートについて、Rustインストール時に一緒についてくるコンパイル済みバージョンを使う代わりに、必要に応じて再コンパイルすることができます。これはとても新しくまだ完成していないので、<ruby>不安定<rp> (</rp><rt>unstable</rt><rp>) </rp></ruby>機能とされており、<a href="https://os.phil-opp.com/ja/minimal-rust-kernel/#installing-rust-nightly">nightly Rustコンパイラ</a>でのみ利用可能です。</p>
+<p>ここでcargoの<a href="https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std"><code>build-std</code>機能</a>の出番です。これを使うと<code>core</code>やその他の標準ライブラリクレートについて、Rustインストール時に一緒についてくるコンパイル済みバージョンを使う代わりに、必要に応じて再コンパイルすることができます。これはとても新しくまだ完成していないので、<ruby>不安定<rp> (</rp><rt>unstable</rt><rp>) </rp></ruby>機能とされており、<a href="https://rust-os.ir/ja/minimal-rust-kernel/#installing-rust-nightly">nightly Rustコンパイラ</a>でのみ利用可能です。</p>
 <p>この機能を使うためには、<a href="https://doc.rust-lang.org/cargo/reference/config.html">cargoの設定</a>ファイルを<code>.cargo/config.toml</code>に作り、次の内容を書きましょう。</p>
 <pre data-lang="toml" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#608b4e;"># in .cargo/config.toml
 </span><span>
@@ -371,7 +371,7 @@
 <h2 id="kaneruwoshi-xing-suru"><a class="zola-anchor" href="#kaneruwoshi-xing-suru" aria-label="Anchor link for: kaneruwoshi-xing-suru">🔗</a>カーネルを実行する</h2>
 <p>では、目で見て分かる処理を行う実行可能ファイルを手に入れたので、実行してみましょう。まず、コンパイルした私達のカーネルを、ブートローダーとリンクすることによってブータブルディスクイメージにする必要があります。そして、そのディスクイメージを、<a href="https://www.qemu.org/">QEMU</a>バーチャルマシン内や、USBメモリを使って実際のハードウェア上で実行できます。</p>
 <h3 id="butoimeziwozuo-ru"><a class="zola-anchor" href="#butoimeziwozuo-ru" aria-label="Anchor link for: butoimeziwozuo-ru">🔗</a>ブートイメージを作る</h3>
-<p>コンパイルされた私達のカーネルをブータブルディスクイメージに変えるには、ブートローダーとリンクする必要があります。<a href="https://os.phil-opp.com/ja/minimal-rust-kernel/#the-boot-process">起動のプロセスのセクション</a>で学んだように、ブートローダーはCPUを初期化しカーネルをロードする役割があります。</p>
+<p>コンパイルされた私達のカーネルをブータブルディスクイメージに変えるには、ブートローダーとリンクする必要があります。<a href="https://rust-os.ir/ja/minimal-rust-kernel/#the-boot-process">起動のプロセスのセクション</a>で学んだように、ブートローダーはCPUを初期化しカーネルをロードする役割があります。</p>
 <p>自前のブートローダーを書くと、それだけで1つのプロジェクトになってしまうので、代わりに<a href="https://crates.io/crates/bootloader"><code>bootloader</code></a>クレートを使いましょう。このクレートは、Cに依存せず、Rustとインラインアセンブリだけで基本的なBIOSブートローダーを実装しています。私達のカーネルを起動するためにこれを依存関係に追加する必要があります：</p>
 <pre data-lang="toml" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#608b4e;"># in Cargo.toml
 </span><span>
@@ -429,7 +429,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -501,13 +501,13 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/minimal-rust-kernel/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/minimal-rust-kernel/">
                         English (original)
-                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://os.phil-opp.com/zh-CN/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://rust-os.ir/zh-CN/minimal-rust-kernel/">
                         Chinese (simplified)
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/minimal-rust-kernel/">
                         Persian
-                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://os.phil-opp.com/ru/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://rust-os.ir/ru/minimal-rust-kernel/">
                         Russian
                     </a></li></ul>
         </div>
@@ -523,7 +523,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

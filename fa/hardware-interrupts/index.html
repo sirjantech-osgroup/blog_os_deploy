@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/fa/hardware-interrupts/" />
+        <link rel="canonical" href="https://rust-os.ir/fa/hardware-interrupts/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/fa" title="All Posts">« همه پست‌ها</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/fa" title="All Posts">« همه پست‌ها</a></aside>
 
             </div>
         </header>
@@ -127,7 +127,7 @@
             
             <p>
             <b>محتوای ترجمه شده:</b>
-            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://os.phil-opp.com/hardware-interrupts/">Hardware Interrupts</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
+            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://rust-os.ir/hardware-interrupts/">Hardware Interrupts</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
             </p>
             <p>
                 ترجمه توسط <a href="https://github.com/hamidrezakp">@hamidrezakp</a> و <a href="https://github.com/MHBahrampour">@MHBahrampour</a>.
@@ -138,7 +138,7 @@
     <div class="right-to-left">
     <p>در این پست ما کنترل کننده قابل برنامه ریزی وقفه را تنظیم می کنیم تا وقفه های سخت افزاری را به درستی به پردازنده منتقل کند. برای مدیریت این وقفه‌ها ، موارد جدیدی به جدول توصیف کننده وقفه اضافه می کنیم ، دقیقاً مانند کارهایی که برای کنترل کننده های استثنا انجام دادیم. ما یاد خواهیم گرفت که چگونه وقفه های متناوب تایمر را گرفته و چگونه از صفحه کلید ورودی بگیریم.</p>
 <span id="continue-reading"></span>
-<p>این بلاگ بصورت آزاد بر روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده. اگر مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. همچنین می‌توانید <a href="https://os.phil-opp.com/fa/hardware-interrupts/#comments">در زیر</a> این پست کامنت بگذارید. سورس کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-07"><code>post-07</code></a> پیدا کنید.</p>
+<p>این بلاگ بصورت آزاد بر روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده. اگر مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. همچنین می‌توانید <a href="https://rust-os.ir/fa/hardware-interrupts/#comments">در زیر</a> این پست کامنت بگذارید. سورس کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-07"><code>post-07</code></a> پیدا کنید.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -230,7 +230,7 @@
 </span><span>
 </span></code></pre>
 <p>این نمودار نحوه اتصال معمول خطوط وقفه را نشان می دهد. می بینیم که بیشتر 15 خط دارای یک نگاشت ثابت هستند ، به عنوان مثال خط 4 PIC ثانویه به ماوس اختصاص داده شده است.</p>
-<p>هر کنترل کننده را می توان از طریق دو <a href="https://os.phil-opp.com/testing/#i-o-ports">پورت ورودی/خروجی</a> ، یک پورت “فرمان” و یک پورت “داده” پیکربندی کرد. برای کنترل کننده اصلی ، این پورت‌ها <code>0x20</code> (فرمان) و<code>0x21</code> (داده) هستند. برای کنترل کننده ثانویه آنها <code>0xa0</code> (فرمان) و <code>0xa1</code> (داده) هستند. برای اطلاعات بیشتر در مورد نحوه پیکربندی PIC ها ، به <a href="https://wiki.osdev.org/8259_PIC">مقاله‌ای در osdev.org</a> مراجعه کنید.</p>
+<p>هر کنترل کننده را می توان از طریق دو <a href="https://rust-os.ir/testing/#i-o-ports">پورت ورودی/خروجی</a> ، یک پورت “فرمان” و یک پورت “داده” پیکربندی کرد. برای کنترل کننده اصلی ، این پورت‌ها <code>0x20</code> (فرمان) و<code>0x21</code> (داده) هستند. برای کنترل کننده ثانویه آنها <code>0xa0</code> (فرمان) و <code>0xa1</code> (داده) هستند. برای اطلاعات بیشتر در مورد نحوه پیکربندی PIC ها ، به <a href="https://wiki.osdev.org/8259_PIC">مقاله‌ای در osdev.org</a> مراجعه کنید.</p>
 <h3 id="pydh-szy"><a class="zola-anchor" href="#pydh-szy" aria-label="Anchor link for: pydh-szy">🔗</a>پیاده سازی</h3>
 <p>پیکربندی پیش فرض PIC ها قابل استفاده نیست، زیرا اعداد بردار وقفه را در محدوده 15-0 به پردازنده می فرستد. این اعداد در حال حاضر توسط استثناهای پردازنده اشغال شده‌اند ، به عنوان مثال شماره 8 مربوط به یک خطای دوگانه است. برای رفع این مشکل همپوشانی، باید وقفه های PIC را به اعداد دیگری تغییر دهیم. دامنه واقعی مهم نیست به شرطی که با استثناها همپوشانی نداشته باشد ، اما معمولاً محدوده 47-32 انتخاب می شود، زیرا اینها اولین شماره های آزاد پس از 32 اسلات استثنا هستند.</p>
 <p>پیکربندی با نوشتن مقادیر ویژه در پورت های فرمان و داده PIC ها اتفاق می افتد. خوشبختانه قبلا کرت‌ای به نام <a href="https://docs.rs/pic8259/0.10.1/pic8259/"><code>pic8259</code></a> وجود دارد، بنابراین نیازی نیست که توالی راه اندازی اولیه را خودمان بنویسیم. در صورت علاقه‌مند بودن به چگونگی عملکرد آن، <a href="https://docs.rs/crate/pic8259/0.10.1/source/src/lib.rs">کد منبع آن</a> را بررسی کنید، نسبتاً کوچک و دارای مستند خوبی است.</p>
@@ -279,7 +279,7 @@
 <p><img src="qemu-hardware-timer-double-fault.png" alt="QEMU printing EXCEPTION: DOUBLE FAULT because of hardware timer" /></p>
 <p>دلیل این خطای دوگانه این است که تایمر سخت افزاری (به طور دقیق تر <a href="https://en.wikipedia.org/wiki/Intel_8253">Intel 8253</a>) به طور پیش فرض فعال است، بنابراین به محض فعال کردن وقفه‌ها ، شروع به دریافت وقفه های تایمر می کنیم. از آنجا که هنوز یک تابع کنترل کننده برای آن تعریف نکرده‌ایم ، کنترل کننده خطای دوگانه فراخوانی می شود.</p>
 <h2 id="mdyryt-wqfhhy-tymr"><a class="zola-anchor" href="#mdyryt-wqfhhy-tymr" aria-label="Anchor link for: mdyryt-wqfhhy-tymr">🔗</a>مدیریت وقفه‌های تایمر</h2>
-<p>همانطور که در شکل <a href="https://os.phil-opp.com/fa/hardware-interrupts/#the-8259-pic">بالا</a> می بینیم، تایمر از خط 0 از PIC اصلی استفاده می کند. این به این معنی است که به صورت وقفه 32 (0 + افست 32) به پردازنده می رسد. به جای هارد-کد(Hardcode) کردن 32، آن را در یک اینام(enum) به نام <code>InterruptIndex</code> ذخیره می کنیم:</p>
+<p>همانطور که در شکل <a href="https://rust-os.ir/fa/hardware-interrupts/#the-8259-pic">بالا</a> می بینیم، تایمر از خط 0 از PIC اصلی استفاده می کند. این به این معنی است که به صورت وقفه 32 (0 + افست 32) به پردازنده می رسد. به جای هارد-کد(Hardcode) کردن 32، آن را در یک اینام(enum) به نام <code>InterruptIndex</code> ذخیره می کنیم:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span>#[derive(Debug, Clone, Copy)]
@@ -349,7 +349,7 @@
 <p>تایمر سخت افزاری که ما از آن استفاده می کنیم ، <em>Programmable Interval Timer</em> یا به اختصار PIT نامیده می شود. همانطور که از نام آن مشخص است ، می توان فاصله بین دو وقفه را پیکربندی کرد. ما در اینجا به جزئیات نمی پردازیم زیرا به زودی به <a href="https://wiki.osdev.org/APIC_timer">تایمر APIC</a> سوییچ خواهیم کرد، اما ویکی OSDev مقاله مفصلی درباره <a href="https://wiki.osdev.org/Programmable_Interval_Timer">پیکربندی PIT</a> دارد.</p>
 <h2 id="bnbst-h"><a class="zola-anchor" href="#bnbst-h" aria-label="Anchor link for: bnbst-h">🔗</a>بن‌بست ها</h2>
 <p>اکنون نوعی همروندی در هسته خود داریم: وقفه های تایمر به صورت ناهمزمان اتفاق می افتند ، بنابراین می توانند تابع <code>start_</code> را در هر زمان قطع کنند. خوشبختانه سیستم مالکیت راست از بسیاری از مشکلات مربوط به همروندی در زمان کامپایل جلوگیری می کند. یک استثنا قابل توجه بن‌بست است. درصورتی که نخ(Thread) بخواهد قفلی را بدست آورد که هرگز آزاد نخواهد شد، بن‌بست به وجود می آید. بنابراین نخ به طور نامحدود هنگ می‌کند.</p>
-<p>ما می توانیم در هسته خود بن‌بست ایجاد کنیم. اگر به یاد داشته باشید، ماکرو <code>println</code> ما تابع <code>vga_buffer::_print</code> را فراخوانی می کند، که با استفاده از spinlock یک <a href="https://os.phil-opp.com/vga-text-mode/#spinlocks"><code>WRITER</code> گلوبال را قفل میکند</a>.</p>
+<p>ما می توانیم در هسته خود بن‌بست ایجاد کنیم. اگر به یاد داشته باشید، ماکرو <code>println</code> ما تابع <code>vga_buffer::_print</code> را فراخوانی می کند، که با استفاده از spinlock یک <a href="https://rust-os.ir/vga-text-mode/#spinlocks"><code>WRITER</code> گلوبال را قفل میکند</a>.</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/vga_buffer.rs
 </span><span>
 </span><span>[…]
@@ -570,10 +570,10 @@
 </span><span>    }
 </span><span>}
 </span></code></pre>
-<p>همانطور که در شکل <a href="https://os.phil-opp.com/fa/hardware-interrupts/#the-8259-pic">بالا</a> مشاهده می کنیم ، صفحه کلید از خط 1 در PIC اصلی استفاده می کند. این به این معنی است که به صورت وقفه 33 (1 + افست 32) به پردازنده می رسد. ما این ایندکس را به عنوان یک نوع جدید <code>Keyboard</code> به ای‌نام <code>InterruptIndex</code> اضافه می کنیم. نیازی نیست که مقدار را صریحاً مشخص کنیم ، زیرا این مقدار به طور پیش فرض برابر مقدار قبلی بعلاوه یک که 33 نیز می باشد ، هست. در کنترل کننده وقفه ، ما یک <code>k</code> چاپ می کنیم و سیگنال پایان وقفه را به کنترل کننده وقفه می فرستیم.</p>
+<p>همانطور که در شکل <a href="https://rust-os.ir/fa/hardware-interrupts/#the-8259-pic">بالا</a> مشاهده می کنیم ، صفحه کلید از خط 1 در PIC اصلی استفاده می کند. این به این معنی است که به صورت وقفه 33 (1 + افست 32) به پردازنده می رسد. ما این ایندکس را به عنوان یک نوع جدید <code>Keyboard</code> به ای‌نام <code>InterruptIndex</code> اضافه می کنیم. نیازی نیست که مقدار را صریحاً مشخص کنیم ، زیرا این مقدار به طور پیش فرض برابر مقدار قبلی بعلاوه یک که 33 نیز می باشد ، هست. در کنترل کننده وقفه ، ما یک <code>k</code> چاپ می کنیم و سیگنال پایان وقفه را به کنترل کننده وقفه می فرستیم.</p>
 <p>اکنون می بینیم که وقتی کلید را فشار می دهیم <code>k</code> بر روی صفحه ظاهر می شود. با این حال ، این فقط برای اولین کلیدی که فشار می دهیم کار می کند ، حتی اگر به فشار دادن کلیدها ادامه دهیم ، دیگر <code>k</code> بر روی صفحه نمایش ظاهر نمی شود. این امر به این دلیل است که کنترل کننده صفحه کلید تا زمانی که اصطلاحاً <em>scancode</em> را نخوانیم ، وقفه دیگری ارسال نمی کند.</p>
 <h3 id="khwndn-skhnkhd-h"><a class="zola-anchor" href="#khwndn-skhnkhd-h" aria-label="Anchor link for: khwndn-skhnkhd-h">🔗</a>خواندن اسکن‌کد ها</h3>
-<p>برای اینکه بفهمیم <em>کدام</em> کلید فشار داده شده است ، باید کنترل کننده صفحه کلید را جستجو کنیم. ما این کار را با خواندن از پورت داده کنترل کننده PS/2 ، که <a href="https://os.phil-opp.com/testing/#i-o-ports">پورت ورودی/خروجی</a> با شماره <code>0x60</code> است ، انجام می دهیم:</p>
+<p>برای اینکه بفهمیم <em>کدام</em> کلید فشار داده شده است ، باید کنترل کننده صفحه کلید را جستجو کنیم. ما این کار را با خواندن از پورت داده کنترل کننده PS/2 ، که <a href="https://rust-os.ir/testing/#i-o-ports">پورت ورودی/خروجی</a> با شماره <code>0x60</code> است ، انجام می دهیم:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span style="color:#569cd6;">extern </span><span style="color:#d69d85;">&quot;x86-interrupt&quot; </span><span style="color:#569cd6;">fn </span><span>keyboard_interrupt_handler(
@@ -697,7 +697,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -769,7 +769,7 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/hardware-interrupts/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/hardware-interrupts/">
                         English (original)
                     </a></li></ul>
         </div>
@@ -785,7 +785,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

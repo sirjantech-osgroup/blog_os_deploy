@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/async-await/" />
+        <link rel="canonical" href="https://rust-os.ir/async-await/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com" title="All Posts">« All Posts</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir" title="All Posts">« All Posts</a></aside>
 
             </div>
         </header>
@@ -117,7 +117,7 @@
     <div class="">
     <p>In this post we explore <em>cooperative multitasking</em> and the <em>async/await</em> feature of Rust. We take a detailed look how async/await works in Rust, including the design of the <code>Future</code> trait, the state machine transformation, and <em>pinning</em>. We then add basic support for async/await to our kernel by creating an asynchronous keyboard task and a basic executor.</p>
 <span id="continue-reading"></span>
-<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://os.phil-opp.com/async-await/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-12"><code>post-12</code></a> branch.</p>
+<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://rust-os.ir/async-await/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-12"><code>post-12</code></a> branch.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -182,7 +182,7 @@
 <p>The idea behind preemptive multitasking is that the operating system controls when to switch tasks. For that, it utilizes the fact that it regains control of the CPU on each interrupt. This makes it possible to switch tasks whenever new input is available to the system. For example, it would be possible to switch tasks when the mouse is moved or a network packet arrives. The operating system can also determine the exact time that a task is allowed to run by configuring a hardware timer to send an interrupt after that time.</p>
 <p>The following graphic illustrates the task switching process on a hardware interrupt:</p>
 <p><img src="regain-control-on-interrupt.svg" alt="" /></p>
-<p>In the first row, the CPU is executing task <code>A1</code> of program <code>A</code>. All other tasks are paused. In the second row, a hardware interrupt arrives at the CPU. As described in the <a href="https://os.phil-opp.com/hardware-interrupts/"><em>Hardware Interrupts</em></a> post, the CPU immediately stops the execution of task <code>A1</code> and jumps to the interrupt handler defined in the interrupt descriptor table (IDT). Through this interrupt handler, the operating system now has control of the CPU again, which allows it to switch to task <code>B1</code> instead of continuing task <code>A1</code>.</p>
+<p>In the first row, the CPU is executing task <code>A1</code> of program <code>A</code>. All other tasks are paused. In the second row, a hardware interrupt arrives at the CPU. As described in the <a href="https://rust-os.ir/hardware-interrupts/"><em>Hardware Interrupts</em></a> post, the CPU immediately stops the execution of task <code>A1</code> and jumps to the interrupt handler defined in the interrupt descriptor table (IDT). Through this interrupt handler, the operating system now has control of the CPU again, which allows it to switch to task <code>B1</code> instead of continuing task <code>A1</code>.</p>
 <h4 id="saving-state"><a class="zola-anchor" href="#saving-state" aria-label="Anchor link for: saving-state">🔗</a>Saving State</h4>
 <p>Since tasks are interrupted at arbitrary points in time, they might be in the middle of some calculations. In order to be able to resume them later, the operating system must backup the whole state of the task, including its <a href="https://en.wikipedia.org/wiki/Call_stack">call stack</a> and the values of all CPU registers. This process is called a <a href="https://en.wikipedia.org/wiki/Context_switch"><em>context switch</em></a>.</p>
 <p>As the call stack can be very large, the operating system typically sets up a separate call stack for each task instead of backing up the call stack content on each task switch. Such a task with a separate stack is called a <a href="https://en.wikipedia.org/wiki/Thread_(computing)"><em>thread of execution</em></a> or <em>thread</em> for short. By using a separate stack for each task, only the register contents need to be saved on a context switch (including the program counter and stack pointer). This approach minimizes the performance overhead of a context switch, which is very important since context switches often occur up to 100 times per second.</p>
@@ -316,7 +316,7 @@
 </span><span>}
 </span></code></pre>
 <p>(<a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d93c28509a1c67661f31ff820281d434">Try it on the playground</a>)</p>
-<p>This function is a direct translation of the <code>example</code> function that used combinator functions from <a href="https://os.phil-opp.com/async-await/#drawbacks">above</a>. Using the <code>.await</code> operator, we can retrieve the value of a future without needing any closures or <code>Either</code> types. As a result, we can write our code like we write normal synchronous code, with the difference that <em>this is still asynchronous code</em>.</p>
+<p>This function is a direct translation of the <code>example</code> function that used combinator functions from <a href="https://rust-os.ir/async-await/#drawbacks">above</a>. Using the <code>.await</code> operator, we can retrieve the value of a future without needing any closures or <code>Either</code> types. As a result, we can write our code like we write normal synchronous code, with the difference that <em>this is still asynchronous code</em>.</p>
 <h4 id="state-machine-transformation"><a class="zola-anchor" href="#state-machine-transformation" aria-label="Anchor link for: state-machine-transformation">🔗</a>State Machine Transformation</h4>
 <p>What the compiler does behind this scenes is to transform the body of the <code>async</code> function into a <a href="https://en.wikipedia.org/wiki/Finite-state_machine"><em>state machine</em></a>, with each <code>.await</code> call representing a different state. For the above <code>example</code> function, the compiler creates a state machine with the following four states:</p>
 <p><img src="async-state-machine-states.svg" alt="Four states: start, waiting on foo.txt, waiting on bar.txt, end" /></p>
@@ -497,7 +497,7 @@
 </ul>
 <p>Because of its principle to provide <em>zero cost abstractions</em>, which means that abstractions should not impose additional runtime costs, Rust decided for the third solution. For this, the <a href="https://doc.rust-lang.org/stable/core/pin/index.html"><em>pinning</em></a> API was proposed in <a href="https://github.com/rust-lang/rfcs/blob/master/text/2349-pin.md">RFC 2349</a>. In the following, we will give a short overview of this API and explain how it works with async/await and futures.</p>
 <h4 id="heap-values"><a class="zola-anchor" href="#heap-values" aria-label="Anchor link for: heap-values">🔗</a>Heap Values</h4>
-<p>The first observation is that <a href="https://os.phil-opp.com/heap-allocation/">heap allocated</a> values already have a fixed memory address most of the time. They are created using a call to <code>allocate</code> and then referenced by a pointer type such as <code>Box&lt;T&gt;</code>. While moving the pointer type is possible, the heap value that the pointer points to stays at the same memory address until it is freed through a <code>deallocate</code> call again.</p>
+<p>The first observation is that <a href="https://rust-os.ir/heap-allocation/">heap allocated</a> values already have a fixed memory address most of the time. They are created using a call to <code>allocate</code> and then referenced by a pointer type such as <code>Box&lt;T&gt;</code>. While moving the pointer type is possible, the heap value that the pointer points to stays at the same memory address until it is freed through a <code>deallocate</code> call again.</p>
 <p>Using heap allocation, we can try to create a self-referential struct:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#569cd6;">fn </span><span>main() {
 </span><span>    </span><span style="color:#569cd6;">let mut</span><span> heap_value = Box::new(SelfReferential {
@@ -580,12 +580,12 @@
 <p>As we already saw in this post, the <a href="https://doc.rust-lang.org/nightly/core/future/trait.Future.html#tymethod.poll"><code>Future::poll</code></a> method uses pinning in the form of a <code>Pin&lt;&amp;mut Self&gt;</code> parameter:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#569cd6;">fn </span><span>poll(self: Pin&lt;</span><span style="color:#569cd6;">&amp;mut Self</span><span>&gt;, cx: </span><span style="color:#569cd6;">&amp;mut</span><span> Context) -&gt; Poll&lt;</span><span style="color:#569cd6;">Self::</span><span>Output&gt;
 </span></code></pre>
-<p>The reason that this method takes <code>self: Pin&lt;&amp;mut Self&gt;</code> instead of the normal <code>&amp;mut self</code> is that future instances created from async/await are often self-referential, as we saw <a href="https://os.phil-opp.com/async-await/#self-referential-structs">above</a>. By wrapping <code>Self</code> into <code>Pin</code> and letting the compiler opt-out of <code>Unpin</code> for self-referential futures generated from async/await, it is guaranteed that the futures are not moved in memory between <code>poll</code> calls. This ensures that all internal references are still valid.</p>
+<p>The reason that this method takes <code>self: Pin&lt;&amp;mut Self&gt;</code> instead of the normal <code>&amp;mut self</code> is that future instances created from async/await are often self-referential, as we saw <a href="https://rust-os.ir/async-await/#self-referential-structs">above</a>. By wrapping <code>Self</code> into <code>Pin</code> and letting the compiler opt-out of <code>Unpin</code> for self-referential futures generated from async/await, it is guaranteed that the futures are not moved in memory between <code>poll</code> calls. This ensures that all internal references are still valid.</p>
 <p>It is worth noting that moving futures before the first <code>poll</code> call is fine. This is a result of the fact that futures are lazy and do nothing until they’re polled for the first time. The <code>start</code> state of the generated state machines therefore only contains the function arguments, but no internal references. In order to call <code>poll</code>, the caller must wrap the future into <code>Pin</code> first, which ensures that the future cannot be moved in memory anymore. Since stack pinning is more difficult to get right, I recommend to always use <a href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html#method.pin"><code>Box::pin</code></a> combined with <a href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html#method.as_mut"><code>Pin::as_mut</code></a> for this.</p>
 <p>In case you’re interested in understanding how to safely implement a future combinator function using stack pinning yourself, take a look at the relatively short <a href="https://docs.rs/futures-util/0.3.4/src/futures_util/future/future/map.rs.html">source of the <code>map</code> combinator method</a> of the <code>futures</code> crate and the section about <a href="https://doc.rust-lang.org/stable/std/pin/index.html#projections-and-structural-pinning">projections and structural pinning</a> of the pin documentation.</p>
 <h3 id="executors-and-wakers"><a class="zola-anchor" href="#executors-and-wakers" aria-label="Anchor link for: executors-and-wakers">🔗</a>Executors and Wakers</h3>
 <p>Using async/await, it is possible to ergonomically work with futures in a completely asynchronous way. However, as we learned above, futures do nothing until they are polled. This means we have to call <code>poll</code> on them at some point, otherwise the asynchronous code is never executed.</p>
-<p>With a single future, we can always wait for each future manually using a loop <a href="https://os.phil-opp.com/async-await/#waiting-on-futures">as described above</a>. However, this approach is very inefficient and not practical for programs that create a large number of futures. The most common solution for this problem is to define a global <em>executor</em> that is responsible for polling all futures in the system until they are finished.</p>
+<p>With a single future, we can always wait for each future manually using a loop <a href="https://rust-os.ir/async-await/#waiting-on-futures">as described above</a>. However, this approach is very inefficient and not practical for programs that create a large number of futures. The most common solution for this problem is to define a global <em>executor</em> that is responsible for polling all futures in the system until they are finished.</p>
 <h4 id="executors"><a class="zola-anchor" href="#executors" aria-label="Anchor link for: executors">🔗</a>Executors</h4>
 <p>The purpose of an executor is to allow spawning futures as independent tasks, typically through some sort of <code>spawn</code> method. The executor is then responsible for polling all futures until they are completed. The big advantage of managing all futures in a central place is that the executor can switch to a different future whenever a future returns <code>Poll::Pending</code>. Thus, asynchronous operations are run in parallel and the CPU is kept busy.</p>
 <p>Many executor implementations can also take advantage of systems with multiple CPU cores. They create a <a href="https://en.wikipedia.org/wiki/Thread_pool">thread pool</a> that is able to utilize all cores if there is enough work available and use techniques such as <a href="https://en.wikipedia.org/wiki/Work_stealing">work stealing</a> to balance the load between cores. There are also special executor implementations for embedded systems that optimize for low latency and memory overhead.</p>
@@ -653,7 +653,7 @@
 <ul>
 <li>We require that the future associated with a task returns <code>()</code>. This means that tasks don’t return any result, they are just executed for its side effects. For example, the <code>example_task</code> function we defined above has no return value, but it prints something to the screen as a side effect.</li>
 <li>The <code>dyn</code> keyword indicates that we store a <a href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html"><em>trait object</em></a> in the <code>Box</code>. This means that the methods on the future are <a href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html#trait-objects-perform-dynamic-dispatch"><em>dynamically dispatched</em></a>, which makes it possible to store different types of futures in the <code>Task</code> type. This is important because each <code>async fn</code> has its own type and we want to be able to create multiple different tasks.</li>
-<li>As we learned in the <a href="https://os.phil-opp.com/async-await/#pinning">section about pinning</a>, the <code>Pin&lt;Box&gt;</code> type ensures that a value cannot be moved in memory by placing it on the heap and preventing the creation of <code>&amp;mut</code> references to it. This is important because futures generated by async/await might be self-referential, i.e. contain pointers to itself that would be invalidated when the future is moved.</li>
+<li>As we learned in the <a href="https://rust-os.ir/async-await/#pinning">section about pinning</a>, the <code>Pin&lt;Box&gt;</code> type ensures that a value cannot be moved in memory by placing it on the heap and preventing the creation of <code>&amp;mut</code> references to it. This is important because futures generated by async/await might be self-referential, i.e. contain pointers to itself that would be invalidated when the future is moved.</li>
 </ul>
 <p>To allow the creation of new <code>Task</code> structs from futures, we create a <code>new</code> function:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/task/mod.rs
@@ -810,7 +810,7 @@
 </ul>
 <h3 id="async-keyboard-input"><a class="zola-anchor" href="#async-keyboard-input" aria-label="Anchor link for: async-keyboard-input">🔗</a>Async Keyboard Input</h3>
 <p>Our simple executor does not utilize the <code>Waker</code> notifications and simply loops over all tasks until they are done. This wasn’t a problem for our example since our <code>example_task</code> can directly run to finish on the first <code>poll</code> call. To see the performance advantages of a proper <code>Waker</code> implementation, we first need to create a task that is truly asynchronous, i.e. a task that will probably return <code>Poll::Pending</code> on the first <code>poll</code> call.</p>
-<p>We already have some kind of asynchronicity in our system that we can use for this: hardware interrupts. As we learned in the <a href="https://os.phil-opp.com/hardware-interrupts/"><em>Interrupts</em></a> post, hardware interrupts can occur at arbitrary points in time, determined by some external device. For example, a hardware timer sends an interrupt to the CPU after some predefined time elapsed. When the CPU receives an interrupt, it immediately transfers control to the corresponding handler function defined in the interrupt descriptor table (IDT).</p>
+<p>We already have some kind of asynchronicity in our system that we can use for this: hardware interrupts. As we learned in the <a href="https://rust-os.ir/hardware-interrupts/"><em>Interrupts</em></a> post, hardware interrupts can occur at arbitrary points in time, determined by some external device. For example, a hardware timer sends an interrupt to the CPU after some predefined time elapsed. When the CPU receives an interrupt, it immediately transfers control to the corresponding handler function defined in the interrupt descriptor table (IDT).</p>
 <p>In the following, we will create an asynchronous task based on the keyboard interrupt. The keyboard interrupt is a good candidate for this because it is both non-deterministic and latency-critical. Non-deterministic means that there is no way to predict when the next key press will occur because it is entirely dependent on the user. Latency-critical means that we want to handle the keyboard input in a timely manner, otherwise the user will feel a lag. To support such a task in an efficient way, it will be essential that the executor has proper support for <code>Waker</code> notifications.</p>
 <h4 id="scancode-queue"><a class="zola-anchor" href="#scancode-queue" aria-label="Anchor link for: scancode-queue">🔗</a>Scancode Queue</h4>
 <p>Currently, we handle the keyboard input directly in the interrupt handler. This is not a good idea for the long term because interrupt handlers should stay as short as possible as they might interrupt important work. Instead, interrupt handlers should only perform the minimal amount of work necessary (e.g. reading the keyboard scancode) and leave the rest of the work (e.g. interpreting the scancode) to a background task.</p>
@@ -1041,7 +1041,7 @@
 </span><span>    }
 </span><span>}
 </span></code></pre>
-<p>The code is very similar to the code we had in our <a href="https://os.phil-opp.com/hardware-interrupts/#interpreting-the-scancodes">keyboard interrupt handler</a> before we modified it in this post. The only difference is that, instead of reading the scancode from an I/O port, we take it from the <code>ScancodeStream</code>. For this, we first create a new <code>Scancode</code> stream and then repeatedly use the <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html#method.next"><code>next</code></a> method provided by the <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html"><code>StreamExt</code></a> trait to get a <code>Future</code> that resolves to the next element in the stream. By using the <code>await</code> operator on it, we asynchronously wait for the result of the future.</p>
+<p>The code is very similar to the code we had in our <a href="https://rust-os.ir/hardware-interrupts/#interpreting-the-scancodes">keyboard interrupt handler</a> before we modified it in this post. The only difference is that, instead of reading the scancode from an I/O port, we take it from the <code>ScancodeStream</code>. For this, we first create a new <code>Scancode</code> stream and then repeatedly use the <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html#method.next"><code>next</code></a> method provided by the <a href="https://docs.rs/futures-util/0.3.4/futures_util/stream/trait.StreamExt.html"><code>StreamExt</code></a> trait to get a <code>Future</code> that resolves to the next element in the stream. By using the <code>await</code> operator on it, we asynchronously wait for the result of the future.</p>
 <p>We use <code>while let</code> to loop until the stream returns <code>None</code> to signal its end. Since our <code>poll_next</code> method never returns <code>None</code>, this is effectively an endless loop, so the <code>print_keypresses</code> task never finishes.</p>
 <p>Let’s add the <code>print_keypresses</code> task to our executor in our <code>main.rs</code> to get working keyboard input again:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/main.rs
@@ -1356,7 +1356,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -1420,7 +1420,7 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/async-await/">
+            <ul><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/async-await/">
                         Japanese
                     </a></li></ul>
         </div>
@@ -1436,7 +1436,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

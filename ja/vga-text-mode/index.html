@@ -12,11 +12,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/ja/vga-text-mode/" />
+        <link rel="canonical" href="https://rust-os.ir/ja/vga-text-mode/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -35,11 +35,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/ja" title="All Posts">« すべての記事へ</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/ja" title="All Posts">« すべての記事へ</a></aside>
 
             </div>
         </header>
@@ -117,7 +117,7 @@
             
             <p>
             <b>この記事は翻訳されたものです：</b>
-            この記事は<strong><a href="https://os.phil-opp.com/vga-text-mode/">VGA Text Mode</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
+            この記事は<strong><a href="https://rust-os.ir/vga-text-mode/">VGA Text Mode</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
             </p>
             <p>
                 翻訳者： <a href="https://github.com/woodyZootopia">@woodyZootopia</a> 及び <a href="https://github.com/JohnTitor">@JohnTitor</a>.
@@ -128,7 +128,7 @@
     <div class="">
     <p><a href="https://en.wikipedia.org/wiki/VGA-compatible_text_mode">VGAテキストモード</a>は画面にテキストを出力するシンプルな方法です。この記事では、すべてのunsafeな要素を別のモジュールにカプセル化することで、それを安全かつシンプルに扱えるようにするインターフェースを作ります。また、Rustの<a href="https://doc.rust-lang.org/std/fmt/#related-macros">フォーマッティングマクロ</a>のサポートも実装します。</p>
 <span id="continue-reading"></span>
-<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://os.phil-opp.com/ja/vga-text-mode/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-03"><code>post-03</code> ブランチ</a>にあります。</p>
+<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://rust-os.ir/ja/vga-text-mode/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-03"><code>post-03</code> ブランチ</a>にあります。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -660,7 +660,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -732,11 +732,11 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/vga-text-mode/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/vga-text-mode/">
                         English (original)
-                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://os.phil-opp.com/zh-CN/vga-text-mode/">
+                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://rust-os.ir/zh-CN/vga-text-mode/">
                         Chinese (simplified)
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/vga-text-mode/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/vga-text-mode/">
                         Persian
                     </a></li></ul>
         </div>
@@ -752,7 +752,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

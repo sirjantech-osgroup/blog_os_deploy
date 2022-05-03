@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/fa/paging-introduction/" />
+        <link rel="canonical" href="https://rust-os.ir/fa/paging-introduction/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/fa" title="All Posts">« همه پست‌ها</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/fa" title="All Posts">« همه پست‌ها</a></aside>
 
             </div>
         </header>
@@ -122,7 +122,7 @@
             
             <p>
             <b>محتوای ترجمه شده:</b>
-            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://os.phil-opp.com/paging-introduction/">Introduction to Paging</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
+            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://rust-os.ir/paging-introduction/">Introduction to Paging</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
             </p>
             <p>
                 ترجمه توسط <a href="https://github.com/hamidrezakp">@hamidrezakp</a> و <a href="https://github.com/MHBahrampour">@MHBahrampour</a>.
@@ -133,7 +133,7 @@
     <div class="right-to-left">
     <p>در این پست <em>صفحه‌بندی</em>، یک طرح مدیریت حافظه بسیار رایج که ما نیز برای سیستم‌عامل خود استفاده خواهیم کرد، معرفی می‌شود. این پست توضیح می‌دهد که چرا ایزوله سازی حافظه مورد نیاز است، قطعه‌بندی چگونه کار می‌کند، <em>حافظه مجازی</em> چیست و چگونه صفحه‌بندی مشکلات تقسیم حافظه را حل می کند. همچنین طرح جدول‌های صفحه چند سطحی را در معماری x86_64 بررسی می‌کند.</p>
 <span id="continue-reading"></span>
-<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر شما مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. شما همچنین می‌توانید <a href="https://os.phil-opp.com/fa/paging-introduction/#comments">در زیر</a> این پست کامنت بگذارید. منبع کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-08"><code>post-08</code></a> پیدا کنید.</p>
+<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر شما مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. شما همچنین می‌توانید <a href="https://rust-os.ir/fa/paging-introduction/#comments">در زیر</a> این پست کامنت بگذارید. منبع کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-08"><code>post-08</code></a> پیدا کنید.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -318,11 +318,11 @@
 <p>برخلاف سایر حافظه‌های پنهان پردازنده، TLB کاملاً شفاف نبوده و با تغییر محتوای جدول‌های صفحه، ترجمه‌ها را به‌روز و حذف نمی‌کند. این بدان معنی است که هسته هر زمان که جدول صفحه را تغییر می‌دهد باید TLB را به صورت دستی به‌روز کند. برای انجام این کار، یک دستورالعمل ویژه پردازنده وجود دارد به نام <a href="https://www.felixcloutier.com/x86/INVLPG.html"><code>invlpg</code></a> (“صفحه نامعتبر”) که ترجمه برای صفحه مشخص شده را از TLB حذف می‌کند، بنابراین دوباره از جدول صفحه در دسترسی بعدی بارگیری می‌شود. TLB همچنین می‌تواند با بارگیری مجدد رجیستر <code>CR3</code>، که یک تعویض فضای آدرس را شبیه‌سازی می‌کند، کاملاً فلاش (کلمه: flush) شود. کریت <code>x86_64</code> توابع راست را برای هر دو نوع در <a href="https://docs.rs/x86_64/0.14.2/x86_64/instructions/tlb/index.html">ماژول <code>tlb</code></a> فراهم می‌کند.</p>
 <p>مهم است که به یاد داشته باشید که TLB را روی هر جدول صفحه فلاش کنید، زیرا در غیر این‌صورت پردازنده ممکن است از ترجمه قدیمی استفاده کند، که می‌تواند منجر به باگ‌های غیرقطعی شود که اشکال‌زدایی آن بسیار سخت است.</p>
 <h2 id="pydhszy"><a class="zola-anchor" href="#pydhszy" aria-label="Anchor link for: pydhszy">🔗</a>پیاده‌سازی</h2>
-<p>چیزی که ما هنوز به آن اشاره نکردیم: <strong>هسته ما از قبل با صفحه‌بندی اجرا می‌شود</strong>. بوت‌لودری که در پست <a href="https://os.phil-opp.com/fa/minimal-rust-kernel/#skht-dyskh-ymyj">“یک هسته مینیمال با Rust”</a> اضافه کردیم، قبلاً یک سلسله مراتب صفحه‌بندی 4 سطح را تنظیم کرده است که هر صفحه از هسته ما را در یک قاب فیزیکی نگاشت می‌کند. بوت‌لودر این کار را انجام می‌دهد زیرا صفحه‌بندی در حالت 64 بیتی در x86_64 اجباری است.</p>
+<p>چیزی که ما هنوز به آن اشاره نکردیم: <strong>هسته ما از قبل با صفحه‌بندی اجرا می‌شود</strong>. بوت‌لودری که در پست <a href="https://rust-os.ir/fa/minimal-rust-kernel/#skht-dyskh-ymyj">“یک هسته مینیمال با Rust”</a> اضافه کردیم، قبلاً یک سلسله مراتب صفحه‌بندی 4 سطح را تنظیم کرده است که هر صفحه از هسته ما را در یک قاب فیزیکی نگاشت می‌کند. بوت‌لودر این کار را انجام می‌دهد زیرا صفحه‌بندی در حالت 64 بیتی در x86_64 اجباری است.</p>
 <p>این بدان معناست که هر آدرس حافظه‌ای که در هسته خود استفاده کردیم یک آدرس مجازی بود. دسترسی به بافر VGA در آدرس <code>0xb8000</code> فقط به این دلیل کار کرد که بوت‌لودر آن صفحه حافظه را نگاشت یکتا (ترجمه: identity mapped) کرد، یعنی صفحه مجازی <code>0xb8000</code> را با فریم فیزیکی <code>0xb8000</code> نگاشت کرده است.</p>
 <p>صفحه‌بندی باعث می‌شود که هسته ما نسبتاً ایمن باشد، زیرا هر دسترسی به حافظه که از مرز خارج شود باعث ایجاد استثنای خطای صفحه، به جای نوشتن روی حافظه فیزیکی تصادفی می‌شود. بوت‌لودر حتی مجوزهای دسترسی صحیح را برای هر صفحه تنظیم کرده است، به این معنی که فقط صفحات حاوی کد قابل اجرا هستند و فقط صفحات داده قابل نوشتن هستند.</p>
 <h3 id="khthy-sfhh"><a class="zola-anchor" href="#khthy-sfhh" aria-label="Anchor link for: khthy-sfhh">🔗</a>خطاهای صفحه</h3>
-<p>بیایید سعی کنیم با دسترسی به برخی از حافظه‌های خارج از هسته، باعث ایجاد خطای صفحه شویم. ابتدا، یک کنترل‌کننده خطای صفحه ایجاد می‌کنیم و آن را در IDT ثبت می‌کنیم، به‌طوری که به جای یک <a href="https://os.phil-opp.com/fa/double-fault-exceptions/">خطای دوگانه</a> یک استثنای خطای صفحه مشاهده می‌کنیم:</p>
+<p>بیایید سعی کنیم با دسترسی به برخی از حافظه‌های خارج از هسته، باعث ایجاد خطای صفحه شویم. ابتدا، یک کنترل‌کننده خطای صفحه ایجاد می‌کنیم و آن را در IDT ثبت می‌کنیم، به‌طوری که به جای یک <a href="https://rust-os.ir/fa/double-fault-exceptions/">خطای دوگانه</a> یک استثنای خطای صفحه مشاهده می‌کنیم:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span>lazy_static! {
@@ -432,7 +432,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -502,9 +502,9 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/paging-introduction/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/paging-introduction/">
                         English (original)
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/paging-introduction/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/paging-introduction/">
                         Japanese
                     </a></li></ul>
         </div>
@@ -520,7 +520,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

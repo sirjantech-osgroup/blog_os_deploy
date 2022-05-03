@@ -76,14 +76,14 @@
     </aside>
 
     <div class="warning">
-        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://os.phil-opp.com/edition-2/">here</a>.
+        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://rust-os.ir/edition-2/">here</a>.
     </div>
 
     <p>In this post, we start exploring exceptions. We set up an interrupt descriptor table and add handler functions. At the end of this post, our kernel will be able to catch divide-by-zero faults.</p>
 <span id="continue-reading"></span>
 <p>As always, the complete source code is on <a href="https://github.com/phil-opp/blog_os/tree/catching_exceptions">GitHub</a>. Please file <a href="https://github.com/phil-opp/blog_os/issues">issues</a> for any problems, questions, or improvement suggestions. There is also a comment section at the end of this page.</p>
 <blockquote>
-<p><strong>Note</strong>: This post describes how to handle exceptions using naked functions (see <a href="https://os.phil-opp.com/edition-1/extra/naked-exceptions/">“Handling Exceptions with Naked Functions”</a> for an overview). Our new way of handling exceptions can be found in the <a href="https://os.phil-opp.com/handling-exceptions/">“Handling Exceptions”</a> post.</p>
+<p><strong>Note</strong>: This post describes how to handle exceptions using naked functions (see <a href="https://rust-os.ir/edition-1/extra/naked-exceptions/">“Handling Exceptions with Naked Functions”</a> for an overview). Our new way of handling exceptions can be found in the <a href="https://rust-os.ir/handling-exceptions/">“Handling Exceptions”</a> post.</p>
 </blockquote>
 <h2 id="exceptions"><a class="zola-anchor" href="#exceptions" aria-label="Anchor link for: exceptions">🔗</a>Exceptions</h2>
 <p>An exception signals that something is wrong with the current instruction. For example, the CPU issues an exception if the current instruction tries to divide by 0. When an exception occurs, the CPU interrupts its current work and immediately calls a specific exception handler function, depending on the exception type.</p>
@@ -688,7 +688,7 @@
             <hr>
             <small>
                 &copy; <time datetime="2017">2017</time>. All rights reserved.
-                <a href="https://os.phil-opp.com/contact/">Contact</a>
+                <a href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

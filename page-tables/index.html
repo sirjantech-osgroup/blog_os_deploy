@@ -108,7 +108,7 @@
     </aside>
 
     <div class="warning">
-        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://os.phil-opp.com/edition-2/">here</a>.
+        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://rust-os.ir/edition-2/">here</a>.
     </div>
 
     <p>In this post we will create a paging module, which allows us to access and modify the 4-level page table. We will explore recursive page table mapping and use some Rust features to make it safe. Finally we will create functions to translate virtual addresses and to map and unmap pages.</p>
@@ -136,7 +136,7 @@
 </span><span>   number: </span><span style="color:#569cd6;">usize</span><span>,
 </span><span>}
 </span></code></pre>
-<p>We import the <code>PAGE_SIZE</code> and define a constant for the number of entries per table. To make future function signatures more expressive, we can use the type aliases <code>PhysicalAddress</code> and <code>VirtualAddress</code>. The <code>Page</code> struct is similar to the <code>Frame</code> struct in the <a href="https://os.phil-opp.com/allocating-frames/#a-memory-module">previous post</a>, but represents a virtual page instead of a physical frame.</p>
+<p>We import the <code>PAGE_SIZE</code> and define a constant for the number of entries per table. To make future function signatures more expressive, we can use the type aliases <code>PhysicalAddress</code> and <code>VirtualAddress</code>. The <code>Page</code> struct is similar to the <code>Frame</code> struct in the <a href="https://rust-os.ir/allocating-frames/#a-memory-module">previous post</a>, but represents a virtual page instead of a physical frame.</p>
 <h3 id="page-table-entries"><a class="zola-anchor" href="#page-table-entries" aria-label="Anchor link for: page-table-entries">🔗</a>Page Table Entries</h3>
 <p>To model page table entries, we create a new <code>entry</code> submodule:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#569cd6;">use </span><span>memory::Frame; </span><span style="color:#608b4e;">// needed later
@@ -550,7 +550,7 @@
 </span><span>}
 </span></code></pre>
 <p>We add an re-export for all <code>entry</code> types since they are required to call the function. We assert that the page is unmapped and always set the present flag (since it wouldn’t make sense to map a page without setting it).</p>
-<p>The <code>Table::next_table_create</code> method doesn’t exist yet. It should return the next table if it exists, or create a new one. For the implementation we need the <code>FrameAllocator</code> from the <a href="https://os.phil-opp.com/allocating-frames/#a-memory-module">previous post</a> and the <code>Table::zero</code> method:</p>
+<p>The <code>Table::next_table_create</code> method doesn’t exist yet. It should return the next table if it exists, or create a new one. For the implementation we need the <code>FrameAllocator</code> from the <a href="https://rust-os.ir/allocating-frames/#a-memory-module">previous post</a> and the <code>Table::zero</code> method:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#569cd6;">use </span><span>memory::FrameAllocator;
 </span><span>
 </span><span style="color:#569cd6;">pub fn </span><span>next_table_create&lt;A&gt;(</span><span style="color:#569cd6;">&amp;mut </span><span>self,
@@ -591,7 +591,7 @@
 </span><span>    p4: Unique&lt;Table&lt;Level4&gt;&gt;,
 </span><span>}
 </span></code></pre>
-<p>We can’t store the <code>Table&lt;Level4&gt;</code> directly because it needs to be at a special memory location (like the <a href="https://os.phil-opp.com/printing-to-screen/#the-text-buffer">VGA text buffer</a>). We could use a raw pointer or <code>&amp;mut</code> instead of <a href="https://doc.rust-lang.org/1.10.0/core/ptr/struct.Unique.html">Unique</a>, but Unique indicates ownership better.</p>
+<p>We can’t store the <code>Table&lt;Level4&gt;</code> directly because it needs to be at a special memory location (like the <a href="https://rust-os.ir/printing-to-screen/#the-text-buffer">VGA text buffer</a>). We could use a raw pointer or <code>&amp;mut</code> instead of <a href="https://doc.rust-lang.org/1.10.0/core/ptr/struct.Unique.html">Unique</a>, but Unique indicates ownership better.</p>
 <p>Because the <code>ActivePageTable</code> owns the unique recursive mapped P4 table, there must be only one <code>ActivePageTable</code> instance. Thus we make the constructor function unsafe:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#569cd6;">impl </span><span>ActivePageTable {
 </span><span>    </span><span style="color:#569cd6;">pub unsafe fn </span><span>new() -&gt; ActivePageTable {
@@ -766,7 +766,7 @@
 <li>and we fixed stack overflow and TLB related bugs</li>
 </ul>
 <h2 id="what-s-next"><a class="zola-anchor" href="#what-s-next" aria-label="Anchor link for: what-s-next">🔗</a>What’s next?</h2>
-<p>In the <a href="https://os.phil-opp.com/remap-the-kernel/">next post</a> we will extend this module and add a function to modify inactive page tables. Through that function, we will create a new page table hierarchy that maps the kernel correctly using 4KiB pages. Then we will switch to the new table to get a safer kernel environment.</p>
+<p>In the <a href="https://rust-os.ir/remap-the-kernel/">next post</a> we will extend this module and add a function to modify inactive page tables. Through that function, we will create a new page table hierarchy that maps the kernel correctly using 4KiB pages. Then we will switch to the new table to get a safer kernel environment.</p>
 <p>Afterwards, we will use this paging module to build a heap allocator. This will allow us to use allocation and collection types such as <code>Box</code> and <code>Vec</code>.</p>
 <p><small>Image sources: <sup class="footnote-reference"><a href="#virtual_physical_translation_source">2</a></sup></small></p>
 <h2 id="footnotes"><a class="zola-anchor" href="#footnotes" aria-label="Anchor link for: footnotes">🔗</a>Footnotes</h2>
@@ -1350,7 +1350,7 @@
             <hr>
             <small>
                 &copy; <time datetime="2017">2017</time>. All rights reserved.
-                <a href="https://os.phil-opp.com/contact/">Contact</a>
+                <a href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

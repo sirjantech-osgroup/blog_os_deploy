@@ -12,11 +12,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/zh-TW/freestanding-rust-binary/" />
+        <link rel="canonical" href="https://rust-os.ir/zh-TW/freestanding-rust-binary/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -35,11 +35,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/zh-TW" title="All Posts">« 所有文章</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/zh-TW" title="All Posts">« 所有文章</a></aside>
 
             </div>
         </header>
@@ -116,7 +116,7 @@
             
             <p>
             <b>翻譯內容：</b>
-            這是對原文章 <strong><a href="https://os.phil-opp.com/freestanding-rust-binary/">A Freestanding Rust Binary</a></strong> 的社區中文翻譯。它可能不完整，過時或者包含錯誤。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">這個 Issue</a> 上評論和提問！
+            這是對原文章 <strong><a href="https://rust-os.ir/freestanding-rust-binary/">A Freestanding Rust Binary</a></strong> 的社區中文翻譯。它可能不完整，過時或者包含錯誤。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">這個 Issue</a> 上評論和提問！
             </p>
             <p>
                 翻譯者： <a href="https://github.com/wusyong">@wusyong</a>.
@@ -127,7 +127,7 @@
     <div class="">
     <p>建立我們自己的作業系統核心的第一步是建立一個不連結標準函式庫的 Rust 執行檔，這使得無需基礎作業系統即可在<a href="https://en.wikipedia.org/wiki/Bare_machine">裸機</a>上執行 Rust 程式碼。</p>
 <span id="continue-reading"></span>
-<p>此網誌在 <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上公開開發，如果您有任何問題或疑問，請在那開一個 issue，您也可以在<a href="https://os.phil-opp.com/zh-TW/freestanding-rust-binary/#comments">下面</a>發表評論，這篇文章的完整開源程式碼可以在 <a href="https://github.com/phil-opp/blog_os/tree/post-01"><code>post-01</code></a> 分支中找到。</p>
+<p>此網誌在 <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上公開開發，如果您有任何問題或疑問，請在那開一個 issue，您也可以在<a href="https://rust-os.ir/zh-TW/freestanding-rust-binary/#comments">下面</a>發表評論，這篇文章的完整開源程式碼可以在 <a href="https://github.com/phil-opp/blog_os/tree/post-01"><code>post-01</code></a> 分支中找到。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -184,7 +184,7 @@
 <p>要編寫作業系統核心，我們需要不依賴於任何作業系統功能的程式碼。這代表我們不能使用執行緒、檔案系統、堆記憶體、網路、隨機數、標準輸出或任何其他需要作業系統抽象或特定硬體的功能。這也是理所當然的，因為我們正在嘗試寫出自己的 OS 和我們的驅動程式。</p>
 <p>這意味著我們不能使用大多數的 <a href="https://doc.rust-lang.org/std/">Rust 標準函式庫</a>，但是我們還是可以使用 <em>很多</em> Rust 的功能。比如說我們可以使用<a href="https://doc.rust-lang.org/book/ch13-02-iterators.html">疊代器</a>、<a href="https://doc.rust-lang.org/book/ch13-01-closures.html">閉包</a>、<a href="https://doc.rust-lang.org/book/ch06-00-enums.html">模式配對</a>、<a href="https://doc.rust-lang.org/core/option/">option</a> 和 <a href="https://doc.rust-lang.org/core/result/">result</a>、<a href="https://doc.rust-lang.org/core/macro.write.html">字串格式化</a>，當然還有<a href="https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html">所有權系統</a>。這些功能讓我們能夠以非常有表達力且高階的方式編寫核心，而無需擔心<a href="https://www.nayuki.io/page/undefined-behavior-in-c-and-cplusplus-programs">未定義行為</a>或<a href="https://tonyarcieri.com/it-s-time-for-a-memory-safety-intervention">記憶體安全</a>。</p>
 <p>為了在 Rust 中建立 OS 核心，我們需要建立一個無須底層作業系統即可運行的執行檔，這類的執行檔通常稱為「獨立式（freestanding）」或「裸機（bare-metal）」的執行檔。</p>
-<p>這篇文章描述了建立一個獨立的 Rust 執行檔的必要步驟，並解釋為什麼需要這些步驟。如果您只對簡單的範例感興趣，可以直接跳到 <strong><a href="https://os.phil-opp.com/zh-TW/freestanding-rust-binary/#summary">總結</a></strong>。</p>
+<p>這篇文章描述了建立一個獨立的 Rust 執行檔的必要步驟，並解釋為什麼需要這些步驟。如果您只對簡單的範例感興趣，可以直接跳到 <strong><a href="https://rust-os.ir/zh-TW/freestanding-rust-binary/#summary">總結</a></strong>。</p>
 <h2 id="ting-yong-biao-zhun-han-shi-ku"><a class="zola-anchor" href="#ting-yong-biao-zhun-han-shi-ku" aria-label="Anchor link for: ting-yong-biao-zhun-han-shi-ku">🔗</a>停用標準函式庫</h2>
 <p>Rust 所有的 crate 在預設情況下都會連結<a href="https://doc.rust-lang.org/std/">標準函式庫</a>，而標準函式庫會依賴作業系統的功能，像式執行緒、檔案系統或是網路。它也會依賴 C 語言的標準函式庫 <code>libc</code>，因為其與作業系統緊密相關。既然我們的計劃是編寫自己的作業系統，我們就得用到 <a href="https://doc.rust-lang.org/1.30.0/book/first-edition/using-rust-without-the-standard-library.html"><code>no_std</code> 屬性</a>來停止標準函式庫的自動引用（automatic inclusion）。</p>
 <p>我們先從建立一個新的 cargo 專案開始，最簡單的辦法是輸入下面的命令：</p>
@@ -457,7 +457,7 @@
 </span></code></pre>
 <p>注意這只是最小的 Rust 獨立執行檔範例，它還是會仰賴一些事情發生，像是當 <code>_start</code> 函式呼叫時堆疊已經初始化完畢。<strong>所以如果想真的使用這樣的執行檔的話還需要更多步驟。</strong></p>
 <h2 id="jie-xia-lai-ni"><a class="zola-anchor" href="#jie-xia-lai-ni" aria-label="Anchor link for: jie-xia-lai-ni">🔗</a>接下來呢？</h2>
-<p><a href="https://os.phil-opp.com/minimal-rust-kernel/">下一篇文章</a> 將會講解如何將我們的獨立執行檔轉成最小的作業系統核心。這包含建立自訂目標、用啟動程式組合我們的執行檔，還有學習如何輸出一些東西到螢幕上。</p>
+<p><a href="https://rust-os.ir/minimal-rust-kernel/">下一篇文章</a> 將會講解如何將我們的獨立執行檔轉成最小的作業系統核心。這包含建立自訂目標、用啟動程式組合我們的執行檔，還有學習如何輸出一些東西到螢幕上。</p>
 
     </div>
 
@@ -465,7 +465,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -533,19 +533,19 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/freestanding-rust-binary/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/freestanding-rust-binary/">
                         English (original)
-                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://os.phil-opp.com/zh-CN/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://rust-os.ir/zh-CN/freestanding-rust-binary/">
                         Chinese (simplified)
-                    </a></li><li data-lang-switch-to="fr" class=""><a href="https://os.phil-opp.com/fr/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="fr" class=""><a href="https://rust-os.ir/fr/freestanding-rust-binary/">
                         French
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/freestanding-rust-binary/">
                         Japanese
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/freestanding-rust-binary/">
                         Persian
-                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://os.phil-opp.com/ru/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://rust-os.ir/ru/freestanding-rust-binary/">
                         Russian
-                    </a></li><li data-lang-switch-to="ko" class=""><a href="https://os.phil-opp.com/ko/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ko" class=""><a href="https://rust-os.ir/ko/freestanding-rust-binary/">
                         Korean
                     </a></li></ul>
         </div>
@@ -561,7 +561,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/ja/paging-introduction/" />
+        <link rel="canonical" href="https://rust-os.ir/ja/paging-introduction/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/ja" title="All Posts">« すべての記事へ</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/ja" title="All Posts">« すべての記事へ</a></aside>
 
             </div>
         </header>
@@ -122,7 +122,7 @@
             
             <p>
             <b>この記事は翻訳されたものです：</b>
-            この記事は<strong><a href="https://os.phil-opp.com/paging-introduction/">Introduction to Paging</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
+            この記事は<strong><a href="https://rust-os.ir/paging-introduction/">Introduction to Paging</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
             </p>
             <p>
                 翻訳者： <a href="https://github.com/woodyZootopia">@woodyZootopia</a> 及び <a href="https://github.com/JohnTitor">@JohnTitor</a>.
@@ -133,7 +133,7 @@
     <div class="">
     <p>この記事では<strong>ページング</strong>を紹介します。これは、私達のオペレーティングシステムにも使う、とても一般的なメモリ管理方式です。なぜメモリの分離が必要なのか、<strong>セグメンテーション</strong>がどういう仕組みなのか、<strong>仮想メモリ</strong>とは何なのか、ページングがいかにしてメモリ<ruby>断片化<rp> (</rp><rt>フラグメンテーション</rt><rp>) </rp></ruby>の問題を解決するのかを説明します。また、x86_64アーキテクチャにおける、マルチレベルページテーブルのレイアウトについても説明します。</p>
 <span id="continue-reading"></span>
-<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください（訳注: リンクは原文(英語)のものになります）。また<a href="https://os.phil-opp.com/ja/paging-introduction/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-08"><code>post-08</code> ブランチ</a>にあります。</p>
+<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください（訳注: リンクは原文(英語)のものになります）。また<a href="https://rust-os.ir/ja/paging-introduction/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-08"><code>post-08</code> ブランチ</a>にあります。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -322,11 +322,11 @@
 </div>
 <p>ページテーブルを修正したときは毎回TLBをflushしないといけないということはしっかりと覚えておいてください。これを行わないと、CPUは古い変換を使いつづけるかもしれず、これはデバッグの非常に難しい、予測不能なバグに繋がるかもしれないためです。</p>
 <h2 id="shi-zhuang"><a class="zola-anchor" href="#shi-zhuang" aria-label="Anchor link for: shi-zhuang">🔗</a>実装</h2>
-<p>ひとつ言っていなかったことがあります：<strong>わたしたちのカーネルはすでにページングを使っています</strong>。<a href="https://os.phil-opp.com/ja/minimal-rust-kernel/#butoimeziwozuo-ru">Rustでつくる最小のカーネル</a>の記事で追加したブートローダは、すでに私たちのカーネルのすべてのページを物理フレームに対応付けるような4層ページ階層構造を設定しているのです。ブートローダがこれを行う理由は、x86_64の64ビットモードにおいてページングは必須となっているからです。</p>
+<p>ひとつ言っていなかったことがあります：<strong>わたしたちのカーネルはすでにページングを使っています</strong>。<a href="https://rust-os.ir/ja/minimal-rust-kernel/#butoimeziwozuo-ru">Rustでつくる最小のカーネル</a>の記事で追加したブートローダは、すでに私たちのカーネルのすべてのページを物理フレームに対応付けるような4層ページ階層構造を設定しているのです。ブートローダがこれを行う理由は、x86_64の64ビットモードにおいてページングは必須となっているからです。</p>
 <p>つまり、私達がカーネルにおいて使ってきたすべてのメモリアドレスは、仮想アドレスだったということです。アドレス<code>0xb8000</code>にあるVGAバッファへのアクセスが上手くいっていたのは、ひとえにブートローダがこのメモリページを <strong>恒等対応</strong> させていた、つまり、仮想ページ<code>0xb8000</code>を物理フレーム<code>0xb8000</code>に対応させていたからです。</p>
 <p>ページングにより、境界外メモリアクセスをしてもおかしな物理メモリに書き込むのではなくページフォルト例外を起こすようになっているため、私達のカーネルはすでに比較的安全になっていました。ブートローダはそれぞれのページに正しい権限を設定することさえしてくれるので、コードを含むページだけが実行可能であり、データを含むページだけが書き込み可能になっています。</p>
 <h3 id="pezihuoruto"><a class="zola-anchor" href="#pezihuoruto" aria-label="Anchor link for: pezihuoruto">🔗</a>ページフォルト</h3>
-<p>カーネルの外のメモリにアクセスすることによって、ページフォルトを引き起こしてみましょう。まず、通常の<a href="https://os.phil-opp.com/ja/double-fault-exceptions/">ダブルフォルト</a>ではなくページフォルト例外が得られるように、ページフォルト<ruby>処理関数<rp> (</rp><rt>ハンドラ</rt><rp>) </rp></ruby>を作ってIDTに追加しましょう：</p>
+<p>カーネルの外のメモリにアクセスすることによって、ページフォルトを引き起こしてみましょう。まず、通常の<a href="https://rust-os.ir/ja/double-fault-exceptions/">ダブルフォルト</a>ではなくページフォルト例外が得られるように、ページフォルト<ruby>処理関数<rp> (</rp><rt>ハンドラ</rt><rp>) </rp></ruby>を作ってIDTに追加しましょう：</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span>lazy_static! {
@@ -357,7 +357,7 @@
 </span><span>    hlt_loop();
 </span><span>}
 </span></code></pre>
-<p><a href="https://en.wikipedia.org/wiki/Control_register#CR2"><code>CR2</code></a>レジスタは、ページフォルト時にCPUによって自動的に設定されており、その値はアクセスされページフォルトを引き起こした仮想アドレスになっています。<code>x86_64</code>クレートの<a href="https://docs.rs/x86_64/0.14.2/x86_64/registers/control/struct.Cr2.html#method.read"><code>Cr2::read</code></a>関数を使ってこれを読み込み出力します。<a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.PageFaultErrorCode.html"><code>PageFaultErrorCode</code></a>型は、ページフォルトを引き起こしたメモリアクセスの種類についてより詳しい情報を提供します（例えば、読み込みと書き込みのどちらによるものなのか、など）。そのため、これも出力します。ページフォルトを解決しない限り実行を継続することはできないので、最後は<a href="https://os.phil-opp.com/hardware-interrupts/#the-hlt-instruction"><code>hlt_loop</code></a>に入ります。</p>
+<p><a href="https://en.wikipedia.org/wiki/Control_register#CR2"><code>CR2</code></a>レジスタは、ページフォルト時にCPUによって自動的に設定されており、その値はアクセスされページフォルトを引き起こした仮想アドレスになっています。<code>x86_64</code>クレートの<a href="https://docs.rs/x86_64/0.14.2/x86_64/registers/control/struct.Cr2.html#method.read"><code>Cr2::read</code></a>関数を使ってこれを読み込み出力します。<a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.PageFaultErrorCode.html"><code>PageFaultErrorCode</code></a>型は、ページフォルトを引き起こしたメモリアクセスの種類についてより詳しい情報を提供します（例えば、読み込みと書き込みのどちらによるものなのか、など）。そのため、これも出力します。ページフォルトを解決しない限り実行を継続することはできないので、最後は<a href="https://rust-os.ir/hardware-interrupts/#the-hlt-instruction"><code>hlt_loop</code></a>に入ります。</p>
 <p>それではカーネル外のメモリにアクセスしてみましょう：</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/main.rs
 </span><span>
@@ -436,7 +436,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -508,9 +508,9 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/paging-introduction/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/paging-introduction/">
                         English (original)
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/paging-introduction/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/paging-introduction/">
                         Persian
                     </a></li></ul>
         </div>
@@ -526,7 +526,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

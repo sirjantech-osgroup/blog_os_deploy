@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/news/pure-rust/" />
+        <link rel="canonical" href="https://rust-os.ir/news/pure-rust/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,7 +34,7 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
@@ -56,11 +56,11 @@
     </time>
     <p>Over the past six months we’ve been working on a second edition of this blog. Our goals for this new version are <a href="https://github.com/phil-opp/blog_os/issues/360">numerous</a> and we are still not done yet, but today we reached a major milestone: It is now possible to build the OS natively on Windows, macOS, and Linux <strong>without any non-Rust dependendencies</strong>.</p>
 <span id="continue-reading"></span>
-<p>The <a href="https://os.phil-opp.com/edition-1/">first edition</a> required several C-tools for building:</p>
+<p>The <a href="https://rust-os.ir/edition-1/">first edition</a> required several C-tools for building:</p>
 <ul>
 <li>We used the <a href="https://www.gnu.org/software/grub/"><code>GRUB</code></a> bootloader for booting our kernel. To create a bootable disk/CD image we used the <a href="https://www.gnu.org/software/grub/manual/grub/html_node/Invoking-grub_002dmkrescue.html"><code>grub-mkrescue</code></a> tool, which is very difficult to get to run on Windows.</li>
 <li>The <a href="https://www.gnu.org/software/xorriso/"><code>xorriso</code></a> program was also required, because it is used by <code>grub-mkrescue</code>.</li>
-<li>GRUB only boots to protected mode, so we needed some assembly code for <a href="https://os.phil-opp.com/entering-longmode/">entering long mode</a>. For building the assembly code, we used the <a href="https://www.nasm.us/xdoc/2.13.03/html/nasmdoc1.html"><code>nasm</code></a> assembler.</li>
+<li>GRUB only boots to protected mode, so we needed some assembly code for <a href="https://rust-os.ir/entering-longmode/">entering long mode</a>. For building the assembly code, we used the <a href="https://www.nasm.us/xdoc/2.13.03/html/nasmdoc1.html"><code>nasm</code></a> assembler.</li>
 <li>We used the GNU linker <a href="https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_node/ld_3.html"><code>ld</code></a> for linking together the assembly files with the rust code, using a custom <a href="https://sourceware.org/binutils/docs/ld/Scripts.html">linker script</a>.</li>
 <li>Finally, we used <a href="https://www.gnu.org/software/make/"><code>make</code></a> for automating the various build steps (assembling, compiling the Rust code, linking, invoking <code>grub-mkrescue</code>).</li>
 </ul>
@@ -73,7 +73,7 @@
 <h2 id="linking-with-lld">Linking with LLD</h2>
 <p>With our custom bootloader in place, the last remaining problem is platform independent linking. Fortunately there is <a href="https://lld.llvm.org/"><code>LLD</code></a>, the cross-platform linker from the LLVM project, which is already very stable for the <code>x86</code> architecture. As a bonus, <code>LLD</code> is <a href="https://github.com/rust-lang/rust/pull/48125">now shipped with Rust</a>, which means that it can be used without any extra installation.</p>
 <h2 id="the-new-posts">The new Posts</h2>
-<p>The second edition is already live at <a href="https://os.phil-opp.com/edition-2/">https://os.phil-opp.com/second-edition</a>. Please tell us if you have any feedback on the new posts! We’re planning to move over the content from the <a href="https://os.phil-opp.com/edition-1/">first edition</a> iteratively, in a different order and with various other improvements.</p>
+<p>The second edition is already live at <a href="https://rust-os.ir/edition-2/">https://os.phil-opp.com/second-edition</a>. Please tell us if you have any feedback on the new posts! We’re planning to move over the content from the <a href="https://rust-os.ir/edition-1/">first edition</a> iteratively, in a different order and with various other improvements.</p>
 <p>Many thanks to everyone who helped to make Rust an even better language for OS development!</p>
 
 </main>
@@ -124,7 +124,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

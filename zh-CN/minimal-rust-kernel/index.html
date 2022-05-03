@@ -12,11 +12,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/zh-CN/minimal-rust-kernel/" />
+        <link rel="canonical" href="https://rust-os.ir/zh-CN/minimal-rust-kernel/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -35,11 +35,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/zh-CN" title="All Posts">« 所有文章</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/zh-CN" title="All Posts">« 所有文章</a></aside>
 
             </div>
         </header>
@@ -117,7 +117,7 @@
             
             <p>
             <b>翻译内容：</b>
-            这是对原文章 <strong><a href="https://os.phil-opp.com/minimal-rust-kernel/">A Minimal Rust Kernel</a></strong> 的社区中文翻译。它可能不完整，过时或者包含错误。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">这个 Issue</a> 上评论和提问！
+            这是对原文章 <strong><a href="https://rust-os.ir/minimal-rust-kernel/">A Minimal Rust Kernel</a></strong> 的社区中文翻译。它可能不完整，过时或者包含错误。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">这个 Issue</a> 上评论和提问！
             </p>
             <p>
                 翻译者： <a href="https://github.com/luojia65">@luojia65</a> 和 <a href="https://github.com/Rustin-Liu">@Rustin-Liu</a>.
@@ -128,7 +128,7 @@
     <div class="">
     <p>在这篇文章中，我们将基于 <strong>x86架构</strong>（the x86 architecture），使用 Rust 语言，编写一个最小化的 64 位内核。我们将从上一章中构建的独立式可执行程序开始，构建自己的内核；它将向显示器打印字符串，并能被打包为一个能够引导启动的<strong>磁盘映像</strong>（disk image）。</p>
 <span id="continue-reading"></span>
-<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://os.phil-opp.com/zh-CN/minimal-rust-kernel/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-02"><code>post-02</code></a> branch.</p>
+<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://rust-os.ir/zh-CN/minimal-rust-kernel/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-02"><code>post-02</code></a> branch.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -321,7 +321,7 @@
 </span><span>   Compiling blog_os v0.1.0 (file:///…/blog_os)
 </span><span>    Finished dev </span><span style="color:#569cd6;">[</span><span>unoptimized + debuginfo</span><span style="color:#569cd6;">]</span><span> target(s) in 0.29 secs
 </span></code></pre>
-<p>我们能看到，<code>cargo xbuild</code> 为我们自定义的目标交叉编译了 <code>core</code>、<code>compiler_builtin</code> 和 <code>alloc</code> 三个部件。这些部件使用了大量的<strong>不稳定特性</strong>（unstable features），所以只能在<a href="https://os.phil-opp.com/zh-CN/minimal-rust-kernel/#an-zhuang-nightly-rust">nightly 版本的 Rust 编译器</a>中工作。这之后，<code>cargo xbuild</code> 成功地编译了我们的 <code>blog_os</code> 包。</p>
+<p>我们能看到，<code>cargo xbuild</code> 为我们自定义的目标交叉编译了 <code>core</code>、<code>compiler_builtin</code> 和 <code>alloc</code> 三个部件。这些部件使用了大量的<strong>不稳定特性</strong>（unstable features），所以只能在<a href="https://rust-os.ir/zh-CN/minimal-rust-kernel/#an-zhuang-nightly-rust">nightly 版本的 Rust 编译器</a>中工作。这之后，<code>cargo xbuild</code> 成功地编译了我们的 <code>blog_os</code> 包。</p>
 <p>现在我们可以为裸机编译内核了；但是，我们提供给引导程序的入口点 <code>_start</code> 函数还是空的。我们可以添加一些东西进去，不过我们可以先做一些优化工作。</p>
 <h3 id="she-zhi-mo-ren-mu-biao"><a class="zola-anchor" href="#she-zhi-mo-ren-mu-biao" aria-label="Anchor link for: she-zhi-mo-ren-mu-biao">🔗</a>设置默认目标</h3>
 <p>为了避免每次使用<code>cargo xbuild</code>时传递<code>--target</code>参数，我们可以覆写默认的编译目标。我们创建一个名为<code>.cargo/config</code>的<a href="https://doc.rust-lang.org/cargo/reference/config.html">cargo配置文件</a>，添加下面的内容：</p>
@@ -417,7 +417,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -489,13 +489,13 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/minimal-rust-kernel/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/minimal-rust-kernel/">
                         English (original)
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/minimal-rust-kernel/">
                         Japanese
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/minimal-rust-kernel/">
                         Persian
-                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://os.phil-opp.com/ru/minimal-rust-kernel/">
+                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://rust-os.ir/ru/minimal-rust-kernel/">
                         Russian
                     </a></li></ul>
         </div>
@@ -511,7 +511,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

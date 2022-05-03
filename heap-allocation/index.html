@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/heap-allocation/" />
+        <link rel="canonical" href="https://rust-os.ir/heap-allocation/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com" title="All Posts">« All Posts</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir" title="All Posts">« All Posts</a></aside>
 
             </div>
         </header>
@@ -120,7 +120,7 @@
     <div class="">
     <p>This post adds support for heap allocation to our kernel. First, it gives an introduction to dynamic memory and shows how the borrow checker prevents common allocation errors. It then implements the basic allocation interface of Rust, creates a heap memory region, and sets up an allocator crate. At the end of this post all the allocation and collection types of the built-in <code>alloc</code> crate will be available to our kernel.</p>
 <span id="continue-reading"></span>
-<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://os.phil-opp.com/heap-allocation/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-10"><code>post-10</code></a> branch.</p>
+<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://rust-os.ir/heap-allocation/#comments">at the bottom</a>. The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-10"><code>post-10</code></a> branch.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -194,13 +194,13 @@
 </span><span>}
 </span></code></pre>
 <p>(<a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=6186a0f3a54f468e1de8894996d12819">run the example on the playground</a>)</p>
-<p>While returning a reference makes no sense in this example, there are cases where we want a variable to live longer than the function. We already saw such a case in our kernel when we tried to <a href="https://os.phil-opp.com/cpu-exceptions/#loading-the-idt">load an interrupt descriptor table</a> and had to use a <code>static</code> variable to extend the lifetime.</p>
+<p>While returning a reference makes no sense in this example, there are cases where we want a variable to live longer than the function. We already saw such a case in our kernel when we tried to <a href="https://rust-os.ir/cpu-exceptions/#loading-the-idt">load an interrupt descriptor table</a> and had to use a <code>static</code> variable to extend the lifetime.</p>
 <h3 id="static-variables"><a class="zola-anchor" href="#static-variables" aria-label="Anchor link for: static-variables">🔗</a>Static Variables</h3>
 <p>Static variables are stored at a fixed memory location separate from the stack. This memory location is assigned at compile time by the linker and encoded in the executable. Statics live for the complete runtime of the program, so they have the <code>'static</code> lifetime and can always be referenced from local variables:</p>
 <p><img src="call-stack-static.svg" alt="The same outer/inner example with the difference that inner has a static Z: [u32; 3] = [1,2,3]; and returns a &amp;Z[i] reference" /></p>
 <p>When the <code>inner</code> function returns in the above example, it’s part of the call stack is destroyed. The static variables live in a separate memory range that is never destroyed, so the <code>&amp;Z[1]</code> reference is still valid after the return.</p>
-<p>Apart from the <code>'static</code> lifetime, static variables also have the useful property that their location is known at compile time, so that no reference is needed for accessing it. We utilized that property for our <code>println</code> macro: By using a <a href="https://os.phil-opp.com/vga-text-mode/#a-global-interface">static <code>Writer</code></a> internally there is no <code>&amp;mut Writer</code> reference needed to invoke the macro, which is very useful in <a href="https://os.phil-opp.com/cpu-exceptions/#implementation">exception handlers</a> where we don’t have access to any additional variables.</p>
-<p>However, this property of static variables brings a crucial drawback: They are read-only by default. Rust enforces this because a <a href="https://doc.rust-lang.org/nomicon/races.html">data race</a> would occur if e.g. two threads modify a static variable at the same time. The only way to modify a static variable is to encapsulate it in a <a href="https://docs.rs/spin/0.5.2/spin/struct.Mutex.html"><code>Mutex</code></a> type, which ensures that only a single <code>&amp;mut</code> reference exists at any point in time. We already used a <code>Mutex</code> for our <a href="https://os.phil-opp.com/vga-text-mode/#spinlocks">static VGA buffer <code>Writer</code></a>.</p>
+<p>Apart from the <code>'static</code> lifetime, static variables also have the useful property that their location is known at compile time, so that no reference is needed for accessing it. We utilized that property for our <code>println</code> macro: By using a <a href="https://rust-os.ir/vga-text-mode/#a-global-interface">static <code>Writer</code></a> internally there is no <code>&amp;mut Writer</code> reference needed to invoke the macro, which is very useful in <a href="https://rust-os.ir/cpu-exceptions/#implementation">exception handlers</a> where we don’t have access to any additional variables.</p>
+<p>However, this property of static variables brings a crucial drawback: They are read-only by default. Rust enforces this because a <a href="https://doc.rust-lang.org/nomicon/races.html">data race</a> would occur if e.g. two threads modify a static variable at the same time. The only way to modify a static variable is to encapsulate it in a <a href="https://docs.rs/spin/0.5.2/spin/struct.Mutex.html"><code>Mutex</code></a> type, which ensures that only a single <code>&amp;mut</code> reference exists at any point in time. We already used a <code>Mutex</code> for our <a href="https://rust-os.ir/vga-text-mode/#spinlocks">static VGA buffer <code>Writer</code></a>.</p>
 <h2 id="dynamic-memory"><a class="zola-anchor" href="#dynamic-memory" aria-label="Anchor link for: dynamic-memory">🔗</a>Dynamic Memory</h2>
 <p>Local and static variables are already very powerful together and enable most use cases. However, we saw that they both have their limitations:</p>
 <ul>
@@ -387,7 +387,7 @@
 <p><img src="qemu-dummy-output.png" alt="QEMU printing “panicked at `allocation error: Layout { size_: 4, align_: 4 }, src/lib.rs:89:5”" /></p>
 <p>The error handler is called because the <code>Box::new</code> function implicitly calls the <code>alloc</code> function of the global allocator. Our dummy allocator always returns a null pointer, so every allocation fails. To fix this we need to create an allocator that actually returns usable memory.</p>
 <h2 id="creating-a-kernel-heap"><a class="zola-anchor" href="#creating-a-kernel-heap" aria-label="Anchor link for: creating-a-kernel-heap">🔗</a>Creating a Kernel Heap</h2>
-<p>Before we can create a proper allocator, we first need to create a heap memory region from which the allocator can allocate memory. To do this, we need to define a virtual memory range for the heap region and then map this region to physical frames. See the <a href="https://os.phil-opp.com/paging-introduction/"><em>“Introduction To Paging”</em></a> post for an overview of virtual memory and page tables.</p>
+<p>Before we can create a proper allocator, we first need to create a heap memory region from which the allocator can allocate memory. To do this, we need to define a virtual memory range for the heap region and then map this region to physical frames. See the <a href="https://rust-os.ir/paging-introduction/"><em>“Introduction To Paging”</em></a> post for an overview of virtual memory and page tables.</p>
 <p>The first step is to define a virtual memory region for the heap. We can choose any virtual address range that we like, as long as it is not already used for a different memory region. Let’s define it as the memory starting at address <code>0x_4444_4444_0000</code> so that we can easily recognize a heap pointer later:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/allocator.rs
 </span><span>
@@ -395,7 +395,7 @@
 </span><span style="color:#569cd6;">pub const </span><span style="color:#b4cea8;">HEAP_SIZE</span><span>: </span><span style="color:#569cd6;">usize </span><span>= </span><span style="color:#b5cea8;">100 </span><span>* </span><span style="color:#b5cea8;">1024</span><span>; </span><span style="color:#608b4e;">// 100 KiB
 </span></code></pre>
 <p>We set the heap size to 100 KiB for now. If we need more space in the future, we can simply increase it.</p>
-<p>If we tried to use this heap region now, a page fault would occur since the virtual memory region is not mapped to physical memory yet. To resolve this, we create an <code>init_heap</code> function that maps the heap pages using the <a href="https://os.phil-opp.com/paging-implementation/#using-offsetpagetable"><code>Mapper</code> API</a> that we introduced in the <a href="https://os.phil-opp.com/paging-implementation/"><em>“Paging Implementation”</em></a> post:</p>
+<p>If we tried to use this heap region now, a page fault would occur since the virtual memory region is not mapped to physical memory yet. To resolve this, we create an <code>init_heap</code> function that maps the heap pages using the <a href="https://rust-os.ir/paging-implementation/#using-offsetpagetable"><code>Mapper</code> API</a> that we introduced in the <a href="https://rust-os.ir/paging-implementation/"><em>“Paging Implementation”</em></a> post:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/allocator.rs
 </span><span>
 </span><span style="color:#569cd6;">use </span><span>x86_64::{
@@ -446,7 +446,7 @@
 <p>We set the required <code>PRESENT</code> flag and the <code>WRITABLE</code> flag for the page. With these flags both read and write accesses are allowed, which makes sense for heap memory.</p>
 </li>
 <li>
-<p>We use the <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/paging/mapper/trait.Mapper.html#method.map_to"><code>Mapper::map_to</code></a> method for creating the mapping in the active page table. The method can fail, therefore we use the <a href="https://doc.rust-lang.org/edition-guide/rust-2018/error-handling-and-panics/the-question-mark-operator-for-easier-error-handling.html">question mark operator</a> again to forward the error to the caller. On success, the method returns a <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/paging/mapper/struct.MapperFlush.html"><code>MapperFlush</code></a> instance that we can use to update the <a href="https://os.phil-opp.com/paging-introduction/#the-translation-lookaside-buffer"><em>translation lookaside buffer</em></a> using the <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/paging/mapper/struct.MapperFlush.html#method.flush"><code>flush</code></a> method.</p>
+<p>We use the <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/paging/mapper/trait.Mapper.html#method.map_to"><code>Mapper::map_to</code></a> method for creating the mapping in the active page table. The method can fail, therefore we use the <a href="https://doc.rust-lang.org/edition-guide/rust-2018/error-handling-and-panics/the-question-mark-operator-for-easier-error-handling.html">question mark operator</a> again to forward the error to the caller. On success, the method returns a <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/paging/mapper/struct.MapperFlush.html"><code>MapperFlush</code></a> instance that we can use to update the <a href="https://rust-os.ir/paging-introduction/#the-translation-lookaside-buffer"><em>translation lookaside buffer</em></a> using the <a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/paging/mapper/struct.MapperFlush.html#method.flush"><code>flush</code></a> method.</p>
 </li>
 </ul>
 </li>
@@ -589,7 +589,7 @@
 </span><span>    blog_os::test_panic_handler(info)
 </span><span>}
 </span></code></pre>
-<p>We reuse the <code>test_runner</code> and <code>test_panic_handler</code> functions from our <code>lib.rs</code>. Since we want to test allocations, we enable the <code>alloc</code> crate through the <code>extern crate alloc</code> statement. For more information about the test boilerplate check out the <a href="https://os.phil-opp.com/testing/"><em>Testing</em></a> post.</p>
+<p>We reuse the <code>test_runner</code> and <code>test_panic_handler</code> functions from our <code>lib.rs</code>. Since we want to test allocations, we enable the <code>alloc</code> crate through the <code>extern crate alloc</code> statement. For more information about the test boilerplate check out the <a href="https://rust-os.ir/testing/"><em>Testing</em></a> post.</p>
 <p>The implementation of the <code>main</code> function looks like this:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in tests/heap_allocation.rs
 </span><span>
@@ -677,7 +677,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -757,7 +757,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

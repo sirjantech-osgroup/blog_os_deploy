@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/fa/freestanding-rust-binary/" />
+        <link rel="canonical" href="https://rust-os.ir/fa/freestanding-rust-binary/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/fa" title="All Posts">« همه پست‌ها</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/fa" title="All Posts">« همه پست‌ها</a></aside>
 
             </div>
         </header>
@@ -115,7 +115,7 @@
             
             <p>
             <b>محتوای ترجمه شده:</b>
-            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://os.phil-opp.com/freestanding-rust-binary/">A Freestanding Rust Binary</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
+            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://rust-os.ir/freestanding-rust-binary/">A Freestanding Rust Binary</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
             </p>
             <p>
                 ترجمه توسط <a href="https://github.com/hamidrezakp">@hamidrezakp</a> و <a href="https://github.com/MHBahrampour">@MHBahrampour</a>.
@@ -126,7 +126,7 @@
     <div class="right-to-left">
     <p>اولین قدم برای نوشتن سیستم‌عامل، ساخت یک باینری راست (کلمه: Rust) هست که به کتابخانه استاندارد نیازمند نباشد. این باعث می‌شود تا بتوانیم کد راست را بدون سیستم‌عامل زیرین، بر روی سخت افزار <a href="https://en.wikipedia.org/wiki/Bare_machine">bare metal</a> اجرا کنیم.</p>
 <span id="continue-reading"></span>
-<p>این بلاگ بصورت آزاد بر روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده. اگر مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. همچنین می‌توانید <a href="https://os.phil-opp.com/fa/freestanding-rust-binary/#comments">در زیر</a> این پست کامنت بگذارید. سورس کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-01"><code>post-01</code></a> پیدا کنید.</p>
+<p>این بلاگ بصورت آزاد بر روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده. اگر مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. همچنین می‌توانید <a href="https://rust-os.ir/fa/freestanding-rust-binary/#comments">در زیر</a> این پست کامنت بگذارید. سورس کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-01"><code>post-01</code></a> پیدا کنید.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -183,7 +183,7 @@
 <p>برای نوشتن هسته سیستم‌عامل، ما به کدی نیاز داریم که به هیچ یک از ویژگی‌های سیستم‌عامل نیازی نداشته باشد. یعنی نمی‌توانیم از نخ‌ها (ترجمه: Threads)، فایل‌ها، حافظه هیپ (کلمه: Heap)، شبکه، اعداد تصادفی، ورودی استاندارد، یا هر ویژگی دیگری که نیاز به انتزاعات سیستم‌عامل یا سخت‌افزار خاصی داشته، استفاده کنیم. منطقی هم به نظر می‌رسد، چون ما سعی داریم سیستم‌عامل و درایور‌های خودمان را بنویسیم.</p>
 <p>نداشتن انتزاعات سیستم‌عامل به این معنی هست که نمی‌توانیم از بخش زیادی از <a href="https://doc.rust-lang.org/std/">کتابخانه استاندارد راست</a> استفاده کنیم، اما هنوز بسیاری از ویژگی‌های راست هستند که می‌توانیم از آن‌ها استفاده کنیم. به عنوان مثال، می‌توانیم از [iterator] ها، [closure] ها، <a href="https://doc.rust-lang.org/book/ch06-00-enums.html">pattern matching</a>، <a href="https://doc.rust-lang.org/core/option/">option</a>، <a href="https://doc.rust-lang.org/core/result/">result</a>، <a href="https://doc.rust-lang.org/core/macro.write.html">string formatting</a> و البته <a href="https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html">سیستم ownership</a> استفاده کنیم. این ویژگی‌ها به ما امکان نوشتن هسته به طور رسا، سطح بالا و بدون نگرانی درباره <a href="https://www.nayuki.io/page/undefined-behavior-in-c-and-cplusplus-programs">رفتار تعریف نشده</a> و <a href="https://tonyarcieri.com/it-s-time-for-a-memory-safety-intervention">امنیت حافظه</a> را میدهند.</p>
 <p>برای ساختن یک هسته سیستم‌عامل به زبان راست، باید فایل اجرایی‌ای بسازیم که بتواند بدون سیستم‌عامل زیرین اجرا بشود. چنین فایل اجرایی، فایل اجرایی مستقل (ترجمه: freestanding) یا فایل اجرایی “bare-metal” نامیده می‌شود.</p>
-<p>این پست قدم‌های لازم برای ساخت یک باینری مستقل راست و اینکه چرا این قدم‌ها نیاز هستند را توضیح می‌دهد. اگر علاقه‌ایی به خواندن کل توضیحات ندارید، می‌توانید <strong><a href="https://os.phil-opp.com/fa/freestanding-rust-binary/#summary">به قسمت خلاصه مراجعه کنید</a></strong>.</p>
+<p>این پست قدم‌های لازم برای ساخت یک باینری مستقل راست و اینکه چرا این قدم‌ها نیاز هستند را توضیح می‌دهد. اگر علاقه‌ایی به خواندن کل توضیحات ندارید، می‌توانید <strong><a href="https://rust-os.ir/fa/freestanding-rust-binary/#summary">به قسمت خلاصه مراجعه کنید</a></strong>.</p>
 <h2 id="gyr-f-l-khrdn-khtbkhnh-stndrd"><a class="zola-anchor" href="#gyr-f-l-khrdn-khtbkhnh-stndrd" aria-label="Anchor link for: gyr-f-l-khrdn-khtbkhnh-stndrd">🔗</a>غیر فعال کردن کتابخانه استاندارد</h2>
 <p>به طور پیش‌فرض تمام کِرِیت‌های راست، از <a href="https://doc.rust-lang.org/std/">کتابخانه استاندارد</a> استفاده می‌کنند(لینک به آن دارند)، که به سیستم‌عامل برای قابلیت‌هایی مثل نخ‌ها، فایل‌ها یا شبکه وابستگی دارد. همچنین به کتابخانه استاندارد زبان سی، <code>libc</code> هم وابسطه هست که با سرویس‌های سیستم‌عامل تعامل نزدیکی دارند. از آن‌جا که قصد داریم یک سیستم‌عامل بنویسیم، نمی‌توانیم از هیچ کتابخانه‌ایی که به سیستم‌عامل نیاز داشته باشد استفاده کنیم. بنابراین باید اضافه شدن خودکار کتابخانه استاندارد را از طریق <a href="https://doc.rust-lang.org/1.30.0/book/first-edition/using-rust-without-the-standard-library.html">خاصیت <code>no_std</code></a> غیر فعال کنیم.</p>
 <p>با ساخت یک اپلیکیشن جدید کارگو شروع می‌کنیم. ساده‌ترین راه برای انجام این کار از طریق خط فرمان است:</p>
@@ -456,7 +456,7 @@
 </span></code></pre>
 <p>توجه داشته باشید که این فقط یک نمونه حداقلی از باینری مستقل راست است. این باینری انتظار چیزهای مختلفی را دارد، به عنوان مثال با فراخوانی تابع <code>start_</code> یک پشته مقداردهی اولیه می‌شود. <strong>بنابراین برای هر گونه استفاده واقعی از چنین باینری، مراحل بیشتری لازم است</strong>.</p>
 <h2 id="b-dy-chyst"><a class="zola-anchor" href="#b-dy-chyst" aria-label="Anchor link for: b-dy-chyst">🔗</a>بعدی چیست؟</h2>
-<p><a href="https://os.phil-opp.com/fa/minimal-rust-kernel/">پست بعدی</a> مراحل مورد نیاز برای تبدیل باینری مستقل به حداقل هسته سیستم‌عامل را توضیح می‌دهد. که شامل ایجاد یک هدف سفارشی، ترکیب اجرایی ما با بوت‌لودر و یادگیری نحوه چاپ چیزی در صفحه است.</p>
+<p><a href="https://rust-os.ir/fa/minimal-rust-kernel/">پست بعدی</a> مراحل مورد نیاز برای تبدیل باینری مستقل به حداقل هسته سیستم‌عامل را توضیح می‌دهد. که شامل ایجاد یک هدف سفارشی، ترکیب اجرایی ما با بوت‌لودر و یادگیری نحوه چاپ چیزی در صفحه است.</p>
 
     </div>
 
@@ -464,7 +464,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -534,19 +534,19 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/freestanding-rust-binary/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/freestanding-rust-binary/">
                         English (original)
-                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://os.phil-opp.com/zh-CN/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://rust-os.ir/zh-CN/freestanding-rust-binary/">
                         Chinese (simplified)
-                    </a></li><li data-lang-switch-to="zh-TW" class=""><a href="https://os.phil-opp.com/zh-TW/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="zh-TW" class=""><a href="https://rust-os.ir/zh-TW/freestanding-rust-binary/">
                         Chinese (traditional)
-                    </a></li><li data-lang-switch-to="fr" class=""><a href="https://os.phil-opp.com/fr/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="fr" class=""><a href="https://rust-os.ir/fr/freestanding-rust-binary/">
                         French
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/freestanding-rust-binary/">
                         Japanese
-                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://os.phil-opp.com/ru/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ru" class=""><a href="https://rust-os.ir/ru/freestanding-rust-binary/">
                         Russian
-                    </a></li><li data-lang-switch-to="ko" class=""><a href="https://os.phil-opp.com/ko/freestanding-rust-binary/">
+                    </a></li><li data-lang-switch-to="ko" class=""><a href="https://rust-os.ir/ko/freestanding-rust-binary/">
                         Korean
                     </a></li></ul>
         </div>
@@ -562,7 +562,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

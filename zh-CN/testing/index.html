@@ -12,11 +12,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/zh-CN/testing/" />
+        <link rel="canonical" href="https://rust-os.ir/zh-CN/testing/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -35,11 +35,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/zh-CN" title="All Posts">« 所有文章</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/zh-CN" title="All Posts">« 所有文章</a></aside>
 
             </div>
         </header>
@@ -134,7 +134,7 @@
             
             <p>
             <b>翻译内容：</b>
-            这是对原文章 <strong><a href="https://os.phil-opp.com/testing/">Testing</a></strong> 的社区中文翻译。它可能不完整，过时或者包含错误。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">这个 Issue</a> 上评论和提问！
+            这是对原文章 <strong><a href="https://rust-os.ir/testing/">Testing</a></strong> 的社区中文翻译。它可能不完整，过时或者包含错误。可以在 <a href="https://github.com/phil-opp/blog_os/issues/961">这个 Issue</a> 上评论和提问！
             </p>
             <p>
                 翻译者： <a href="https://github.com/luojia65">@luojia65</a> 和 <a href="https://github.com/Rustin-Liu">@Rustin-Liu</a>.
@@ -217,7 +217,7 @@
     </details>
 
 <h2 id="yue-du-yao-qiu"><a class="zola-anchor" href="#yue-du-yao-qiu" aria-label="Anchor link for: yue-du-yao-qiu">🔗</a>阅读要求</h2>
-<p>这篇文章替换了此前的(现在已经过时了) <a href="https://os.phil-opp.com/unit-testing/"><em>单元测试(Unit Testing)</em></a> 和 <a href="https://os.phil-opp.com/integration-tests/"><em>集成测试(Integration Tests)</em></a> 两篇文章。这里我将假定你是在2019-04-27日后阅读的<a href="https://os.phil-opp.com/minimal-rust-kernel/"><em>最小Rust内核</em></a>一文。总而言之，本文要求你已经有一个<a href="https://os.phil-opp.com/minimal-rust-kernel/#set-a-default-target">设置默认目标</a>的 <code>.cargo/config</code> 文件且<a href="https://os.phil-opp.com/minimal-rust-kernel/#using-cargo-run">定义了一个runner可执行文件</a>。</p>
+<p>这篇文章替换了此前的(现在已经过时了) <a href="https://rust-os.ir/unit-testing/"><em>单元测试(Unit Testing)</em></a> 和 <a href="https://rust-os.ir/integration-tests/"><em>集成测试(Integration Tests)</em></a> 两篇文章。这里我将假定你是在2019-04-27日后阅读的<a href="https://rust-os.ir/minimal-rust-kernel/"><em>最小Rust内核</em></a>一文。总而言之，本文要求你已经有一个<a href="https://rust-os.ir/minimal-rust-kernel/#set-a-default-target">设置默认目标</a>的 <code>.cargo/config</code> 文件且<a href="https://rust-os.ir/minimal-rust-kernel/#using-cargo-run">定义了一个runner可执行文件</a>。</p>
 <h2 id="rustzhong-de-ce-shi"><a class="zola-anchor" href="#rustzhong-de-ce-shi" aria-label="Anchor link for: rustzhong-de-ce-shi">🔗</a>Rust中的测试</h2>
 <p>Rust有一个<strong>内置的测试框架</strong>（<a href="https://doc.rust-lang.org/book/second-edition/ch11-00-testing.html">built-in test framework</a>）：无需任何设置就可以进行单元测试，只需要创建一个通过assert来检查结果的函数并在函数的头部加上<code>#[test]</code>属性即可。然后<code>cargo test</code>会自动找到并执行你的crate中的所有测试函数。</p>
 <p>不幸的是，对于一个<code>no_std</code>的应用，比如我们的内核，这有点点复杂。现在的问题是，Rust的测试框架会隐式的调用内置的<a href="https://doc.rust-lang.org/test/index.html"><code>test</code></a>库，但是这个库依赖于标准库。这也就是说我们的 <code>#[no_std]</code>内核无法使用默认的测试框架。</p>
@@ -380,7 +380,7 @@
 </span><span>    };
 </span><span>}
 </span></code></pre>
-<p>就像<a href="https://os.phil-opp.com/vga-text-mode/#lazy-statics">VGA文本缓冲区</a>一样，我们使用 <code>lazy_static</code> 和一个自旋锁来创建一个 <code>static</code> writer实例。通过使用 <code>lazy_static</code> ，我们可以保证<code>init</code>方法只会在该示例第一次被使用使被调用。</p>
+<p>就像<a href="https://rust-os.ir/vga-text-mode/#lazy-statics">VGA文本缓冲区</a>一样，我们使用 <code>lazy_static</code> 和一个自旋锁来创建一个 <code>static</code> writer实例。通过使用 <code>lazy_static</code> ，我们可以保证<code>init</code>方法只会在该示例第一次被使用使被调用。</p>
 <p>和 <code>isa-debug-exit</code>设备一样，UART也是用过I/O端口进行编程的。由于UART相对来讲更加复杂，它使用多个I/O端口来对不同的设备寄存器进行编程。不安全的<code>SerialPort::new</code>函数需要UART的第一个I/O端口的地址作为参数，从该地址中可以计算出所有所需端口的地址。我们传递的端口地址为<code>0x3F8</code> ，该地址是第一个串行接口的标准端口号。</p>
 <p>为了使串口更加易用，我们添加了 <code>serial_print!</code> 和 <code>serial_println!</code>宏:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[doc(hidden)]
@@ -855,7 +855,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -925,11 +925,11 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/testing/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/testing/">
                         English (original)
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/testing/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/testing/">
                         Japanese
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/testing/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/testing/">
                         Persian
                     </a></li></ul>
         </div>
@@ -945,7 +945,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

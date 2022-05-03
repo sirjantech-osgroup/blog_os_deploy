@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/ja/cpu-exceptions/" />
+        <link rel="canonical" href="https://rust-os.ir/ja/cpu-exceptions/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/ja" title="All Posts">« すべての記事へ</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/ja" title="All Posts">« すべての記事へ</a></aside>
 
             </div>
         </header>
@@ -113,7 +113,7 @@
             
             <p>
             <b>この記事は翻訳されたものです：</b>
-            この記事は<strong><a href="https://os.phil-opp.com/cpu-exceptions/">CPU Exceptions</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
+            この記事は<strong><a href="https://rust-os.ir/cpu-exceptions/">CPU Exceptions</a></strong>をコミュニティの手により翻訳したものです。そのため、翻訳が完全・最新でなかったり、原文にない誤りを含んでいる可能性があります。問題があれば<a href="https://github.com/phil-opp/blog_os/issues/906">このissue</a>上で報告してください！
             </p>
             <p>
                 翻訳者： <a href="https://github.com/woodyZootopia">@woodyZootopia</a>.
@@ -124,7 +124,7 @@
     <div class="">
     <p>CPU例外は、例えば無効なメモリアドレスにアクセスしたときやゼロ除算したときなど、様々なミスによって発生します。それらに対処するために、ハンドラ関数を提供する <strong><ruby>割り込み記述子表<rp> (</rp><rt>interrupt descriptor table</rt><rp>) </rp></ruby></strong> を設定しなくてはなりません。この記事を読み終わる頃には、私達のカーネルは<a href="https://wiki.osdev.org/Exceptions#Breakpoint">ブレークポイント例外</a>を捕捉し、その後通常の実行を継続できるようになっているでしょう。</p>
 <span id="continue-reading"></span>
-<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://os.phil-opp.com/ja/cpu-exceptions/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-05"><code>post-05</code> ブランチ</a>にあります。</p>
+<p>このブログの内容は <a href="https://github.com/phil-opp/blog_os">GitHub</a> 上で公開・開発されています。何か問題や質問などがあれば issue をたててください (訳注: リンクは原文(英語)のものになります)。また<a href="https://rust-os.ir/ja/cpu-exceptions/#comments">こちら</a>にコメントを残すこともできます。この記事の完全なソースコードは<a href="https://github.com/phil-opp/blog_os/tree/post-05"><code>post-05</code> ブランチ</a>にあります。</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -297,7 +297,7 @@
 <li><strong>エラーコードを処理する</strong>: いくつかの例外の場合、エラーコードがプッシュされるのですが、これが状況をより複雑にします。エラーコードはスタックのアラインメントを変更し（次の箇条を参照）、リターンする前にスタックからポップされる必要があるのです。<code>x86-interrupt</code>呼び出し規約は、このややこしい仕組みをすべて処理してくれます。しかし、どのハンドラ関数がどの例外に使われているかは呼び出し規約側にはわからないので、関数の引数の数からその情報を推測する必要があります。つまり、プログラマはやはりそれぞれの例外に対して正しい関数型を使う責任があるということです。幸いにも、<code>x86_64</code>クレートで定義されている<code>InterruptDescriptorTable</code>型が、正しい関数型が確実に使われるようにしてくれます。</li>
 <li><strong>スタックをアラインする</strong>: 一部の命令（特にSSE命令）には、16バイトのスタックアラインメントを必要とするものがあります。CPUは例外が発生したときには必ずこのようにスタックが<ruby>整列<rp> (</rp><rt>アライン</rt><rp>) </rp></ruby>されることを保証しますが、例外の中には、エラーコードをプッシュして再びスタックの整列を壊してしまうものもあります。この場合、<code>x86-interrupt</code>の呼び出し規約は、スタックを再整列させることでこの問題を解決します。</li>
 </ul>
-<p>もしより詳しく知りたい場合は、例外の処理について<a href="https://github.com/rust-lang/rfcs/blob/master/text/1201-naked-fns.md">naked function</a>を使って説明する一連の記事があります。<a href="https://os.phil-opp.com/ja/cpu-exceptions/#sasuganijian-dan-sugi">この記事の最下部</a>にそこへのリンクがあります。</p>
+<p>もしより詳しく知りたい場合は、例外の処理について<a href="https://github.com/rust-lang/rfcs/blob/master/text/1201-naked-fns.md">naked function</a>を使って説明する一連の記事があります。<a href="https://rust-os.ir/ja/cpu-exceptions/#sasuganijian-dan-sugi">この記事の最下部</a>にそこへのリンクがあります。</p>
 <h2 id="shi-zhuang"><a class="zola-anchor" href="#shi-zhuang" aria-label="Anchor link for: shi-zhuang">🔗</a>実装</h2>
 <p>理屈は理解したので、私達のカーネルでCPUの例外を実際に処理していきましょう。まず、<code>src/interrupts.rs</code>に割り込みのための新しいモジュールを作ります。このモジュールはまず、<code>init_idt</code>関数という、新しい<code>InterruptDescriptorTable</code>を作る関数を定義します。</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/lib.rs
@@ -389,7 +389,7 @@
 <p>このように変更するとエラーなくコンパイルできますが、このような書き方は全く慣用的ではありません。<code>static mut</code>はデータ競合を非常に起こしやすいので、アクセスするたびに<a href="https://doc.rust-lang.org/1.30.0/book/second-edition/ch19-01-unsafe-rust.html#unsafe-superpowers">unsafeブロック</a>が必要になります。</p>
 <h4 id="lazy-staticsniomakase"><a class="zola-anchor" href="#lazy-staticsniomakase" aria-label="Anchor link for: lazy-staticsniomakase">🔗</a>Lazy Staticsにおまかせ</h4>
 <p>幸いにも、例の<code>lazy_static</code>マクロが存在します。このマクロは<code>static</code>をコンパイル時に評価する代わりに、最初に参照されたときに初期化を行います。このため、初期化時にはほとんどすべてのことができ、実行時にのみ決定する値を読み込むこともできます。</p>
-<p><a href="https://os.phil-opp.com/ja/vga-text-mode/#dai-keta-lazy-jing-de-bian-shu">VGAテキストバッファの抽象化をした</a>ときに、すでに<code>lazy_static</code>クレートはインポートしました。そのため、すぐに<code>lazy_static!</code>マクロを使って静的なIDTを作ることができます。</p>
+<p><a href="https://rust-os.ir/ja/vga-text-mode/#dai-keta-lazy-jing-de-bian-shu">VGAテキストバッファの抽象化をした</a>ときに、すでに<code>lazy_static</code>クレートはインポートしました。そのため、すぐに<code>lazy_static!</code>マクロを使って静的なIDTを作ることができます。</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span style="color:#569cd6;">use </span><span>lazy_static::lazy_static;
@@ -468,7 +468,7 @@
 <pre style="background-color:#1e1e1e;color:#dcdcdc;"><code><span>blog_os::interrupts::test_breakpoint_exception...	[ok]
 </span></code></pre>
 <h2 id="sasuganijian-dan-sugi"><a class="zola-anchor" href="#sasuganijian-dan-sugi" aria-label="Anchor link for: sasuganijian-dan-sugi">🔗</a>さすがに簡単すぎ？</h2>
-<p><code>x86-interrupt</code>呼び出し規約と<a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.InterruptDescriptorTable.html"><code>InterruptDescriptorTable</code></a>型のおかげで、例外処理のプロセスは比較的わかりやすく、面倒なところはありませんでした。「これではさすがに簡単すぎる、例外処理の闇をすべて学び尽くしたい」というあなた向けの記事もあります：私達の<a href="https://os.phil-opp.com/edition-1/extra/naked-exceptions/">Handling Exceptions with Naked Functions</a>シリーズ（未訳）では、<code>x86-interrupt</code>呼び出し規約を使わずに例外を処理する方法を学び、さらには独自のIDT型を定義します。<code>x86-interrupt</code>呼び出し規約や、<code>x86_64</code>クレートが存在する前は、これらの記事が主な例外処理に関する記事でした。なお、これらの記事はこのブログの<a href="https://os.phil-opp.com/edition-1/">第1版</a>をもとにしているので、内容が古くなっている可能性があることに注意してください。</p>
+<p><code>x86-interrupt</code>呼び出し規約と<a href="https://docs.rs/x86_64/0.14.2/x86_64/structures/idt/struct.InterruptDescriptorTable.html"><code>InterruptDescriptorTable</code></a>型のおかげで、例外処理のプロセスは比較的わかりやすく、面倒なところはありませんでした。「これではさすがに簡単すぎる、例外処理の闇をすべて学び尽くしたい」というあなた向けの記事もあります：私達の<a href="https://rust-os.ir/edition-1/extra/naked-exceptions/">Handling Exceptions with Naked Functions</a>シリーズ（未訳）では、<code>x86-interrupt</code>呼び出し規約を使わずに例外を処理する方法を学び、さらには独自のIDT型を定義します。<code>x86-interrupt</code>呼び出し規約や、<code>x86_64</code>クレートが存在する前は、これらの記事が主な例外処理に関する記事でした。なお、これらの記事はこのブログの<a href="https://rust-os.ir/edition-1/">第1版</a>をもとにしているので、内容が古くなっている可能性があることに注意してください。</p>
 <h2 id="ci-ha"><a class="zola-anchor" href="#ci-ha" aria-label="Anchor link for: ci-ha">🔗</a>次は？</h2>
 <p>例外を捕捉し、そこから戻ってくることに成功しました！次のステップは、すべての例外を捕捉できるようにすることです。なぜなら、補足されなかった例外は致命的な<a href="https://wiki.osdev.org/Triple_Fault">トリプルフォルト</a>を引き起こし、これはシステムリセットにつながってしまうからです。次の記事では、<a href="https://wiki.osdev.org/Double_Fault#Double_Fault">ダブルフォルト</a>を正しく捕捉することで、これを回避できることを説明します。</p>
 
@@ -478,7 +478,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -550,9 +550,9 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/cpu-exceptions/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/cpu-exceptions/">
                         English (original)
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/cpu-exceptions/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/cpu-exceptions/">
                         Persian
                     </a></li></ul>
         </div>
@@ -568,7 +568,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

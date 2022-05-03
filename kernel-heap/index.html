@@ -89,10 +89,10 @@
     </aside>
 
     <div class="warning">
-        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://os.phil-opp.com/edition-2/">here</a>.
+        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://rust-os.ir/edition-2/">here</a>.
     </div>
 
-    <p>In the previous posts we created a <a href="https://os.phil-opp.com/allocating-frames/">frame allocator</a> and a <a href="https://os.phil-opp.com/page-tables/">page table module</a>. Now we are ready to create a kernel heap and a memory allocator. Thus, we will unlock <code>Box</code>, <code>Vec</code>, <code>BTreeMap</code>, and the rest of the <a href="https://doc.rust-lang.org/nightly/alloc/index.html">alloc</a> crate.</p>
+    <p>In the previous posts we created a <a href="https://rust-os.ir/allocating-frames/">frame allocator</a> and a <a href="https://rust-os.ir/page-tables/">page table module</a>. Now we are ready to create a kernel heap and a memory allocator. Thus, we will unlock <code>Box</code>, <code>Vec</code>, <code>BTreeMap</code>, and the rest of the <a href="https://doc.rust-lang.org/nightly/alloc/index.html">alloc</a> crate.</p>
 <span id="continue-reading"></span>
 <p>As always, you can find the complete source code on <a href="https://github.com/phil-opp/blog_os/tree/first_edition_post_8">GitHub</a>. Please file <a href="https://github.com/phil-opp/blog_os/issues">issues</a> for any problems, questions, or improvement suggestions. There is also a comment section at the end of this page.</p>
 <h2 id="introduction"><a class="zola-anchor" href="#introduction" aria-label="Anchor link for: introduction">🔗</a>Introduction</h2>
@@ -316,7 +316,7 @@
 </span><span style="color:#569cd6;">use </span><span>alloc::boxed::Box;
 </span><span style="color:#569cd6;">let</span><span> heap_test = Box::new(</span><span style="color:#b5cea8;">42</span><span>);
 </span></code></pre>
-<p>When we run it, a triple fault occurs and causes permanent rebooting. Let’s try debug it using QEMU and objdump as described <a href="https://os.phil-opp.com/remap-the-kernel/#debugging">in the previous post</a>:</p>
+<p>When we run it, a triple fault occurs and causes permanent rebooting. Let’s try debug it using QEMU and objdump as described <a href="https://rust-os.ir/remap-the-kernel/#debugging">in the previous post</a>:</p>
 <pre style="background-color:#1e1e1e;color:#dcdcdc;"><code><span>&gt; qemu-system-x86_64 -d int -no-reboot -cdrom build/os-x86_64.iso
 </span><span>…
 </span><span>check_exception old: 0xffffffff new 0xe
@@ -413,7 +413,7 @@
 </span></code></pre>
 <p>That’s it. Now our <code>memory::init</code> function can only be called once. The macro works by creating a static <a href="https://doc.rust-lang.org/nightly/core/sync/atomic/struct.AtomicBool.html">AtomicBool</a> named <code>CALLED</code>, which is initialized to <code>false</code>. When the macro is invoked, it checks the value of <code>CALLED</code> and sets it to <code>true</code>. If the value was already <code>true</code> before, the macro panics.</p>
 <h3 id="mapping-the-heap"><a class="zola-anchor" href="#mapping-the-heap" aria-label="Anchor link for: mapping-the-heap">🔗</a>Mapping the Heap</h3>
-<p>Now we’re ready to map the heap pages. In order to do it, we need access to the <code>ActivePageTable</code> or <code>Mapper</code> instance (see the <a href="https://os.phil-opp.com/page-tables/">page table</a> and <a href="https://os.phil-opp.com/remap-the-kernel/">kernel remapping</a> posts). For that we return it from the <code>paging::remap_the_kernel</code> function:</p>
+<p>Now we’re ready to map the heap pages. In order to do it, we need access to the <code>ActivePageTable</code> or <code>Mapper</code> instance (see the <a href="https://rust-os.ir/page-tables/">page table</a> and <a href="https://rust-os.ir/remap-the-kernel/">kernel remapping</a> posts). For that we return it from the <code>paging::remap_the_kernel</code> function:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/memory/paging/mod.rs
 </span><span>
 </span><span style="color:#569cd6;">pub fn </span><span>remap_the_kernel&lt;A&gt;(allocator: </span><span style="color:#569cd6;">&amp;mut</span><span> A, boot_info: </span><span style="color:#569cd6;">&amp;</span><span>BootInformation)
@@ -577,7 +577,7 @@
 </span><span>#[global_allocator]
 </span><span style="color:#569cd6;">static </span><span style="color:#b4cea8;">HEAP_ALLOCATOR</span><span>: LockedHeap = LockedHeap::empty();
 </span></code></pre>
-<p>We can’t initialize the linked list allocator statically, since it needs to initialize the first hole (like described <a href="https://os.phil-opp.com/kernel-heap/#initialization">above</a>). This can’t be done at compile time, so the function can’t be a <code>const</code> function. Therefore we can only create an empty heap and initialize it later at runtime. For that, we add the following lines to our <code>rust_main</code> function:</p>
+<p>We can’t initialize the linked list allocator statically, since it needs to initialize the first hole (like described <a href="https://rust-os.ir/kernel-heap/#initialization">above</a>). This can’t be done at compile time, so the function can’t be a <code>const</code> function. Therefore we can only create an empty heap and initialize it later at runtime. For that, we add the following lines to our <code>rust_main</code> function:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/lib.rs
 </span><span>
 </span><span>#[no_mangle]
@@ -607,7 +607,7 @@
 <h2 id="summary"><a class="zola-anchor" href="#summary" aria-label="Anchor link for: summary">🔗</a>Summary</h2>
 <p>Now we’re able to use heap storage in our kernel without leaking memory. This allows us to effectively process dynamic data such as user supplied strings in the future. We can also use <code>Rc</code> and <code>Arc</code> to create types with shared ownership. And we have access to various data structures such as <code>Vec</code> or <code>Linked List</code>, which will make our lives much easier. We even have some well tested and optimized <a href="https://en.wikipedia.org/wiki/Binary_heap">binary heap</a> and <a href="https://en.wikipedia.org/wiki/B-tree">B-tree</a> implementations!</p>
 <h2 id="what-s-next"><a class="zola-anchor" href="#what-s-next" aria-label="Anchor link for: what-s-next">🔗</a>What’s next?</h2>
-<p>This post concludes the section about memory management for now. We will revisit this topic eventually, but now it’s time to explore other topics. The upcoming posts will be about CPU exceptions and interrupts. We will catch all page, double, and triple faults and create a driver to read keyboard input. The <a href="https://os.phil-opp.com/handling-exceptions/">next post</a> starts by setting up a so-called <em>Interrupt Descriptor Table</em>.</p>
+<p>This post concludes the section about memory management for now. We will revisit this topic eventually, but now it’s time to explore other topics. The upcoming posts will be about CPU exceptions and interrupts. We will catch all page, double, and triple faults and create a driver to read keyboard input. The <a href="https://rust-os.ir/handling-exceptions/">next post</a> starts by setting up a so-called <em>Interrupt Descriptor Table</em>.</p>
 
 </main>
 
@@ -801,7 +801,7 @@
             <hr>
             <small>
                 &copy; <time datetime="2017">2017</time>. All rights reserved.
-                <a href="https://os.phil-opp.com/contact/">Contact</a>
+                <a href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

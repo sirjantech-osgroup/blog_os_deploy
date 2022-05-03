@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/hardware-interrupts/" />
+        <link rel="canonical" href="https://rust-os.ir/hardware-interrupts/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com" title="All Posts">« All Posts</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir" title="All Posts">« All Posts</a></aside>
 
             </div>
         </header>
@@ -126,7 +126,7 @@
     <div class="">
     <p>In this post we set up the programmable interrupt controller to correctly forward hardware interrupts to the CPU. To handle these interrupts we add new entries to our interrupt descriptor table, just like we did for our exception handlers. We will learn how to get periodic timer interrupts and how to get input from the keyboard.</p>
 <span id="continue-reading"></span>
-<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://os.phil-opp.com/hardware-interrupts/#comments">at the bottom</a>.  The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-07"><code>post-07</code></a> branch.</p>
+<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://rust-os.ir/hardware-interrupts/#comments">at the bottom</a>.  The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-07"><code>post-07</code></a> branch.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -218,7 +218,7 @@
 </span><span>
 </span></code></pre>
 <p>This graphic shows the typical assignment of interrupt lines. We see that most of the 15 lines have a fixed mapping, e.g. line 4 of the secondary PIC is assigned to the mouse.</p>
-<p>Each controller can be configured through two <a href="https://os.phil-opp.com/testing/#i-o-ports">I/O ports</a>, one “command” port and one “data” port. For the primary controller these ports are <code>0x20</code> (command) and <code>0x21</code> (data). For the secondary controller they are <code>0xa0</code> (command) and <code>0xa1</code> (data). For more information on how the PICs can be configured see the <a href="https://wiki.osdev.org/8259_PIC">article on osdev.org</a>.</p>
+<p>Each controller can be configured through two <a href="https://rust-os.ir/testing/#i-o-ports">I/O ports</a>, one “command” port and one “data” port. For the primary controller these ports are <code>0x20</code> (command) and <code>0x21</code> (data). For the secondary controller they are <code>0xa0</code> (command) and <code>0xa1</code> (data). For more information on how the PICs can be configured see the <a href="https://wiki.osdev.org/8259_PIC">article on osdev.org</a>.</p>
 <h3 id="implementation"><a class="zola-anchor" href="#implementation" aria-label="Anchor link for: implementation">🔗</a>Implementation</h3>
 <p>The default configuration of the PICs is not usable, because it sends interrupt vector numbers in the range 0–15 to the CPU. These numbers are already occupied by CPU exceptions, for example number 8 corresponds to a double fault. To fix this overlapping issue, we need to remap the PIC interrupts to different numbers. The actual range doesn’t matter as long as it does not overlap with the exceptions, but typically the range 32–47 is chosen, because these are the first free numbers after the 32 exception slots.</p>
 <p>The configuration happens by writing special values to the command and data ports of the PICs. Fortunately there is already a crate called <a href="https://docs.rs/pic8259/0.10.1/pic8259/"><code>pic8259</code></a>, so we don’t need to write the initialization sequence ourselves. In case you are interested how it works, check out <a href="https://docs.rs/crate/pic8259/0.10.1/source/src/lib.rs">its source code</a>, it’s fairly small and well documented.</p>
@@ -267,7 +267,7 @@
 <p><img src="qemu-hardware-timer-double-fault.png" alt="QEMU printing EXCEPTION: DOUBLE FAULT because of hardware timer" /></p>
 <p>The reason for this double fault is that the hardware timer (the <a href="https://en.wikipedia.org/wiki/Intel_8253">Intel 8253</a> to be exact) is enabled by default, so we start receiving timer interrupts as soon as we enable interrupts. Since we didn’t define a handler function for it yet, our double fault handler is invoked.</p>
 <h2 id="handling-timer-interrupts"><a class="zola-anchor" href="#handling-timer-interrupts" aria-label="Anchor link for: handling-timer-interrupts">🔗</a>Handling Timer Interrupts</h2>
-<p>As we see from the graphic <a href="https://os.phil-opp.com/hardware-interrupts/#the-8259-pic">above</a>, the timer uses line 0 of the primary PIC. This means that it arrives at the CPU as interrupt 32 (0 + offset 32). Instead of hardcoding index 32, we store it in an <code>InterruptIndex</code> enum:</p>
+<p>As we see from the graphic <a href="https://rust-os.ir/hardware-interrupts/#the-8259-pic">above</a>, the timer uses line 0 of the primary PIC. This means that it arrives at the CPU as interrupt 32 (0 + offset 32). Instead of hardcoding index 32, we store it in an <code>InterruptIndex</code> enum:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span>#[derive(Debug, Clone, Copy)]
@@ -337,7 +337,7 @@
 <p>The hardware timer that we use is called the <em>Programmable Interval Timer</em> or PIT for short. Like the name says, it is possible to configure the interval between two interrupts. We won’t go into details here because we will switch to the <a href="https://wiki.osdev.org/APIC_timer">APIC timer</a> soon, but the OSDev wiki has an extensive article about the <a href="https://wiki.osdev.org/Programmable_Interval_Timer">configuring the PIT</a>.</p>
 <h2 id="deadlocks"><a class="zola-anchor" href="#deadlocks" aria-label="Anchor link for: deadlocks">🔗</a>Deadlocks</h2>
 <p>We now have a form of concurrency in our kernel: The timer interrupts occur asynchronously, so they can interrupt our <code>_start</code> function at any time. Fortunately Rust’s ownership system prevents many types of concurrency related bugs at compile time. One notable exception are deadlocks. Deadlocks occur if a thread tries to acquire a lock that will never become free. Thus the thread hangs indefinitely.</p>
-<p>We can already provoke a deadlock in our kernel. Remember, our <code>println</code> macro calls the <code>vga_buffer::_print</code> function, which <a href="https://os.phil-opp.com/vga-text-mode/#spinlocks">locks a global <code>WRITER</code></a> using a spinlock:</p>
+<p>We can already provoke a deadlock in our kernel. Remember, our <code>println</code> macro calls the <code>vga_buffer::_print</code> function, which <a href="https://rust-os.ir/vga-text-mode/#spinlocks">locks a global <code>WRITER</code></a> using a spinlock:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/vga_buffer.rs
 </span><span>
 </span><span>[…]
@@ -558,10 +558,10 @@
 </span><span>    }
 </span><span>}
 </span></code></pre>
-<p>As we see from the graphic <a href="https://os.phil-opp.com/hardware-interrupts/#the-8259-pic">above</a>, the keyboard uses line 1 of the primary PIC. This means that it arrives at the CPU as interrupt 33 (1 + offset 32). We add this index as a new <code>Keyboard</code> variant to the <code>InterruptIndex</code> enum. We don’t need to specify the value explicitly, since it defaults to the previous value plus one, which is also 33. In the interrupt handler, we print a <code>k</code> and send the end of interrupt signal to the interrupt controller.</p>
+<p>As we see from the graphic <a href="https://rust-os.ir/hardware-interrupts/#the-8259-pic">above</a>, the keyboard uses line 1 of the primary PIC. This means that it arrives at the CPU as interrupt 33 (1 + offset 32). We add this index as a new <code>Keyboard</code> variant to the <code>InterruptIndex</code> enum. We don’t need to specify the value explicitly, since it defaults to the previous value plus one, which is also 33. In the interrupt handler, we print a <code>k</code> and send the end of interrupt signal to the interrupt controller.</p>
 <p>We now see that a <code>k</code> appears on the screen when we press a key. However, this only works for the first key we press, even if we continue to press keys no more <code>k</code>s appear on the screen. This is because the keyboard controller won’t send another interrupt until we have read the so-called <em>scancode</em> of the pressed key.</p>
 <h3 id="reading-the-scancodes"><a class="zola-anchor" href="#reading-the-scancodes" aria-label="Anchor link for: reading-the-scancodes">🔗</a>Reading the Scancodes</h3>
-<p>To find out <em>which</em> key was pressed, we need to query the keyboard controller. We do this by reading from the data port of the PS/2 controller, which is the <a href="https://os.phil-opp.com/testing/#i-o-ports">I/O port</a> with number <code>0x60</code>:</p>
+<p>To find out <em>which</em> key was pressed, we need to query the keyboard controller. We do this by reading from the data port of the PS/2 controller, which is the <a href="https://rust-os.ir/testing/#i-o-ports">I/O port</a> with number <code>0x60</code>:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/interrupts.rs
 </span><span>
 </span><span style="color:#569cd6;">extern </span><span style="color:#d69d85;">&quot;x86-interrupt&quot; </span><span style="color:#569cd6;">fn </span><span>keyboard_interrupt_handler(
@@ -685,7 +685,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -751,7 +751,7 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/hardware-interrupts/">
+            <ul><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/hardware-interrupts/">
                         Persian
                     </a></li></ul>
         </div>
@@ -767,7 +767,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

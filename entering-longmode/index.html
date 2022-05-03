@@ -79,10 +79,10 @@
     </aside>
 
     <div class="warning">
-        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://os.phil-opp.com/edition-2/">here</a>.
+        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://rust-os.ir/edition-2/">here</a>.
     </div>
 
-    <p>In the <a href="https://os.phil-opp.com/multiboot-kernel/">previous post</a> we created a minimal multiboot kernel. It just prints <code>OK</code> and hangs. The goal is to extend it and call 64-bit <a href="https://www.rust-lang.org/">Rust</a> code. But the CPU is currently in <a href="https://en.wikipedia.org/wiki/Protected_mode">protected mode</a> and allows only 32-bit instructions and up to 4GiB memory. So we need to set up <em>Paging</em> and switch to the 64-bit <a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a> first.</p>
+    <p>In the <a href="https://rust-os.ir/multiboot-kernel/">previous post</a> we created a minimal multiboot kernel. It just prints <code>OK</code> and hangs. The goal is to extend it and call 64-bit <a href="https://www.rust-lang.org/">Rust</a> code. But the CPU is currently in <a href="https://en.wikipedia.org/wiki/Protected_mode">protected mode</a> and allows only 32-bit instructions and up to 4GiB memory. So we need to set up <em>Paging</em> and switch to the 64-bit <a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a> first.</p>
 <span id="continue-reading"></span>
 <p>I tried to explain everything in detail and to keep the code as simple as possible. If you have any questions, suggestions, or issues, please leave a comment or <a href="https://github.com/phil-opp/blog_os/issues">create an issue</a> on Github. The source code is available in a <a href="https://github.com/phil-opp/blog_os/tree/first_edition_post_2/src/arch/x86_64">repository</a>, too.</p>
 <h2 id="some-tests"><a class="zola-anchor" href="#some-tests" aria-label="Anchor link for: some-tests">🔗</a>Some Tests</h2>
@@ -96,7 +96,7 @@
 </span><span>    </span><span style="color:#569cd6;">mov </span><span>byte  [</span><span style="color:#b4cea8;">0xb800a</span><span>], al
 </span><span>    </span><span style="color:#569cd6;">hlt
 </span></code></pre>
-<p>At address <code>0xb8000</code> begins the so-called <a href="https://en.wikipedia.org/wiki/VGA-compatible_text_mode">VGA text buffer</a>. It’s an array of screen characters that are displayed by the graphics card. A <a href="https://os.phil-opp.com/printing-to-screen/">future post</a> will cover the VGA buffer in detail and create a Rust interface to it. But for now, manual bit-fiddling is the easiest option.</p>
+<p>At address <code>0xb8000</code> begins the so-called <a href="https://en.wikipedia.org/wiki/VGA-compatible_text_mode">VGA text buffer</a>. It’s an array of screen characters that are displayed by the graphics card. A <a href="https://rust-os.ir/printing-to-screen/">future post</a> will cover the VGA buffer in detail and create a Rust interface to it. But for now, manual bit-fiddling is the easiest option.</p>
 <p>A screen character consists of a 8 bit color code and a 8 bit <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> character. We used the color code <code>4f</code> for all characters, which means white text on red background. <code>0x52</code> is an ASCII <code>R</code>, <code>0x45</code> is an <code>E</code>, <code>0x3a</code> is a <code>:</code>, and <code>0x20</code> is a space. The second space is overwritten by the given ASCII byte. Finally the CPU is stopped with the <code>hlt</code> instruction.</p>
 <p>Now we can add some check <em>functions</em>. A function is just a normal label with an <code>ret</code> (return) instruction at the end. The <code>call</code> instruction can be used to call it. Unlike the <code>jmp</code> instruction that just jumps to a memory address, the <code>call</code> instruction will push a return address to the stack (and the <code>ret</code> will jump to this address). But we don’t have a stack yet. The <a href="https://stackoverflow.com/a/1464052/866447">stack pointer</a> in the esp register could point to some important data or even invalid memory. So we need to update it and point it to some valid stack memory.</p>
 <h3 id="creating-a-stack"><a class="zola-anchor" href="#creating-a-stack" aria-label="Anchor link for: creating-a-stack">🔗</a>Creating a Stack</h3>
@@ -308,7 +308,7 @@
 <h3 id="enable-paging"><a class="zola-anchor" href="#enable-paging" aria-label="Anchor link for: enable-paging">🔗</a>Enable Paging</h3>
 <p>To enable paging and enter long mode, we need to do the following:</p>
 <ol>
-<li>write the address of the P4 table to the CR3 register (the CPU will look there, see the <a href="https://os.phil-opp.com/entering-longmode/#paging">paging section</a>)</li>
+<li>write the address of the P4 table to the CR3 register (the CPU will look there, see the <a href="https://rust-os.ir/entering-longmode/#paging">paging section</a>)</li>
 <li>long mode is an extension of <a href="https://en.wikipedia.org/wiki/Physical_Address_Extension">Physical Address Extension</a> (PAE), so we need to enable PAE first</li>
 <li>Set the long mode bit in the EFER register</li>
 <li>Enable Paging</li>
@@ -442,7 +442,7 @@ The Global Descriptor Table (GDT) was used for <em>Segmentation</em> in old oper
 </ul>
 <p><em>Congratulations</em>! You have successfully wrestled through this CPU configuration and compatibility mode mess :).</p>
 <h4 id="one-last-thing"><a class="zola-anchor" href="#one-last-thing" aria-label="Anchor link for: one-last-thing">🔗</a>One Last Thing</h4>
-<p>Above, we reloaded the code segment register <code>cs</code> with the new GDT offset. However, the data segment registers <code>ss</code>, <code>ds</code>, <code>es</code>, <code>fs</code>, and <code>gs</code> still contain the data segment offsets of the old GDT. This isn’t necessarily bad, since they’re ignored by almost all instructions in 64-bit mode. However, there are a few instructions that expect a valid data segment descriptor <em>or the null descriptor</em> in those registers. An example is the the <a href="https://os.phil-opp.com/returning-from-exceptions/#the-iretq-instruction">iretq</a> instruction that we’ll need in the <a href="https://os.phil-opp.com/returning-from-exceptions/"><em>Returning from Exceptions</em></a> post.</p>
+<p>Above, we reloaded the code segment register <code>cs</code> with the new GDT offset. However, the data segment registers <code>ss</code>, <code>ds</code>, <code>es</code>, <code>fs</code>, and <code>gs</code> still contain the data segment offsets of the old GDT. This isn’t necessarily bad, since they’re ignored by almost all instructions in 64-bit mode. However, there are a few instructions that expect a valid data segment descriptor <em>or the null descriptor</em> in those registers. An example is the the <a href="https://rust-os.ir/returning-from-exceptions/#the-iretq-instruction">iretq</a> instruction that we’ll need in the <a href="https://rust-os.ir/returning-from-exceptions/"><em>Returning from Exceptions</em></a> post.</p>
 <p>To avoid future problems, we reload all data segment registers with null:</p>
 <pre data-lang="nasm" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span>long_mode_start:
 </span><span style="color:#608b4e;">    ; load 0 into all data segment registers
@@ -457,7 +457,7 @@ The Global Descriptor Table (GDT) was used for <em>Segmentation</em> in old oper
 </span><span>    ...
 </span></code></pre>
 <h2 id="what-s-next"><a class="zola-anchor" href="#what-s-next" aria-label="Anchor link for: what-s-next">🔗</a>What’s next?</h2>
-<p>It’s time to finally leave assembly behind and switch to <a href="https://www.rust-lang.org/">Rust</a>. Rust is a systems language without garbage collections that guarantees memory safety. Through a real type system and many abstractions it feels like a high-level language but can still be low-level enough for OS development. The <a href="https://os.phil-opp.com/set-up-rust/">next post</a> describes the Rust setup.</p>
+<p>It’s time to finally leave assembly behind and switch to <a href="https://www.rust-lang.org/">Rust</a>. Rust is a systems language without garbage collections that guarantees memory safety. Through a real type system and many abstractions it feels like a high-level language but can still be low-level enough for OS development. The <a href="https://rust-os.ir/set-up-rust/">next post</a> describes the Rust setup.</p>
 <h2 id="footnotes"><a class="zola-anchor" href="#footnotes" aria-label="Anchor link for: footnotes">🔗</a>Footnotes</h2>
 <div class="footnote-definition" id="hardware_lookup"><sup class="footnote-definition-label">1</sup>
 <p>In the x86 architecture, the page tables are <em>hardware walked</em>, so the CPU will look at the table on its own when it needs a translation. Other architectures, for example MIPS, just throw an exception and let the OS translate the virtual address.</p>
@@ -1302,7 +1302,7 @@ table it looks like only bits 12-51 (40 bits) are used for that.</p></div><div c
             <hr>
             <small>
                 &copy; <time datetime="2017">2017</time>. All rights reserved.
-                <a href="https://os.phil-opp.com/contact/">Contact</a>
+                <a href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

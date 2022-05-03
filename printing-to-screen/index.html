@@ -99,10 +99,10 @@
     </aside>
 
     <div class="warning">
-        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://os.phil-opp.com/edition-2/">here</a>.
+        <b>No longer updated!</b> You are viewing the a post of the first edition of “Writing an OS in Rust”, which is no longer updated. You can find the second edition <a href="https://rust-os.ir/edition-2/">here</a>.
     </div>
 
-    <p>In the <a href="https://os.phil-opp.com/set-up-rust/">previous post</a> we switched from assembly to <a href="https://www.rust-lang.org/">Rust</a>, a systems programming language that provides great safety. But so far we are using unsafe features like <a href="https://doc.rust-lang.org/book/raw-pointers.html">raw pointers</a> whenever we want to print to screen. In this post we will create a Rust module that provides a safe and easy-to-use interface for the VGA text buffer. It will support Rust’s <a href="https://doc.rust-lang.org/std/fmt/#related-macros">formatting macros</a>, too.</p>
+    <p>In the <a href="https://rust-os.ir/set-up-rust/">previous post</a> we switched from assembly to <a href="https://www.rust-lang.org/">Rust</a>, a systems programming language that provides great safety. But so far we are using unsafe features like <a href="https://doc.rust-lang.org/book/raw-pointers.html">raw pointers</a> whenever we want to print to screen. In this post we will create a Rust module that provides a safe and easy-to-use interface for the VGA text buffer. It will support Rust’s <a href="https://doc.rust-lang.org/std/fmt/#related-macros">formatting macros</a>, too.</p>
 <span id="continue-reading"></span>
 <p>This post uses recent unstable features, so you need an up-to-date nighly compiler. If you have any questions, problems, or suggestions please <a href="https://github.com/phil-opp/blog_os/issues">file an issue</a> or create a comment at the bottom. The code from this post is also available on <a href="https://github.com/phil-opp/blog_os/tree/first_edition_post_4">GitHub</a>.</p>
 <h2 id="the-vga-text-buffer"><a class="zola-anchor" href="#the-vga-text-buffer" aria-label="Anchor link for: the-vga-text-buffer">🔗</a>The VGA Text Buffer</h2>
@@ -519,13 +519,13 @@
 <p>We see that both “inner” and “outer” are printed.</p>
 <h2 id="what-s-next"><a class="zola-anchor" href="#what-s-next" aria-label="Anchor link for: what-s-next">🔗</a>What’s next?</h2>
 <p>In the next posts we will map the kernel pages correctly so that accessing <code>0x0</code> or writing to <code>.rodata</code> is not possible anymore. To obtain the loaded kernel sections we will read the Multiboot information structure. Then we will create a paging module and use it to switch to a new page table where the kernel sections are mapped correctly.</p>
-<p>The <a href="https://os.phil-opp.com/allocating-frames/">next post</a> describes the Multiboot information structure and creates a frame allocator using the information about memory areas.</p>
+<p>The <a href="https://rust-os.ir/allocating-frames/">next post</a> describes the Multiboot information structure and creates a frame allocator using the information about memory areas.</p>
 <h2 id="other-rust-os-projects"><a class="zola-anchor" href="#other-rust-os-projects" aria-label="Anchor link for: other-rust-os-projects">🔗</a>Other Rust OS Projects</h2>
 <p>Now that you know the very basics of OS development in Rust, you should also check out the following projects:</p>
 <ul>
 <li>
 <p><a href="https://github.com/thepowersgang/rust-barebones-kernel">Rust Bare-Bones Kernel</a>: A basic kernel with roughly the same functionality as ours. Writes output to the serial port instead of the VGA buffer and maps the kernel to the <a href="https://wiki.osdev.org/Higher_Half_Kernel">higher half</a> (instead of our identity mapping).
-<em>Note</em>: You need to <a href="https://os.phil-opp.com/cross-compile-binutils/">cross compile binutils</a> to build it (or you create some symbolic links<sup class="footnote-reference"><a href="#fn-symlink">1</a></sup> if you’re on x86_64).</p>
+<em>Note</em>: You need to <a href="https://rust-os.ir/cross-compile-binutils/">cross compile binutils</a> to build it (or you create some symbolic links<sup class="footnote-reference"><a href="#fn-symlink">1</a></sup> if you’re on x86_64).</p>
 </li>
 <li>
 <p><a href="https://github.com/RustOS-Fork-Holding-Ground/RustOS">RustOS</a>: More advanced kernel that supports allocation, keyboard inputs, and threads. It also has a scheduler and a basic network driver.</p>
@@ -1100,7 +1100,7 @@
             <hr>
             <small>
                 &copy; <time datetime="2017">2017</time>. All rights reserved.
-                <a href="https://os.phil-opp.com/contact/">Contact</a>
+                <a href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

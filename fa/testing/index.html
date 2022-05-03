@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/fa/testing/" />
+        <link rel="canonical" href="https://rust-os.ir/fa/testing/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com/fa" title="All Posts">« همه پست‌ها</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir/fa" title="All Posts">« همه پست‌ها</a></aside>
 
             </div>
         </header>
@@ -135,7 +135,7 @@
             
             <p>
             <b>محتوای ترجمه شده:</b>
-            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://os.phil-opp.com/testing/">Testing</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
+            این یک ترجمه از جامعه کاربران برای پست <strong><a href="https://rust-os.ir/testing/">Testing</a></strong> است. ممکن است ناقص، منسوخ شده یا دارای خطا باشد. لطفا هر گونه مشکل را در <a href="https://github.com/phil-opp/blog_os/issues/908">این ایشو</a> گزارش دهید!
             </p>
             <p>
                 ترجمه توسط <a href="https://github.com/hamidrezakp">@hamidrezakp</a> و <a href="https://github.com/MHBahrampour">@MHBahrampour</a>.
@@ -146,7 +146,7 @@
     <div class="right-to-left">
     <p>این پست به بررسی تست‌های واحد (ترجمه: unit) و یکپارچه (ترجمه: integration) در فایل‌های اجرایی ‌<code>no_std</code> می‌پردازد. ما از پشتیبانی Rust برای فریم‌ورک تست‌های سفارشی استفاده می‌کنیم تا توابع تست را درون کرنل‌مان اجرا کنیم. برای گزارش کردن نتایج خارج از QEMU، از ویژگی‌های مختلف QEMU و ابزار <code>bootimage</code> استفاده می‌کنیم.</p>
 <span id="continue-reading"></span>
-<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر شما مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. شما همچنین می‌توانید <a href="https://os.phil-opp.com/fa/testing/#comments">در زیر</a> این پست کامنت بگذارید. منبع کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-04"><code>post-04</code></a> پیدا کنید.</p>
+<p>این بلاگ بصورت آزاد روی <a href="https://github.com/phil-opp/blog_os">گیت‌هاب</a> توسعه داده شده است. اگر شما مشکل یا سوالی دارید، لطفاً آن‌جا یک ایشو باز کنید. شما همچنین می‌توانید <a href="https://rust-os.ir/fa/testing/#comments">در زیر</a> این پست کامنت بگذارید. منبع کد کامل این پست را می‌توانید در بِرَنچ <a href="https://github.com/phil-opp/blog_os/tree/post-04"><code>post-04</code></a> پیدا کنید.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -220,7 +220,7 @@
     </details>
 
 <h2 id="nyzmndyh"><a class="zola-anchor" href="#nyzmndyh" aria-label="Anchor link for: nyzmndyh">🔗</a>نیازمندی‌ها</h2>
-<p>این پست جایگزین (حالا منسوخ شده) پست‌های <a href="https://os.phil-opp.com/unit-testing/"><em>Unit Testing</em></a> و <a href="https://os.phil-opp.com/integration-tests/"><em>Integration Tests</em></a> می‌شود. فرض بر این است که شما پست <a href="https://os.phil-opp.com/minimal-rust-kernel/"><em>یک کرنل مینیمال با Rust</em></a> را پس از 27-09-2019 دنبال کرده‌اید. اساساً نیاز است که شما یک فایل <code>.cargo/config.toml</code> داشته باشید که <a href="https://os.phil-opp.com/minimal-rust-kernel/#set-a-default-target">یک هدف پیشفرض مشخص می‌کند</a> و <a href="https://os.phil-opp.com/minimal-rust-kernel/#using-cargo-run">یک اجرا کننده قابل اجرا تعریف می‌کند</a>.</p>
+<p>این پست جایگزین (حالا منسوخ شده) پست‌های <a href="https://rust-os.ir/unit-testing/"><em>Unit Testing</em></a> و <a href="https://rust-os.ir/integration-tests/"><em>Integration Tests</em></a> می‌شود. فرض بر این است که شما پست <a href="https://rust-os.ir/minimal-rust-kernel/"><em>یک کرنل مینیمال با Rust</em></a> را پس از 27-09-2019 دنبال کرده‌اید. اساساً نیاز است که شما یک فایل <code>.cargo/config.toml</code> داشته باشید که <a href="https://rust-os.ir/minimal-rust-kernel/#set-a-default-target">یک هدف پیشفرض مشخص می‌کند</a> و <a href="https://rust-os.ir/minimal-rust-kernel/#using-cargo-run">یک اجرا کننده قابل اجرا تعریف می‌کند</a>.</p>
 <h2 id="tst-khrdn-dr-rust"><a class="zola-anchor" href="#tst-khrdn-dr-rust" aria-label="Anchor link for: tst-khrdn-dr-rust">🔗</a>تست کردن در Rust</h2>
 <p>زبان Rust یک <a href="https://doc.rust-lang.org/book/second-edition/ch11-00-testing.html">فریم‌ورک تست توکار</a> دارد که قادر به اجرای تست‌های واحد بدون نیاز به تنظیم هر چیزی است. فقط کافی است تابعی ایجاد کنید که برخی نتایج را از طریق اَسرشن‌ها (کلمه: assertions) بررسی کند و صفت <code>#[test]</code> را به هدر تابع (ترجمه: function header) اضافه کنید. سپس <code>cargo test</code> به طور خودکار تمام تابع‌های تست کریت شما را پیدا و اجرا می‌کند.</p>
 <p>متأسفانه برای برنامه‌های <code>no_std</code> مانند هسته ما کمی پیچیده‌تر است. مسئله این است که فریم‌ورک تست Rust به طور ضمنی از کتابخانه <a href="https://doc.rust-lang.org/test/index.html"><code>test</code></a> داخلی استفاده می‌کند که به کتابخانه استاندارد وابسته‌ است. این بدان معناست که ما نمی‌توانیم از فریم‌ورک تست پیشفرض برای هسته <code>#[no_std]</code> خود استفاده کنیم.</p>
@@ -293,7 +293,7 @@
 <p><code>bootimage runner</code> برای کلیه تست‌های اجرایی <code> test-args</code> را به دستور پیش فرض QEMU اضافه می کند. برای یک <code>cargo run</code> عادی، آرگومان‌ها نادیده گرفته می‌شوند.</p>
 <p>همراه با نام دستگاه (<code>isa-debug-exit</code>)، دو پارامتر <code>iobase</code> و <code>iosize</code> را عبور می‌دهیم که <em>پورت I/O</em> را مشخص می‌کند و هسته از طریق آن می‌تواند به دستگاه دسترسی داشته باشد.</p>
 <h3 id="pwrthy-i-o"><a class="zola-anchor" href="#pwrthy-i-o" aria-label="Anchor link for: pwrthy-i-o">🔗</a>پورت‌های I/O</h3>
-<p>برای برقراری ارتباط بین پردازنده و سخت افزار جانبی در x86، دو رویکرد مختلف وجود دارد،<strong>memory-mapped I/O</strong> و <strong>port-mapped I/O</strong>. ما قبلاً برای دسترسی به <a href="https://os.phil-opp.com/vga-text-mode/">بافر متن VGA</a> از طریق آدرس حافظه <code>0xb8000</code> از memory-mapped I/O استفاده کرده‌ایم. این آدرس به RAM مپ (ترسیم) نشده است، بلکه به برخی از حافظه‌های دستگاه VGA مپ شده است.</p>
+<p>برای برقراری ارتباط بین پردازنده و سخت افزار جانبی در x86، دو رویکرد مختلف وجود دارد،<strong>memory-mapped I/O</strong> و <strong>port-mapped I/O</strong>. ما قبلاً برای دسترسی به <a href="https://rust-os.ir/vga-text-mode/">بافر متن VGA</a> از طریق آدرس حافظه <code>0xb8000</code> از memory-mapped I/O استفاده کرده‌ایم. این آدرس به RAM مپ (ترسیم) نشده است، بلکه به برخی از حافظه‌های دستگاه VGA مپ شده است.</p>
 <p>در مقابل، port-mapped I/O از یک گذرگاه I/O جداگانه برای ارتباط استفاده می‌کند. هر قسمت جانبی متصل دارای یک یا چند شماره پورت است. برای برقراری ارتباط با چنین پورت I/O، دستورالعمل‌های CPU خاصی وجود دارد که <code>in</code> و <code>out</code> نامیده می‌شوند، که یک عدد پورت و یک بایت داده را می‌گیرند (همچنین این دستورات تغییراتی دارند که اجازه می دهد یک <code>u16</code> یا <code>u32</code> ارسال کنید).</p>
 <p>دستگاه‌های <code>isa-debug-exit</code> از port-mapped I/O استفاده می‌کنند. پارامتر <code>iobase</code> مشخص می‌کند که دستگاه باید در کدام آدرس پورت قرار بگیرد (<code>0xf4</code> یک پورت <a href="https://wiki.osdev.org/I/O_Ports#The_list">معمولاً استفاده نشده</a> در گذرگاه IO x86 است) و <code>iosize</code> اندازه پورت را مشخص می‌کند (<code>0x04</code> یعنی چهار بایت).</p>
 <h3 id="stfdh-z-dstgh-khrwj"><a class="zola-anchor" href="#stfdh-z-dstgh-khrwj" aria-label="Anchor link for: stfdh-z-dstgh-khrwj">🔗</a>استفاده از دستگاه خروج</h3>
@@ -386,7 +386,7 @@
 </span><span>    };
 </span><span>}
 </span></code></pre>
-<p>مانند <a href="https://os.phil-opp.com/vga-text-mode/">بافر متن VGA</a> <a href="https://os.phil-opp.com/vga-text-mode/#lazy-statics">vga lazy-static</a>، ما از <code>lazy_static</code> و یک spinlock برای ایجاد یک نمونه نویسنده <code>static</code> استفاده می‌کنیم. با استفاده از <code>lazy_static</code> می‌توان اطمینان حاصل کرد که متد <code>init</code> در اولین استفاده دقیقاً یک بار فراخوانی می‌شود.</p>
+<p>مانند <a href="https://rust-os.ir/vga-text-mode/">بافر متن VGA</a> <a href="https://rust-os.ir/vga-text-mode/#lazy-statics">vga lazy-static</a>، ما از <code>lazy_static</code> و یک spinlock برای ایجاد یک نمونه نویسنده <code>static</code> استفاده می‌کنیم. با استفاده از <code>lazy_static</code> می‌توان اطمینان حاصل کرد که متد <code>init</code> در اولین استفاده دقیقاً یک بار فراخوانی می‌شود.</p>
 <p>مانند دستگاه <code>isa-debug-exit</code>، UART با استفاده از پورت I/O برنامه نویسی می‌شود. از آنجا که UART پیچیده‌تر است، از چندین پورت I/O برای برنامه نویسی رجیسترهای مختلف دستگاه استفاده می‌کند. تابع ناامن <code>SerialPort::new</code> انتظار دارد که آدرس اولین پورت I/O از UART به عنوان آرگومان باشد، که از آن می‌تواند آدرس تمام پورت‌های مورد نیاز را محاسبه کند. ما در حال عبور دادنِ آدرس پورت <code>0x3F8</code> هستیم که شماره پورت استاندارد برای اولین رابط سریال است.</p>
 <p>برای اینکه پورت سریال به راحتی قابل استفاده باشد، ماکروهای <code>serial_print!</code> و <code>serial_println!</code> را اضافه می‌کنیم:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[doc(hidden)]
@@ -927,7 +927,7 @@ To make our library work with <code>cargo test</code>, we need to also add the t
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -999,11 +999,11 @@ To make our library work with <code>cargo test</code>, we need to also add the t
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="en" class=""><a href="https://os.phil-opp.com/testing/">
+            <ul><li data-lang-switch-to="en" class=""><a href="https://rust-os.ir/testing/">
                         English (original)
-                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://os.phil-opp.com/zh-CN/testing/">
+                    </a></li><li data-lang-switch-to="zh-CN" class=""><a href="https://rust-os.ir/zh-CN/testing/">
                         Chinese (simplified)
-                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/testing/">
+                    </a></li><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/testing/">
                         Japanese
                     </a></li></ul>
         </div>
@@ -1019,7 +1019,7 @@ To make our library work with <code>cargo test</code>, we need to also add the t
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>

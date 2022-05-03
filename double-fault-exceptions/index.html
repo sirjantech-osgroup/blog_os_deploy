@@ -11,11 +11,11 @@
     <meta name="author" content="Philipp Oppermann">
 
     
-        <link rel="canonical" href="https://os.phil-opp.com/double-fault-exceptions/" />
+        <link rel="canonical" href="https://rust-os.ir/double-fault-exceptions/" />
     
     <link href="/css/edition-2/main.css" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://os.phil-opp.com/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RSS feed for os.phil-opp.com" href="https://rust-os.ir/rss.xml" />
 
     <script>
         let theme = localStorage.getItem("theme");
@@ -34,11 +34,11 @@
         <header class="masthead">
             <div style="position:relative">
                 <h2 class="masthead-title">
-                    <a href="https://os.phil-opp.com" title="Home">Writing an OS in Rust</a>
+                    <a href="https://rust-os.ir" title="Home">Writing an OS in Rust</a>
                 </h2>
                 <p><small>Philipp&nbsp;Oppermann's&nbsp;blog</small></p>
                 
-    <aside id="all-posts-link"><a href="https://os.phil-opp.com" title="All Posts">« All Posts</a></aside>
+    <aside id="all-posts-link"><a href="https://rust-os.ir" title="All Posts">« All Posts</a></aside>
 
             </div>
         </header>
@@ -119,7 +119,7 @@
     <div class="">
     <p>This post explores the double fault exception in detail, which occurs when the CPU fails to invoke an exception handler. By handling this exception we avoid fatal <em>triple faults</em> that cause a system reset. To prevent triple faults in all cases we also set up an <em>Interrupt Stack Table</em> to catch double faults on a separate kernel stack.</p>
 <span id="continue-reading"></span>
-<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://os.phil-opp.com/double-fault-exceptions/#comments">at the bottom</a>.  The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-06"><code>post-06</code></a> branch.</p>
+<p>This blog is openly developed on <a href="https://github.com/phil-opp/blog_os">GitHub</a>. If you have any problems or questions, please open an issue there. You can also leave comments <a href="https://rust-os.ir/double-fault-exceptions/#comments">at the bottom</a>.  The complete source code for this post can be found in the <a href="https://github.com/phil-opp/blog_os/tree/post-06"><code>post-06</code></a> branch.</p>
 <!-- fix for zola anchor checker (target is in template): <a id="comments"> -->
 
     <details id = "toc-inline">
@@ -178,7 +178,7 @@
     </details>
 
 <h2 id="what-is-a-double-fault"><a class="zola-anchor" href="#what-is-a-double-fault" aria-label="Anchor link for: what-is-a-double-fault">🔗</a>What is a Double Fault?</h2>
-<p>In simplified terms, a double fault is a special exception that occurs when the CPU fails to invoke an exception handler. For example, it occurs when a page fault is triggered but there is no page fault handler registered in the <a href="https://os.phil-opp.com/cpu-exceptions/#the-interrupt-descriptor-table">Interrupt Descriptor Table</a> (IDT). So it’s kind of similar to catch-all blocks in programming languages with exceptions, e.g. <code>catch(...)</code> in C++ or <code>catch(Exception e)</code> in Java or C#.</p>
+<p>In simplified terms, a double fault is a special exception that occurs when the CPU fails to invoke an exception handler. For example, it occurs when a page fault is triggered but there is no page fault handler registered in the <a href="https://rust-os.ir/cpu-exceptions/#the-interrupt-descriptor-table">Interrupt Descriptor Table</a> (IDT). So it’s kind of similar to catch-all blocks in programming languages with exceptions, e.g. <code>catch(...)</code> in C++ or <code>catch(Exception e)</code> in Java or C#.</p>
 <p>A double fault behaves like a normal exception. It has the vector number <code>8</code> and we can define a normal handler function for it in the IDT. It is really important to provide a double fault handler, because if a double fault is unhandled a fatal <em>triple fault</em> occurs. Triple faults can’t be caught and most hardware reacts with a system reset.</p>
 <h3 id="triggering-a-double-fault"><a class="zola-anchor" href="#triggering-a-double-fault" aria-label="Anchor link for: triggering-a-double-fault">🔗</a>Triggering a Double Fault</h3>
 <p>Let’s provoke a double fault by triggering an exception for that we didn’t define a handler function:</p>
@@ -203,7 +203,7 @@
 </span><span>    </span><span style="color:#569cd6;">loop </span><span>{}
 </span><span>}
 </span></code></pre>
-<p>We use <code>unsafe</code> to write to the invalid address <code>0xdeadbeef</code>. The virtual address is not mapped to a physical address in the page tables, so a page fault occurs. We haven’t registered a page fault handler in our <a href="https://os.phil-opp.com/cpu-exceptions/#the-interrupt-descriptor-table">IDT</a>, so a double fault occurs.</p>
+<p>We use <code>unsafe</code> to write to the invalid address <code>0xdeadbeef</code>. The virtual address is not mapped to a physical address in the page tables, so a page fault occurs. We haven’t registered a page fault handler in our <a href="https://rust-os.ir/cpu-exceptions/#the-interrupt-descriptor-table">IDT</a>, so a double fault occurs.</p>
 <p>When we start our kernel now, we see that it enters an endless boot loop. The reason for the boot loop is the following:</p>
 <ol>
 <li>The CPU tries to write to <code>0xdeadbeef</code>, which causes a page fault.</li>
@@ -275,7 +275,7 @@
 <p>What happens if our kernel overflows its stack and the guard page is hit?</p>
 </blockquote>
 <p>A guard page is a special memory page at the bottom of a stack that makes it possible to detect stack overflows. The page is not mapped to any physical frame, so accessing it causes a page fault instead of silently corrupting other memory. The bootloader sets up a guard page for our kernel stack, so a stack overflow causes a <em>page fault</em>.</p>
-<p>When a page fault occurs the CPU looks up the page fault handler in the IDT and tries to push the <a href="https://os.phil-opp.com/cpu-exceptions/#the-interrupt-stack-frame">interrupt stack frame</a> onto the stack. However, the current stack pointer still points to the non-present guard page. Thus, a second page fault occurs, which causes a double fault (according to the above table).</p>
+<p>When a page fault occurs the CPU looks up the page fault handler in the IDT and tries to push the <a href="https://rust-os.ir/cpu-exceptions/#the-interrupt-stack-frame">interrupt stack frame</a> onto the stack. However, the current stack pointer still points to the non-present guard page. Thus, a second page fault occurs, which causes a double fault (according to the above table).</p>
 <p>So the CPU tries to call the <em>double fault handler</em> now. However, on a double fault the CPU tries to push the exception stack frame, too. The stack pointer still points to the guard page, so a <em>third</em> page fault occurs, which causes a <em>triple fault</em> and a system reboot. So our current double fault handler can’t avoid a triple fault in this case.</p>
 <p>Let’s try it ourselves! We can easily provoke a kernel stack overflow by calling a function that recurses endlessly:</p>
 <pre data-lang="rust" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#608b4e;">// in src/main.rs
@@ -305,7 +305,7 @@
 </span><span>    stack_pointers: [Option&lt;StackPointer&gt;; 7],
 </span><span>}
 </span></code></pre>
-<p>For each exception handler, we can choose a stack from the IST through the <code>stack_pointers</code> field in the corresponding <a href="https://os.phil-opp.com/cpu-exceptions/#the-interrupt-descriptor-table">IDT entry</a>. For example, we could use the first stack in the IST for our double fault handler. Then the CPU would automatically switch to this stack whenever a double fault occurs. This switch would happen before anything is pushed, so it would prevent the triple fault.</p>
+<p>For each exception handler, we can choose a stack from the IST through the <code>stack_pointers</code> field in the corresponding <a href="https://rust-os.ir/cpu-exceptions/#the-interrupt-descriptor-table">IDT entry</a>. For example, we could use the first stack in the IST for our double fault handler. Then the CPU would automatically switch to this stack whenever a double fault occurs. This switch would happen before anything is pushed, so it would prevent the triple fault.</p>
 <h3 id="the-ist-and-tss"><a class="zola-anchor" href="#the-ist-and-tss" aria-label="Anchor link for: the-ist-and-tss">🔗</a>The IST and TSS</h3>
 <p>The Interrupt Stack Table (IST) is part of an old legacy structure called <em><a href="https://en.wikipedia.org/wiki/Task_state_segment">Task State Segment</a></em> (TSS). The TSS used to hold various information (e.g. processor register state) about a task in 32-bit mode and was for example used for <a href="https://wiki.osdev.org/Context_Switching#Hardware_Context_Switching">hardware context switching</a>. However, hardware context switching is no longer supported in 64-bit mode and the format of the TSS changed completely.</p>
 <p>On x86_64, the TSS no longer holds any task specific information at all. Instead, it holds two stack tables (the IST is one of them). The only common field between the 32-bit and 64-bit TSS is the pointer to the <a href="https://en.wikipedia.org/wiki/Task_state_segment#I.2FO_port_permissions">I/O port permissions bitmap</a>.</p>
@@ -474,7 +474,7 @@
 </span><span>    blog_os::test_panic_handler(info)
 </span><span>}
 </span></code></pre>
-<p>Like our <code>panic_handler</code> test, the test will run <a href="https://os.phil-opp.com/testing/#no-harness-tests">without a test harness</a>. The reason is that we can’t continue execution after a double fault, so more than one test doesn’t make sense. To disable the test harness for the test, we add the following to our <code>Cargo.toml</code>:</p>
+<p>Like our <code>panic_handler</code> test, the test will run <a href="https://rust-os.ir/testing/#no-harness-tests">without a test harness</a>. The reason is that we can’t continue execution after a double fault, so more than one test doesn’t make sense. To disable the test harness for the test, we add the following to our <code>Cargo.toml</code>:</p>
 <pre data-lang="toml" style="background-color:#1e1e1e;color:#dcdcdc;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#608b4e;"># in Cargo.toml
 </span><span>
 </span><span>[[</span><span style="color:#808080;">test</span><span>]]
@@ -565,7 +565,7 @@
         <h2>Support Me</h2>
         
 <p>
-    Creating and <a href="https://os.phil-opp.com/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
+    Creating and <a href="https://rust-os.ir/status-update/">maintaining</a> this blog and the associated libraries is a lot of work, but I really enjoy doing it. By supporting me, you allow me to invest more time in new content, new features, and continuous maintenance.
 </p>
 <p>
     The best way to support me is to <a href="https://github.com/sponsors/phil-opp"><em>sponsor me on GitHub</em></a>, since they don't charge any fees. If you prefer other platforms, I also have <a href="https://www.patreon.com/phil_opp"><em>Patreon</em></a> and <a href="https://donorbox.org/phil-opp"><em>Donorbox</em></a> accounts. The latter is the most flexible as it supports multiple currencies and one-time contributions.
@@ -631,9 +631,9 @@
         <div class="block" id="language-selector">
             <h2>Other Languages</h2>
             
-            <ul><li data-lang-switch-to="ja" class=""><a href="https://os.phil-opp.com/ja/double-fault-exceptions/">
+            <ul><li data-lang-switch-to="ja" class=""><a href="https://rust-os.ir/ja/double-fault-exceptions/">
                         Japanese
-                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://os.phil-opp.com/fa/double-fault-exceptions/">
+                    </a></li><li data-lang-switch-to="fa" class=""><a href="https://rust-os.ir/fa/double-fault-exceptions/">
                         Persian
                     </a></li></ul>
         </div>
@@ -649,7 +649,7 @@
             <small>
                 &copy; <time datetime="2022">2022</time>. All rights reserved.
                 <a class="spaced" href="https://github.com/phil-opp/blog_os#license">License</a>
-                <a class="spaced" href="https://os.phil-opp.com/contact/">Contact</a>
+                <a class="spaced" href="https://rust-os.ir/contact/">Contact</a>
             </small>
         </footer>
     </div>
